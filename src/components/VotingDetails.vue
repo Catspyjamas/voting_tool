@@ -7,7 +7,7 @@
       <fieldset>
         <legend >Title Vote</legend>
         <label class="instructions" for="vote__title">Add a title for your vote</label>
-        <input id="vote__title" type="text" placeholder="Title" v-model="voteTitle" name="vote-title"></input>
+        <input id="vote__title" type="text" placeholder="Title" v-model="voteTitle" name="vote-title"/>
       </fieldset>
       <fieldset>
         <legend>Question</legend>
