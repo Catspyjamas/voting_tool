@@ -1,85 +1,96 @@
 <template>
-  <div class="container">
-    <div class="breadcrumb">
-      <span>Details ></span>
-    </div>
-  <form @submit.prevent="addOption">
-      <fieldset>
-        <legend >Title Vote</legend>
-        <label class="instructions" for="vote__title">Add a title for your vote</label>
-        <input id="vote__title" type="text" placeholder="Title" v-model="voteTitle" name="vote-title"/>
-      </fieldset>
-      <fieldset>
-        <legend>Question</legend>
-        <label class="instructions" for="vote__question">Add a question and additional info about your vote</label>
-        <input id="vote__question" type="text" placeholder="Instructions" v-model="voteQuestion" name="question">
-      </fieldset>
-      <p class="instructions">Add several options that you would like to vote on.</p>
-      <div class="form__innerbox">
-        <fieldset>
-          <legend>Add Options</legend>
-          <label class="instructions label__small" for="vote__option__title">Title</label>
-          <input id="vote__option__title" type="text" placeholder="Option title" v-model="title" v-validate="'min:5'">
-          <label class="instructions label__small" for="vote__option__info">Additional Information</label>
-          <input id="vote__option__info" type="text" placeholder="Additional info" v-model="addInfo" >
-          <button class="button__add" type="submit" v-on:click="addOption">
-            <feather type="plus"></feather>
-          </button>
-        </fieldset>
+<div class="container">
+  <div class="breadcrumb">
+    <span>Details ></span>
+  </div>
+  <form id="vote" >
+    <fieldset>
+      <legend >Title Vote</legend>
+      <label class="instructions" for="vote__title">Add a title for your vote</label>
+      <input id="vote__title" type="text" placeholder="Title" v-model="voteTitle" name="vote-title" v-validate="'required'"/>
+      <transition name="slide-fade">
+      <div v-show="errors.items.length > 0" class="error-message">
+        {{ errors.first('vote-title') }}
       </div>
+    </transition>
+    </fieldset>
+    <fieldset>
+      <legend>Question</legend>
+      <label class="instructions" for="vote__question">Add a question and additional info about your vote</label>
+      <input id="vote__question" type="text" placeholder="Instructions" v-model="voteQuestion" name="vote-question" v-validate="'required'">
+      <transition name="slide-fade">
+      <div v-show="errors.items.length > 0" class="error-message">
+        {{ errors.first('vote-question') }}
+      </div>
+      </transition>
+    </fieldset>
+    <p class="instructions">Add several options that you would like to vote on.</p>
+    <AddOption   v-on:onSubmit="addOption"/>
     </form>
     <ul>
-      <transition-group name="list" enter-active-class="animated bounceInUp" leave-active-class="bounceOutDown">
+      <transition-group name="list" class="list" enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
         <div v-for="(option, index) in options" :key='index'> 
-          <li class="options-list-item">{{option.title}}</li>
-          <p>{{option.addInfo}}</p>
+          <div class="list__options">
+            <button class="button__remove" type="submit" v-on:click="removeOption(index)" >
+              <feather type="x"></feather>
+            </button>
+            <li class="list__options__title">{{option.title}}</li>
+            <p>{{option.addInfo}}</p>
+          </div>
         </div>
       </transition-group>
     </ul>
-  </div>
-  <!-- TODO: Add Button -->
+
+    <button type="submit" class="button__next" form="vote" @click="saveVotingInfo">
+      <feather type="check"></feather> Go to voters
+    </button>
+
+</div>
+
 </template>
 
 <script>
+import AddOption from "./AddOption.vue";
 export default {
   name: 'VotingDetails',
   data() {
     return {
-    title: "",
-    addInfo: "",
+    voteTitle: "",
     voteQuestion: "",
     options: [
       {"title": "Radlfahren",
       "addInfo": "in Penzberg"}
     ],
-    voteTitle: "",
-    skills: [
-      {"skill": "Vue.js"},
-      {"skill": "Frontend"}
-    ],
-    alertObject: {
-      alert: true
+    vote: {
     }
     }
   },
+  components: {
+    AddOption,
+  },
   methods: {
-    addOption() {
-      this.$validator.validateAll().then((result) => {
-        if(result) {
-          this.options.push({title: this.title, addInfo: this.addInfo});
-          this.title = "";
-          this.addInfo="";
-        } else {
+    addOption(option) {
+      this.options.push(option);
+    },
+    removeOption(index) {
+      if(index !== -1) {
+        this.options.splice(index, 1)
+      }
+    },
+    saveVotingInfo() {
+      this.$validator.validate().then((result) => {
+        if(result) {        
+          this.vote.voteTitle = this.voteTitle;
+          this.vote.voteQuestion = this.voteQuestion;
+          this.vote.options = this.options;}
+
+        else{
           // eslint-disable-next-line
           console.log("not valid")
         }
+
       })
-      },
-    removeItem(index) {
-      if(index !== -1) {
-        this.skills.splice(index, 1)
-      }
-    }
+    },
   }
 }
 </script>
@@ -90,13 +101,6 @@ export default {
 
   
 
-  input {
-    width: 100%;
-    border: 0;
-    padding: 0.8em;
-    font-size: 1.3em;
-    background: #E8E8E8;
-  }
 
   ul {
     margin: 0;
@@ -110,72 +114,50 @@ export default {
     justify-content: space-between;
   }
 
-  fieldset {
-    border: unset;
-    margin: unset;
-    padding: unset;
+
+
+.button__next {
+  position: relative;
+  background-color: #00CFBB;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  left:0;
+  right:0;
+  border-radius:unset;
+  text-transform: uppercase;
+  color: white;
+  font-size: 1.1em;
+  width:unset;
+  height: unset;
+  padding: 1.5em 1.5em 1em 1.5em;
+}
+
+  .container {
+    min-height: 100vh;
   }
 
-  legend {
-    display: none;
-  }
-
-  .button__add {
-    background-color:#00CFBB;
-  }
-
-  .breadcrumb,
-  .instructions {
-      color: rgba(232, 232, 232, 0.5);
-      font-size: 1.2em;
-  }
-
-
-  .breadcrumb {
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding-bottom: 1em;
-  }
-
-  .instructions {
-    padding: 0 0 0 1em;
-    margin-bottom: 1em;
-    border-left: 1px solid rgba(232, 232, 232, 0.5);
-    display: block;
+  .button__remove {
+    background-color: #2B239E;
+    right: -1em;
+    top: -1.5em;
+    margin-left: auto;
   }
 
 
-  .form__innerbox {
-    padding: 1em;
-  }
-
-
-  .alert-in-enter-active {
-    animation: bounce-in .5s;
-  }
-
-  .alert-in-leave-active {
-      animation: bounce-in .5s reverse;
-  }
-
-  .form__innerbox {
-    border:1px solid rgba(232, 232, 232, 0.5);
-    position:relative;
-  }
-
-  .label__small {
-    font-size: 0.9em;
-    border-left: 0;
-    padding: 0;
-  }
-
-  .options-list-item {
-    font-family: nexablack;
-    font-size: 1.3em;
-    border-top: 1px solid rgba(255, 255, 255, 0.20);
+  .list__options {
     color: white;
-    padding: 1em 0 0.5em 0;
+    position: relative;
+    border-top: 1px solid rgba(232, 232, 232, 0.5);
+    margin-top: 2em;
   }
+
+  .list__options__title {
+      font-family: nexablack;
+      font-size: 1.3em;
+      padding: 1em 0 0.5em 0;
+  }
+
 
   @keyframes bounce-in {
     0%   {

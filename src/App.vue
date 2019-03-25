@@ -53,10 +53,6 @@ h1 {
   font-size: 3em;
 }
 
-.tagline {
-  font-size: 1.25em;
-}
-
 
 body {
   background: linear-gradient(180deg, #06050E 0%, #23222A 100%);
@@ -71,10 +67,6 @@ button {
     width: 5em;
     border:none;
     position: absolute;
-    margin-left: auto;
-    margin-right: auto;
-    left: 0;
-    right: 0;
     bottom: -2.5em;
 }
 
@@ -95,9 +87,83 @@ nav a {
   text-transform: uppercase;
 }
 
+
+  legend {
+    display: none;
+  }
+
+
+  fieldset {
+    border: unset;
+    margin: unset;
+    padding: unset;
+    position: relative;
+  }
+
+
+  input {
+    width: 100%;
+    border: 0;
+    padding: 0.8em;
+    font-size: 1.3em;
+    background: #E8E8E8;
+  }
+
+  .breadcrumb,
+  .instructions {
+      color: rgba(232, 232, 232, 0.5);
+      font-size: 1.2em;
+  }
+
+.tagline {
+  font-size: 1.25em;
+}
+
+
+.slide-fade-enter-active, .slide-fade-leave-active {
+  transition: all .7s ease;
+}
+
+.slide-fade-enter {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+
+
+  .breadcrumb {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: 1em;
+  }
+
+
 .feather__content {
   color: white;
 }
+
+.error-message {
+  display: block;
+  color: #FFF385; 
+}
+
+  .instructions {
+    padding: 0 0 0 1em;
+    margin-bottom: 1em;
+    border-left: 1px solid rgba(232, 232, 232, 0.5);
+    display: block;
+  }
+
+   .error-message {
+   position: absolute;
+   z-index: 1;
+   background-color: gold;
+   color: #06050E;
+   bottom:0.5em;
+   right: -0.5em;
+ }
+
+
 
 #app {
     width: 50%;
