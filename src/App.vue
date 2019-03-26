@@ -4,6 +4,7 @@
         <router-link to="/">Home</router-link>
         <router-link to="/about">About</router-link>
         <router-link to="/votingDetails">Voting</router-link>
+        <router-link to="/ballot">Ballot</router-link>
       </nav>
     <router-view/>
   </div>
@@ -16,9 +17,9 @@
 export default {
   name: 'app',
   components: {
-    // Skills,
-    // About,
-    // VotingDetails
+    //  About,
+    //  VotingDetails,
+    //  Ballot
   }
 }
 </script>
@@ -74,9 +75,7 @@ p {
   font-size: 1.25em;
 }
 
-.container {
-  padding-top: 3em;
-}
+
 
 nav a {
   padding: 0.6em;
@@ -109,6 +108,28 @@ nav a {
     background: #E8E8E8;
   }
 
+.button-next {
+  position: relative;
+  background-color: #00CFBB;
+  display: flex;
+  margin: 1em auto 1em auto;
+  left:0;
+  right:0;
+  border-radius:unset;
+  text-transform: uppercase;
+  color: white;
+  font-size: 1.1em;
+  width:unset;
+  height: unset;
+  padding: 1.2em 1.5em 1em 1.5em;
+  letter-spacing: 0.1em;
+  bottom: 0;
+}
+
+.button__icon {
+  padding-right: 0.5em;
+}
+
   .breadcrumb,
   .instructions {
       color: rgba(232, 232, 232, 0.5);
@@ -119,6 +140,10 @@ nav a {
   font-size: 1.25em;
 }
 
+
+.container {
+  padding-top: 3em;
+}
 
 .slide-fade-enter-active, .slide-fade-leave-active {
   transition: all .7s ease;

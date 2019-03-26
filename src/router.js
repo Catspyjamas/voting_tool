@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import About from './components/About.vue'
 import VotingDetails from './components/VotingDetails.vue'
+import Ballot from './components/Ballot.vue'
 
 Vue.use(Router)
 
@@ -20,6 +21,11 @@ export default new Router({
       path: '/votingDetails',
       name: 'votingDetails',
       component: VotingDetails
+    },
+    {
+      path: '/ballot',
+      name: 'ballot',
+      component: Ballot
     }
   ]
 })
