@@ -47,7 +47,7 @@
       <p class="instructions">
         Add several options that you would like to vote on.
       </p>
-      <AddOption @onSubmit="addOption" />
+      <PollChoiceForm @onSubmit="addOption" />
     </form>
     <ul>
       <transition-group
@@ -84,11 +84,11 @@
 </template>
 
 <script>
-import AddOption from "./AddOption.vue";
+import PollChoiceForm from "./PollChoiceForm.vue";
 export default {
   name: "VotingDetails",
   components: {
-    AddOption
+    PollChoiceForm
   },
   data() {
     return {
@@ -113,9 +113,6 @@ export default {
           this.vote.voteTitle = this.voteTitle;
           this.vote.voteQuestion = this.voteQuestion;
           this.vote.options = this.options;
-        } else {
-          // eslint-disable-next-line
-          console.log("not valid");
         }
       });
     }
