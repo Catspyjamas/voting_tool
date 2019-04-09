@@ -2,7 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import About from "./components/About.vue";
 import NewPollForm from "./components/NewPollForm.vue";
-import Ballot from "./components/Ballot.vue";
+import Poll from "./components/Poll.vue";
 
 Vue.use(Router);
 
@@ -24,9 +24,9 @@ export default new Router({
       component: NewPollForm
     },
     {
-      path: "/ballot",
-      name: "ballot",
-      component: Ballot
+      path: "/poll",
+      name: "poll",
+      component: Poll
     }
   ]
 });

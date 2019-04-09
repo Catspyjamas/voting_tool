@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <h1>Hello {{ their_name }} is an about page</h1>
+    <h1>Hello! This {{ their_name }} is a voting app.</h1>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna ali...
@@ -18,3 +18,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.about {
+  min-height: 100vh;
+}
+</style>

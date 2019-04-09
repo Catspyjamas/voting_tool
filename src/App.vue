@@ -3,8 +3,8 @@
     <nav>
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
-      <router-link to="/newPollForm">Voting</router-link>
-      <router-link to="/ballot">Ballot</router-link>
+      <router-link to="/newPollForm">New Election</router-link>
+      <router-link to="/poll">Poll</router-link>
     </nav>
     <router-view />
   </div>
@@ -18,7 +18,7 @@ export default {
 </script>
 
 <style>
-@import "./assets/css/fonts.css";
+@import './assets/css/fonts.css';
 
 * {
   box-sizing: border-box;
@@ -29,14 +29,14 @@ h2,
 h3,
 h4,
 a {
-  font-family: "nexablack", sans-serif;
+  font-family: 'nexablack', sans-serif;
 }
 
 body,
 p,
 label,
 input {
-  font-family: "Lato", sans-serif;
+  font-family: 'Lato', sans-serif;
   font-weight: 300;
   margin-top: unset;
   margin-bottom: 1em;
@@ -70,7 +70,7 @@ nav a {
   padding: 0.6em;
   display: inline-block;
   text-decoration: none;
-  background: #fff;
+  background: #ffffff;
   color: #161616;
   text-transform: uppercase;
 }
@@ -174,4 +174,5 @@ input {
 #app {
   width: 50%;
 }
+
 </style>
