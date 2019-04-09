@@ -6,14 +6,13 @@
       </div>
       <h1>{{ voteTitle }}</h1>
       <p class="subhead">{{ voteQuestion }}</p>
+      <p class="subhead">
+        Or would you rather not vore at all and leave your vote blank?
+      </p>
+      <button class="button__text">Abstain from the {{ voteTitle }} Poll</button>
     </header>
     <main>
-      <draggable
-        v-model="options"
-        group="options"
-        @start="(drag = true), setDrag()"
-        @end="drag = false"
-      >
+      <draggable v-model="options" group="options">
         <li
           v-for="(option, index) in options"
           :key="option.id"
@@ -35,7 +34,6 @@
         <feather type="arrow-right-circle" class="button__icon" />Submit your
         choice
       </button>
-      <p>{{ activeOption }}</p>
     </main>
   </div>
 </template>
@@ -75,17 +73,6 @@ export default {
       ],
       activeOption: ""
     };
-  },
-  methods: {
-    setDrag(index) {
-      this.activeOption = index;
-      // eslint-disable-next-line
-      console.log(index);
-    },
-    removeDrag() {
-      // eslint-disable-next-line
-      console.log("BOO");
-    }
   }
 };
 </script>
@@ -96,6 +83,7 @@ h2 {
   color: white;
   margin: unset;
 }
+
 .subhead {
   color: rgba(232, 232, 232, 0.5);
   font-size: 1.3em;
@@ -119,6 +107,18 @@ h2 {
 .option__main {
   width: 80%;
   padding-right: 2em;
+}
+
+.button__text {
+  border-radius: 0;
+  position: relative;
+  bottom: 0;
+  width: inherit;
+  height:inherit;
+  font-size: 1em;
+  margin-bottom: 2em;
+  padding: 0.6em 0.6em 0.6em 0.6em;
+  background-color:lightcoral;
 }
 
 .option__handle {
