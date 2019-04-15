@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <nav>
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
-      <router-link to="/newPollForm">New Election</router-link>
-      <router-link to="/poll">Poll</router-link>
+      <router-link class="navlink" to="/">Home</router-link>
+      <router-link class="navlink" to="/about">About</router-link>
+      <router-link class="navlink" to="/newPollForm">New Election</router-link>
+      <router-link class="navlink" to="/poll">Poll</router-link>
     </nav>
     <router-view />
   </div>
@@ -17,9 +17,7 @@ export default {
 };
 </script>
 
-<style>
-@import './assets/css/fonts.css';
-
+<style lang="scss">
 * {
   box-sizing: border-box;
 }
@@ -28,16 +26,16 @@ h1,
 h2,
 h3,
 h4,
-a {
-  font-family: 'nexablack', sans-serif;
+a,
+.navlink {
+  font-family: "nexablack";
+  font-weight: normal;
 }
 
 body,
-p,
-label,
-input {
-  font-family: 'Lato', sans-serif;
-  font-weight: 300;
+p {
+  font-family: "Lato", sans-serif;
+  font-weight: normal;
   margin-top: unset;
   margin-bottom: 1em;
 }
@@ -53,17 +51,8 @@ body {
   justify-items: center;
 }
 
-button {
-  border-radius: 50%;
-  height: 5em;
-  width: 5em;
-  border: none;
-  position: absolute;
-  bottom: -2.5em;
-}
-
 p {
-  font-size: 1.25em;
+  font-size: $small;
 }
 
 nav a {
@@ -75,69 +64,17 @@ nav a {
   text-transform: uppercase;
 }
 
-legend {
-  display: none;
-}
-
-fieldset {
-  border: unset;
-  margin: unset;
-  padding: unset;
-  position: relative;
-}
-
-input {
-  width: 100%;
-  border: 0;
-  padding: 0.8em;
-  font-size: 1.3em;
-  background: #e8e8e8;
-}
-
-.button-next {
-  position: relative;
-  background-color: #00cfbb;
-  display: flex;
-  margin: 1em auto 1em auto;
-  left: 0;
-  right: 0;
-  border-radius: unset;
-  text-transform: uppercase;
-  color: white;
-  font-size: 1.1em;
-  width: unset;
-  height: unset;
-  padding: 1.2em 1.5em 1em 1.5em;
-  letter-spacing: 0.1em;
-  bottom: 0;
-}
-
-.button__icon {
-  padding-right: 0.5em;
-}
-
-.breadcrumb,
-.instructions {
-  color: rgba(232, 232, 232, 0.5);
-  font-size: 1.2em;
+.breadcrumb {
+  color: $primary;
+  font-size: $small;
 }
 
 .tagline {
-  font-size: 1.25em;
+  font-size: $small;
 }
 
 .container {
   padding-top: 3em;
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.7s ease;
-}
-
-.slide-fade-enter {
-  transform: translateX(10px);
-  opacity: 0;
 }
 
 .breadcrumb {
@@ -150,29 +87,15 @@ input {
   color: white;
 }
 
-.error-message {
-  display: block;
-  color: #fff385;
-}
-
 .instructions {
   padding: 0 0 0 1em;
   margin-bottom: 1em;
-  border-left: 1px solid rgba(232, 232, 232, 0.5);
+  border-left: 1px solid $primary;
   display: block;
-}
-
-.error-message {
-  position: absolute;
-  z-index: 1;
-  background-color: gold;
-  color: #06050e;
-  bottom: 0.5em;
-  right: -0.5em;
+  color: $primary;
 }
 
 #app {
   width: 50%;
 }
-
 </style>

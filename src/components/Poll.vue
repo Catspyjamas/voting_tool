@@ -9,7 +9,7 @@
       <p class="subhead">
         Or would you rather not vore at all and leave your vote blank?
       </p>
-      <button class="button__text">Abstain from the {{ voteTitle }} Poll</button>
+      <TextButton text="Abstain" background-color="coral" />
     </header>
     <main>
       <draggable v-model="options" group="options">
@@ -40,10 +40,12 @@
 
 <script>
 import draggable from "vuedraggable";
+import TextButton from "./TextButton.vue";
 export default {
   name: "Ballot",
   components: {
-    draggable
+    draggable,
+    TextButton
   },
   data() {
     return {
@@ -107,18 +109,6 @@ h2 {
 .option__main {
   width: 80%;
   padding-right: 2em;
-}
-
-.button__text {
-  border-radius: 0;
-  position: relative;
-  bottom: 0;
-  width: inherit;
-  height:inherit;
-  font-size: 1em;
-  margin-bottom: 2em;
-  padding: 0.6em 0.6em 0.6em 0.6em;
-  background-color:lightcoral;
 }
 
 .option__handle {

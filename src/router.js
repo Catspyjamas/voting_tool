@@ -14,11 +14,6 @@ export default new Router({
       component: About
     },
     {
-      path: "/about/:name",
-      name: "about",
-      component: About
-    },
-    {
       path: "/newPollForm",
       name: "newPollForm",
       component: NewPollForm
