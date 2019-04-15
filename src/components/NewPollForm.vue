@@ -6,48 +6,27 @@
       </div>
     </header>
     <form id="vote">
-      <fieldset>
-        <legend>Title Vote</legend>
-        <label class="instructions" for="vote__title"
-          >Add a title for your vote</label
-        >
-        <input
-          id="vote__title"
-          v-model="voteTitle"
-          v-validate="'required'"
-          type="text"
-          placeholder="Title"
-          name="vote-title"
-        />
-        <transition name="slide-fade">
-          <div v-show="errors.items.length > 0" class="error-message">
-            {{ errors.first("vote-title") }}
-          </div>
-        </transition>
-      </fieldset>
-      <fieldset>
-        <legend>Question</legend>
-        <label class="instructions" for="vote__question"
-          >Add a question and additional info about your vote</label
-        >
-        <input
-          id="vote__question"
-          v-model="voteQuestion"
-          v-validate="'required'"
-          type="text"
-          placeholder="Instructions"
-          name="vote-question"
-        />
-        <transition name="slide-fade">
-          <div v-show="errors.items.length > 0" class="error-message">
-            {{ errors.first("vote-question") }}
-          </div>
-        </transition>
-      </fieldset>
+      <legend>Vote Title</legend>
+      <FormFieldset
+        v-model="voteTitle"
+        field-id="vote__title"
+        label-text="Add a title for your vote"
+        placeholder="Title"
+        name="vote-title"
+      />
+      <legend>Vote Question</legend>
+      <FormFieldset
+        v-model="voteQuestion"
+        field-id="vote__question"
+        label-text="Add all the information and questions that voters might need to make their decision"
+        placeholder="Poll information"
+        :textarea="true"
+        name="vote-question"
+      />
       <p class="instructions">
         Add several options that you would like to vote on.
       </p>
-      <PollChoiceForm @onSubmit="addOption" />
+      <PollChoiceForm @submit="addOption" />
     </form>
     <ul>
       <transition-group
@@ -58,37 +37,42 @@
       >
         <div v-for="(option, index) in options" :key="option.title">
           <div class="list__options">
-            <button
-              class="button-remove"
-              type="submit"
+            <div class="list__options__info">
+              <li class="list__options__title">{{ option.title }}</li>
+              <p>{{ option.addInfo }}</p>
+            </div>
+            <IconButton
+              class="icon_option"
+              icon="x"
               @click="removeOption(index)"
-            >
-              <feather type="x" />
-            </button>
-            <li class="list__options__title">{{ option.title }}</li>
-            <p>{{ option.addInfo }}</p>
+            />
           </div>
         </div>
       </transition-group>
     </ul>
-
-    <button
+    <TextButton
       type="submit"
-      class="button-next"
+      icon="arrow-right-circle"
+      text="Go to voters"
       form="vote"
       @click="saveVotingInfo"
-    >
-      <feather type="arrow-right-circle" />Go to voters
-    </button>
+    />
   </div>
 </template>
 
 <script>
+import TextButton from "./TextButton.vue";
+
 import PollChoiceForm from "./PollChoiceForm.vue";
+import IconButton from "./IconButton.vue";
+import FormFieldset from "./FormFieldset.vue";
 export default {
-  name: "VotingDetails",
+  name: "NewPollForm",
   components: {
-    PollChoiceForm
+    PollChoiceForm,
+    IconButton,
+    TextButton,
+    FormFieldset
   },
   data() {
     return {
@@ -108,22 +92,16 @@ export default {
       }
     },
     saveVotingInfo() {
-      this.$validator.validate().then(result => {
-        if (result) {
-          this.vote.voteTitle = this.voteTitle;
-          this.vote.voteQuestion = this.voteQuestion;
-          this.vote.options = this.options;
-        }
-      });
+      this.vote.voteTitle = this.voteTitle;
+      this.vote.voteQuestion = this.voteQuestion;
+      this.vote.options = this.options;
     }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-@import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
-
+<style lang="scss">
 ul {
   margin: 0;
   padding: 0;
@@ -135,21 +113,21 @@ li {
   justify-content: space-between;
 }
 
+.icon_option {
+  margin-top: -$small;
+  margin-right: -$small;
+}
+
 .container {
   min-height: 100vh;
 }
 
-.button-remove {
-  background-color: #2b239e;
-  right: -1em;
-  top: -1.5em;
-  margin-left: auto;
-}
-
 .list__options {
   color: white;
+  display: flex;
+  justify-content: space-between;
   position: relative;
-  border-top: 1px solid rgba(232, 232, 232, 0.5);
+  border-top: 1px solid $primary;
   margin-top: 2em;
 }
 
