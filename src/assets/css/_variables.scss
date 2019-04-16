@@ -1,5 +1,20 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:300);
 @import url(https://cdn.jsdelivr.net/npm/animate.css@3.5.1);
+
+
+@font-face {
+  font-family: 'speziabook';
+  src: url('~@/assets/fonts/SpeziaWebTrial-Book.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'speziabold';
+  src: url('~@/assets/fonts/SpeziaWebTrial-Bold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
 
 @font-face {
@@ -10,21 +25,19 @@
 }
 
 @font-face {
-  font-family: 'nexabook';
-  src: url('~@/assets/fonts/nexa-book-webfont.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
   font-family: 'nexablack';
-  src: url('~@/assets/fonts/nexa-black-webfont.woff2') format('woff2');
+  src: url('~@/assets/fonts/nexa-extrabold-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
-$primary: rgba(232, 232, 232, 0.8);
+$primary: rgba(243, 243, 243, 0.7);
 $light: white;
+$dark: #18181a;
+$dark-gradient: linear-gradient(180deg, #18181a 0%, #242425 100%);
 $mint: #00cfbb;
 
 $small: 1.25em;
+$standard: 1.0em;
+$xsmall: 0.5em;
+$medium: 1.4em;
