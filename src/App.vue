@@ -37,10 +37,15 @@ h2 {
 }
 
 a {
-  font-family: "speziabold";
+  font-family: "speziabook";
   text-decoration: none;
-  border-bottom: 1px solid $dark;
+  border-bottom: 1px solid;
   letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: $mint;
+  padding: $xsmall 0;
+  margin: $standard 0;
+  display: inline-block;
 }
 
 body,

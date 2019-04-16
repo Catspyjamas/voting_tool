@@ -1,16 +1,31 @@
 <template>
   <div class="container">
     <h1>You successfully submitted your poll.</h1>
-    <p class="subhead">Now we wait until the poll is over.</p>
-    <p>Current time: {{ getNow }}</p>
-    <p>End time: {{ getEnd }}</p>
+    <div v-if="!pollOver">
+      <p class="subhead">Now we wait until the poll is over.</p>
+      <p>End time: {{ getEnd }}</p>
+      <TextButton
+        text="Pretend it's later"
+        direction="left"
+        @click="timeWarp"
+      />
+    </div>
+
+    <div v-if="pollOver">
+      <h2>It's over!</h2>
+      <router-link to="about">See the results</router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import moment from "moment";
+import TextButton from "./TextButton.vue";
 export default {
   name: "Submitted",
+  components: {
+    TextButton
+  },
   props: {
     endTime: {
       type: String,
@@ -32,8 +47,10 @@ export default {
       );
     }
   },
-  created() {
-    console.log(moment());
+  methods: {
+    timeWarp() {
+      this.pollOver = true;
+    }
   }
 };
 </script>

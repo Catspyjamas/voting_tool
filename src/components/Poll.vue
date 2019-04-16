@@ -32,6 +32,7 @@
       </draggable>
       <router-link to="submitted">
         <TextButton
+          to="submitted"
           icon="arrow-right-circle"
           text="Submit your
         choice"
@@ -83,6 +84,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+a {
+  border-bottom: unset;
+}
 .subhead {
   color: $primary;
   font-size: $medium;
