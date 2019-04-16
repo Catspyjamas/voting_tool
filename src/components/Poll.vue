@@ -30,11 +30,13 @@
           </div>
         </li>
       </draggable>
-      <TextButton
-        icon="arrow-right-circle"
-        text="Submit your
+      <router-link to="submitted">
+        <TextButton
+          icon="arrow-right-circle"
+          text="Submit your
         choice"
-      />
+        />
+      </router-link>
     </main>
   </div>
 </template>
@@ -81,12 +83,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h1,
-h2 {
-  color: white;
-  margin: unset;
-}
-
 .subhead {
   color: $primary;
   font-size: $medium;

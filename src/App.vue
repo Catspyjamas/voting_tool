@@ -2,9 +2,9 @@
   <div id="app">
     <nav>
       <router-link class="navlink" to="/">Home</router-link>
-      <router-link class="navlink" to="/about">About</router-link>
-      <router-link class="navlink" to="/newPollForm">New Election</router-link>
-      <router-link class="navlink" to="/poll">Poll</router-link>
+      <router-link class="navlink" to="about">About</router-link>
+      <router-link class="navlink" to="newPollForm">New Election</router-link>
+      <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
     <router-view />
   </div>
@@ -25,15 +25,28 @@ export default {
 h1,
 h2,
 h3,
-h4,
-a {
+h4 {
   font-family: "nexablack";
   font-weight: normal;
+  text-decoration: none;
+  color: white;
+}
+
+h2 {
+  font-size: 1.6em;
+}
+
+a {
+  font-family: "speziabold";
+  text-decoration: none;
+  border-bottom: 1px solid $dark;
+  letter-spacing: 0.1em;
 }
 
 body,
 p {
   font-family: "speziabook", sans-serif;
+  color: $primary;
   font-weight: normal;
   margin-top: unset;
   margin-bottom: $xsmall;
@@ -41,10 +54,18 @@ p {
 
 h1 {
   font-size: 3em;
+  margin-bottom: 0.1em;
+  margin-top: 0.2em;
+}
+
+h2 {
+  font-size: 1.6em;
+  margin-top: unset;
+  margin-bottom: unset;
 }
 
 body {
-  background: linear-gradient(180deg, #06050e 0%, #23222a 100%);
+  background: $dark-gradient;
   display: grid;
   grid-template-rows: auto;
   justify-items: center;
@@ -65,7 +86,7 @@ nav {
 
 .navlink {
   margin: $standard $small $standard 0;
-  padding: 0.2em 0 0.2em 0;
+  padding: 0.1em 0 0.1em 0;
   display: inline-block;
   text-decoration: none;
   color: $dark;
@@ -84,6 +105,7 @@ nav {
 
 .container {
   padding: 1em 20vw 0 20vw;
+  min-height: 100vh;
 }
 
 .breadcrumb {
@@ -105,7 +127,8 @@ nav {
 }
 
 .router-link-exact-active {
-  border-bottom: 1px solid $dark;
+  font-family: "speziabold";
+  border-bottom: 2px solid $dark;
   color: $dark;
 }
 

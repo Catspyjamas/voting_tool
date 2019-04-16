@@ -53,7 +53,7 @@ export default {
 }
 
 .button {
-  font-family: "nexablack";
+  font-family: "speziabold";
   letter-spacing: 0.1em;
   background-color: $mint;
   display: flex;

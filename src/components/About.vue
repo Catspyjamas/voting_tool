@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about container">
     <h1>Hello! This {{ their_name }} is a voting app.</h1>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -18,9 +18,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.about {
-  min-height: 100vh;
-}
-</style>

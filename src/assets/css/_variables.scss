@@ -3,21 +3,23 @@
 
 @font-face {
   font-family: 'speziabook';
-  src: url('~@/assets/fonts/SpeziaWebTrial-Light.woff2') format('woff2');
+  src: url('~@/assets/fonts/SpeziaWebTrial-Book.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
+
+
+@font-face {
+  font-family: 'speziabold';
+  src: url('~@/assets/fonts/SpeziaWebTrial-Bold.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 @font-face {
   font-family: 'nexathin';
   src: url('~@/assets/fonts/nexa-thin-webfont.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'nexabook';
-  src: url('~@/assets/fonts/nexa-book-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -31,10 +33,11 @@
 
 $primary: rgba(243, 243, 243, 0.7);
 $light: white;
-$dark: #141414;
+$dark: #18181a;
+$dark-gradient: linear-gradient(180deg, #18181a 0%, #242425 100%);
 $mint: #00cfbb;
 
 $small: 1.25em;
 $standard: 1.0em;
-$xsmall: 0.65em;
+$xsmall: 0.5em;
 $medium: 1.4em;

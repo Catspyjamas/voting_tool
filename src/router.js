@@ -3,6 +3,7 @@ import Router from "vue-router";
 import About from "./components/About.vue";
 import NewPollForm from "./components/NewPollForm.vue";
 import Poll from "./components/Poll.vue";
+import Submitted from "./components/Submitted.vue";
 
 Vue.use(Router);
 
@@ -22,6 +23,11 @@ export default new Router({
       path: "/poll",
       name: "poll",
       component: Poll
+    },
+    {
+      path: "/submitted",
+      name: "submitted",
+      component: Submitted
     }
   ]
 });
