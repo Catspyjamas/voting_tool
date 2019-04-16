@@ -26,18 +26,17 @@ h1,
 h2,
 h3,
 h4,
-a,
-.navlink {
+a {
   font-family: "nexablack";
   font-weight: normal;
 }
 
 body,
 p {
-  font-family: "Lato", sans-serif;
+  font-family: "speziabook", sans-serif;
   font-weight: normal;
   margin-top: unset;
-  margin-bottom: 1em;
+  margin-bottom: $xsmall;
 }
 
 h1 {
@@ -55,18 +54,28 @@ p {
   font-size: $small;
 }
 
-nav a {
-  padding: 0.6em;
+nav {
+  background-color: white;
+  margin: 0 auto 0 auto;
+  position: sticky;
+  display: flex;
+  padding: 0 20vw 0 20vw;
+  align-items: center;
+}
+
+.navlink {
+  margin: $standard $small $standard 0;
+  padding: 0.2em 0 0.2em 0;
   display: inline-block;
   text-decoration: none;
-  background: #ffffff;
-  color: #161616;
+  color: $dark;
   text-transform: uppercase;
+  font-family: "speziabook";
 }
 
 .breadcrumb {
   color: $primary;
-  font-size: $small;
+  font-size: $standard;
 }
 
 .tagline {
@@ -74,13 +83,13 @@ nav a {
 }
 
 .container {
-  padding-top: 3em;
+  padding: 1em 20vw 0 20vw;
 }
 
 .breadcrumb {
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding-bottom: 1em;
+  letter-spacing: 0.5em;
+  padding-bottom: $xsmall;
 }
 
 .feather__content {
@@ -88,14 +97,19 @@ nav a {
 }
 
 .instructions {
-  padding: 0 0 0 1em;
+  padding: 0 0 0 $xsmall;
   margin-bottom: 1em;
   border-left: 1px solid $primary;
   display: block;
   color: $primary;
 }
 
+.router-link-exact-active {
+  border-bottom: 1px solid $dark;
+  color: $dark;
+}
+
 #app {
-  width: 50%;
+  width: 100%;
 }
 </style>

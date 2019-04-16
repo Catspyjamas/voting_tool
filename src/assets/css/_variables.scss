@@ -1,6 +1,12 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:300);
 @import url(https://cdn.jsdelivr.net/npm/animate.css@3.5.1);
 
+
+@font-face {
+  font-family: 'speziabook';
+  src: url('~@/assets/fonts/SpeziaWebTrial-Light.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
 @font-face {
   font-family: 'nexathin';
@@ -18,13 +24,17 @@
 
 @font-face {
   font-family: 'nexablack';
-  src: url('~@/assets/fonts/nexa-black-webfont.woff2') format('woff2');
+  src: url('~@/assets/fonts/nexa-extrabold-webfont.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
 
-$primary: rgba(232, 232, 232, 0.8);
+$primary: rgba(243, 243, 243, 0.7);
 $light: white;
+$dark: #141414;
 $mint: #00cfbb;
 
 $small: 1.25em;
+$standard: 1.0em;
+$xsmall: 0.65em;
+$medium: 1.4em;

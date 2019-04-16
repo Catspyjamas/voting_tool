@@ -133,7 +133,7 @@ li {
 
 .list__options__title {
   font-family: nexablack;
-  font-size: 1.3em;
+  font-size: $small;
   padding: 1em 0 0.5em 0;
 }
 

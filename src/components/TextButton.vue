@@ -1,6 +1,6 @@
 <template>
   <button
-    class="button"
+    :class="['button', direction]"
     :style="{ color: textColor, backgroundColor }"
     :disabled="disabled"
     @click="$emit('click')"
@@ -34,21 +34,35 @@ export default {
     icon: {
       type: String,
       default: ""
+    },
+    direction: {
+      type: String,
+      default: "center"
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.center {
+  margin: $xsmall auto;
+}
+
+.left {
+  margin: $xsmall auto $xsmall 0;
+}
+
 .button {
+  font-family: "nexablack";
+  letter-spacing: 0.1em;
   background-color: $mint;
   display: flex;
-  margin: $small auto;
+  align-items: center;
   border: none;
   text-transform: uppercase;
   color: white;
-  font-size: 1.1em;
-  padding: $small;
+  font-size: $standard;
+  padding: $xsmall;
   bottom: 0;
   cursor: pointer;
 }

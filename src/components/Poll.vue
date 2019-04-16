@@ -2,14 +2,15 @@
   <div class="container">
     <header>
       <div class="breadcrumb">
-        <span>Vote</span>
+        <span>Poll</span>
       </div>
       <h1>{{ voteTitle }}</h1>
       <p class="subhead">{{ voteQuestion }}</p>
       <p class="subhead">
-        Or would you rather not vore at all and leave your vote blank?
+        Or, if you would you rather not vote at all and leave your vote blank,
+        you can also choose to abstain from the vote.
       </p>
-      <TextButton text="Abstain" background-color="coral" />
+      <TextButton text="Abstain" background-color="coral" direction="left" />
     </header>
     <main>
       <draggable v-model="options" group="options">
@@ -29,11 +30,11 @@
           </div>
         </li>
       </draggable>
-
-      <button class="button-next">
-        <feather type="arrow-right-circle" class="button__icon" />Submit your
-        choice
-      </button>
+      <TextButton
+        icon="arrow-right-circle"
+        text="Submit your
+        choice"
+      />
     </main>
   </div>
 </template>
@@ -51,7 +52,7 @@ export default {
     return {
       voteTitle: "Birthday Event",
       voteQuestion:
-        "You can rank! Drag and drop the options until the order of importance seems fine to you.",
+        "Drag and drop the options until the order of importance seems fine to you.",
       options: [
         { title: "Radlfahren", id: "radlfahren", addInfo: "in Penzberg" },
         {
@@ -79,7 +80,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 h1,
 h2 {
   color: white;
@@ -87,14 +88,15 @@ h2 {
 }
 
 .subhead {
-  color: rgba(232, 232, 232, 0.5);
-  font-size: 1.3em;
+  color: $primary;
+  font-size: $medium;
+  line-height: 1.1em;
 }
 
 .option {
-  color: rgba(232, 232, 232, 0.5);
+  color: $primary;
   display: flex;
-  border-top: 1px solid rgba(232, 232, 232, 0.5);
+  border-top: 1px solid $primary;
   padding-top: 1em;
   position: relative;
   cursor: move;
@@ -117,8 +119,8 @@ h2 {
   position: absolute;
   border-radius: 50%;
   background-color: #2b239e;
-  top: -1em;
-  right: -1em;
+  top: -$standard;
+  right: -$standard;
   display: flex;
   align-items: center;
   justify-content: center;
