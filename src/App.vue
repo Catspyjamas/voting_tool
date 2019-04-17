@@ -6,14 +6,24 @@
       <router-link class="navlink" to="newPollForm">New Election</router-link>
       <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
-    <router-view />
+    <router-view @pollSubmit="addPoll" />
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
-  components: {}
+  components: {},
+  data() {
+    return {
+      polls: []
+    };
+  },
+  methods: {
+    addPoll(newPoll) {
+      this.polls.push(newPoll);
+    }
+  }
 };
 </script>
 

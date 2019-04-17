@@ -8,16 +8,30 @@
     <form id="vote">
       <legend>Vote Title</legend>
       <FormFieldset
-        v-model="voteTitle"
-        field-id="vote__title"
+        v-model="pollTitle"
+        field-id="poll_title"
         label-text="Add a title for your vote"
         placeholder="Title"
         name="vote-title"
       />
+      <legend>Start Time</legend>
+      <form-fieldset
+        v-model="pollStart"
+        field-id="poll_start"
+        label-text="When should your poll start?"
+        placeholder="e.g. '2019-07-28 09:30'"
+      />
+      <legend>End Time</legend>
+      <form-fieldset
+        v-model="pollEnd"
+        field-id="poll_end"
+        label-text="When should your poll end?"
+        placeholder="e.g. '2019-07-31 18:30'"
+      />
       <legend>Vote Question</legend>
       <FormFieldset
-        v-model="voteQuestion"
-        field-id="vote__question"
+        v-model="pollInfo"
+        field-id="poll_info"
         label-text="Add all the information and questions that voters might need to make their decision"
         placeholder="Poll information"
         :textarea="true"
@@ -35,7 +49,7 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(option, index) in options" :key="option.title">
+        <div v-for="(option, index) in pollOptions" :key="option.title">
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
@@ -53,7 +67,7 @@
     <TextButton
       type="submit"
       icon="arrow-right-circle"
-      text="Go to voters"
+      text="Submit your Poll"
       form="vote"
       @click="saveVotingInfo"
     />
@@ -76,25 +90,38 @@ export default {
   },
   data() {
     return {
-      voteTitle: "",
-      voteQuestion: "",
-      options: [{ title: "Radlfahren", addInfo: "in Penzberg" }],
-      vote: {}
+      pollTitle: "",
+      pollInfo: "",
+      pollOptions: [{ title: "Radlfahren", addInfo: "in Penzberg" }],
+      pollStart: "",
+      pollEnd: "",
+      polls: []
     };
   },
   methods: {
     addOption(option) {
-      this.options.push(option);
+      this.pollOptions.push(option);
     },
     removeOption(index) {
       if (index !== -1) {
-        this.options.splice(index, 1);
+        this.pollOptions.splice(index, 1);
       }
     },
     saveVotingInfo() {
-      this.vote.voteTitle = this.voteTitle;
-      this.vote.voteQuestion = this.voteQuestion;
-      this.vote.options = this.options;
+      const { pollTitle, pollInfo, pollOptions, pollStart, pollEnd } = this;
+      this.polls.push({ pollTitle, pollInfo, pollOptions, pollStart, pollEnd });
+      this.$emit("pollSubmit", {
+        pollTitle,
+        pollInfo,
+        pollOptions,
+        pollStart,
+        pollEnd
+      });
+      this.pollTitle = "";
+      this.pollInfo = "";
+      this.pollOptions = "";
+      this.pollStart = "";
+      this.pollEnd = "";
     }
   }
 };
@@ -147,5 +174,14 @@ li {
   100% {
     transform: scale(1);
   }
+}
+
+legend {
+  overflow: hidden;
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
 }
 </style>
