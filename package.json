@@ -19,6 +19,7 @@
     "vue-feather": "^1.0.0",
     "vue-feather-icon": "^1.2.0",
     "vue-router": "^3.0.2",
+    "vue-smooth-dnd": "^0.8.0",
     "vuedraggable": "^2.20.0"
   },
   "devDependencies": {

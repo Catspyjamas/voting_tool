@@ -40,6 +40,7 @@ export default {
   height: 5em;
   width: 5em;
   cursor: pointer;
+  flex-shrink: 0;
 }
 </style>
 

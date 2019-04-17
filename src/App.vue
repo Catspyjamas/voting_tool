@@ -6,7 +6,7 @@
       <router-link class="navlink" to="newPollForm">New Election</router-link>
       <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
-    <router-view @pollSubmit="addPoll" />
+    <router-view :poll="polls[0]" @pollSubmit="addPoll" @voteSubmit="addVote" />
   </div>
 </template>
 
@@ -49,7 +49,8 @@ export default {
               addInfo:
                 "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
             }
-          ]
+          ],
+          votes: []
         }
       ]
     };
@@ -57,6 +58,13 @@ export default {
   methods: {
     addPoll(newPoll) {
       this.polls.push(newPoll);
+    },
+    addVote(newVote) {
+      for (let element of this.polls) {
+        if (element.id === newVote.pollId) {
+          element.votes.push(newVote);
+        }
+      }
     }
   }
 };
@@ -104,8 +112,9 @@ p {
 
 h1 {
   font-size: 3em;
-  margin-bottom: 0.1em;
+  margin-bottom: $xsmall;
   margin-top: 0.2em;
+  line-height: 1.1em;
 }
 
 h2 {
@@ -180,6 +189,15 @@ nav {
   font-family: "speziabold";
   border-bottom: 2px solid $dark;
   color: $dark;
+}
+
+.button-link {
+  font-family: unset;
+  text-decoration: unset;
+  border-bottom: unset;
+  padding: unset;
+  margin: 1em 0;
+  display: unset;
 }
 
 #app {
