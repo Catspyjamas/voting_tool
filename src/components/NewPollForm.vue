@@ -80,6 +80,7 @@ import TextButton from "./TextButton.vue";
 import PollChoiceForm from "./PollChoiceForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
+import uniqid from "uniqid";
 export default {
   name: "NewPollForm",
   components: {
@@ -92,9 +93,12 @@ export default {
     return {
       pollTitle: "",
       pollInfo: "",
-      pollOptions: [{ title: "Radlfahren", addInfo: "in Penzberg" }],
+      pollOptions: [
+        { title: "Radlfahren", addInfo: "in Penzberg", id: "bla123" }
+      ],
       pollStart: "",
       pollEnd: "",
+      pollId: "",
       polls: []
     };
   },
@@ -109,19 +113,28 @@ export default {
     },
     saveVotingInfo() {
       const { pollTitle, pollInfo, pollOptions, pollStart, pollEnd } = this;
-      this.polls.push({ pollTitle, pollInfo, pollOptions, pollStart, pollEnd });
       this.$emit("pollSubmit", {
         pollTitle,
         pollInfo,
         pollOptions,
         pollStart,
-        pollEnd
+        pollEnd,
+        pollId: this.createId(pollTitle)
       });
       this.pollTitle = "";
       this.pollInfo = "";
       this.pollOptions = "";
       this.pollStart = "";
       this.pollEnd = "";
+      this.pollId = "";
+    },
+    createId(string) {
+      return uniqid(
+        string
+          .replace(/[^a-zA-Zs]/g, "")
+          .toLowerCase()
+          .slice(0, 3) + "-"
+      );
     }
   }
 };
