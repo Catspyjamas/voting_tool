@@ -1,6 +1,11 @@
 <template>
   <div class="container">
-    <h1>You successfully submitted your poll.</h1>
+    <h1>You have officially voted.</h1>
+    <p>If you've changed your mind, you can still edit your vote.</p>
+    <router-link to="poll" class="button-link">
+      <TextButton text="Edit vote" direction="left" />
+    </router-link>
+
     <div v-if="!pollOver">
       <p class="subhead">Now we wait until the poll is over.</p>
       <p>End time: {{ getEnd }}</p>
@@ -27,9 +32,19 @@ export default {
     TextButton
   },
   props: {
-    endTime: {
-      type: String,
-      default: "2013-02-08 09:30"
+    poll: {
+      type: Object,
+      required: true,
+      default: function() {
+        return {
+          id: "",
+          title: "",
+          start: "",
+          end: "",
+          info: "",
+          options: [{ title: "", id: "", addInfo: "" }]
+        };
+      }
     }
   },
   data() {
@@ -42,7 +57,7 @@ export default {
       return moment().format("dddd, MMMM Do YYYY, HH.mm");
     },
     getEnd() {
-      return moment(this.endTime, "YYYY-MM-DD HH:mm").format(
+      return moment(this.poll.end, "YYYY-MM-DD HH:mm").format(
         "dddd, MMMM Do YYYY, HH.mm"
       );
     }
@@ -55,4 +70,13 @@ export default {
 };
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+.button-link {
+  font-family: unset;
+  text-decoration: unset;
+  border-bottom: unset;
+  padding: unset;
+  margin: 1em 0;
+  display: unset;
+}
+</style>

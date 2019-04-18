@@ -1,11 +1,11 @@
 <template>
-  <div class="container">
+  <div v-if="!voted" class="container">
     <header>
       <div class="breadcrumb">
         <span>Poll</span>
       </div>
-      <h1>{{ voteTitle }}</h1>
-      <p class="subhead">{{ voteQuestion }}</p>
+      <h1>{{ poll.title }}</h1>
+      <p class="subhead">{{ poll.addInfo }}</p>
       <p class="subhead">
         Or, if you would you rather not vote at all and leave your vote blank,
         you can also choose to abstain from the vote.
@@ -13,29 +13,24 @@
       <TextButton text="Abstain" background-color="coral" direction="left" />
     </header>
     <main>
-      <draggable v-model="options" group="options">
-        <li
-          v-for="(option, index) in options"
-          :key="option.id"
+      <draggable v-model="vote">
+        <PollOption
+          v-for="(option, index) in vote"
+          :id="option.id"
+          :key="index"
+          :index="index"
+          :title="option.title"
+          :add-info="option.addInfo"
           class="option"
-          :class="{ red: activeOption === option.id }"
-        >
-          <div class="option__number">#{{ index + 1 }}</div>
-          <div class="option__main">
-            <h2 class="option__head">{{ option.title }}</h2>
-            <p>{{ option.addInfo }}</p>
-          </div>
-          <div class="option__handle">
-            <feather type="move" />
-          </div>
-        </li>
+        />
       </draggable>
-      <router-link to="submitted">
+      <router-link to="submitted" class="button-link">
         <TextButton
           to="submitted"
           icon="arrow-right-circle"
           text="Submit your
         choice"
+          @click="submitPoll"
         />
       </router-link>
     </main>
@@ -43,50 +38,61 @@
 </template>
 
 <script>
-import draggable from "vuedraggable";
 import TextButton from "./TextButton.vue";
+import PollOption from "./PollOption.vue";
+import draggable from "vuedraggable";
 export default {
-  name: "Ballot",
+  name: "Poll",
   components: {
-    draggable,
-    TextButton
+    TextButton,
+    PollOption,
+    draggable
+  },
+  props: {
+    poll: {
+      type: Object,
+      required: true,
+      default: function() {
+        return {
+          id: "",
+          title: "",
+          start: "",
+          end: "",
+          info: "",
+          options: [{ title: "", id: "", addInfo: "" }]
+        };
+      }
+    }
   },
   data() {
     return {
-      voteTitle: "Birthday Event",
-      voteQuestion:
-        "Drag and drop the options until the order of importance seems fine to you.",
-      options: [
-        { title: "Radlfahren", id: "radlfahren", addInfo: "in Penzberg" },
-        {
-          title: "Canyoning",
-          id: "canyoning",
-          addInfo:
-            "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-        },
-        {
-          title: "Europapark",
-          id: "europapark",
-          addInfo:
-            "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-        },
-        {
-          title: "Something Else",
-          id: "somethingelse",
-          addInfo:
-            "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-        }
-      ],
-      activeOption: ""
+      voted: false,
+      vote: []
     };
+  },
+  created() {
+    this.vote = this.shuffleArray(this.poll.options);
+  },
+  methods: {
+    submitPoll() {
+      this.$emit("voteSubmit", {
+        pollId: this.poll.id,
+        userId: "xxxx",
+        ranking: this.vote
+      });
+      this.voted = true;
+    },
+    shuffleArray(arr) {
+      return arr
+        .map(a => [Math.random(), a])
+        .sort((a, b) => a[0] - b[0])
+        .map(a => a[1]);
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-a {
-  border-bottom: unset;
-}
 .subhead {
   color: $primary;
   font-size: $medium;
@@ -100,33 +106,5 @@ a {
   padding-top: 1em;
   position: relative;
   cursor: move;
-}
-
-.option__number {
-  font-family: "nexathin";
-  font-size: 4em;
-  margin-top: -0.2em;
-  width: 20%;
-}
-.option__main {
-  width: 80%;
-  padding-right: 2em;
-}
-
-.option__handle {
-  width: 4em;
-  height: 4em;
-  position: absolute;
-  border-radius: 50%;
-  background-color: #2b239e;
-  top: -$standard;
-  right: -$standard;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.red {
-  background-color: red;
 }
 </style>

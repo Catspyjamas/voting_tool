@@ -21,6 +21,7 @@
 <script>
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
+import uniqid from "uniqid";
 export default {
   name: "PollChoiceForm",
   components: {
@@ -36,13 +37,21 @@ export default {
   methods: {
     onSubmit() {
       const { title, addInfo } = this;
-
       this.$emit("submit", {
         title,
-        addInfo
+        addInfo,
+        id: this.createId(title)
       });
       this.title = "";
       this.addInfo = "";
+    },
+    createId(string) {
+      return uniqid(
+        string
+          .replace(/[^a-zA-Zs]/g, "")
+          .toLowerCase()
+          .slice(0, 3) + "-"
+      );
     }
   }
 };

@@ -6,14 +6,67 @@
       <router-link class="navlink" to="newPollForm">New Election</router-link>
       <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
-    <router-view />
+    <router-view :poll="polls[polls.length - 1]" @pollSubmit="addPoll" @voteSubmit="addVote" />
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
-  components: {}
+  components: {},
+  data() {
+    return {
+      polls: [
+        {
+          id: "bla-1jul80elt",
+          title: "Birthday Event",
+          start: "2019-07-28 09:30",
+          end: "2019-07-31 09:30",
+          info:
+            "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
+          options: [
+            {
+              title: "Radlfahren",
+              id: "radlfahren",
+              addInfo:
+                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+            },
+            {
+              title: "Canyoning",
+              id: "canyoning",
+              addInfo:
+                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+            },
+            {
+              title: "Europapark",
+              id: "europapark",
+              addInfo:
+                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+            },
+            {
+              title: "Go cart Driving",
+              id: "gocartdriving",
+              addInfo:
+                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+            }
+          ],
+          votes: []
+        }
+      ]
+    };
+  },
+  methods: {
+    addPoll(newPoll) {
+      this.polls.push(newPoll);
+    },
+    addVote(newVote) {
+      for (let element of this.polls) {
+        if (element.id === newVote.pollId) {
+          element.votes.push(newVote);
+        }
+      }
+    }
+  }
 };
 </script>
 
@@ -59,8 +112,9 @@ p {
 
 h1 {
   font-size: 3em;
-  margin-bottom: 0.1em;
+  margin-bottom: $xsmall;
   margin-top: 0.2em;
+  line-height: 1.1em;
 }
 
 h2 {
@@ -135,6 +189,15 @@ nav {
   font-family: "speziabold";
   border-bottom: 2px solid $dark;
   color: $dark;
+}
+
+.button-link {
+  font-family: unset;
+  text-decoration: unset;
+  border-bottom: unset;
+  padding: unset;
+  margin: 1em 0;
+  display: unset;
 }
 
 #app {
