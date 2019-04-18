@@ -13,17 +13,17 @@
       <TextButton text="Abstain" background-color="coral" direction="left" />
     </header>
     <main>
-      <Container>
-        <Draggable v-for="(option, index) in vote" :key="index">
-          <PollOption
-            :id="option.id"
-            :index="index"
-            :title="option.title"
-            :add-info="option.addInfo"
-            class="option"
-          />
-        </Draggable>
-      </Container>
+      <draggable v-model="vote">
+        <PollOption
+          v-for="(option, index) in vote"
+          :id="option.id"
+          :key="index"
+          :index="index"
+          :title="option.title"
+          :add-info="option.addInfo"
+          class="option"
+        />
+      </draggable>
       <router-link to="submitted" class="button-link">
         <TextButton
           to="submitted"
@@ -40,14 +40,13 @@
 <script>
 import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
-import { Container, Draggable } from "vue-smooth-dnd";
+import draggable from "vuedraggable";
 export default {
   name: "Poll",
   components: {
     TextButton,
     PollOption,
-    Container,
-    Draggable
+    draggable
   },
   props: {
     poll: {
