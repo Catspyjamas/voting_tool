@@ -14,7 +14,7 @@
     </header>
     <main>
       <Container>
-        <Draggable v-for="(option, index) in ranking" :key="index">
+        <Draggable v-for="(option, index) in vote" :key="index">
           <PollOption
             :id="option.id"
             :index="index"
@@ -67,38 +67,27 @@ export default {
   },
   data() {
     return {
-      voted: false
+      voted: false,
+      vote: []
     };
   },
-  computed: {
-    ranking() {
-      return this.shuffle(this.poll.options);
-    }
+  created() {
+    this.vote = this.shuffleArray(this.poll.options);
   },
   methods: {
-    shuffle(array) {
-      var currentIndex = array.length,
-        temporaryValue,
-        randomIndex;
-      // While there remain elements to shuffle...
-      while (0 !== currentIndex) {
-        // Pick a remaining element...
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        // And swap it with the current element.
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-      }
-      return array;
-    },
     submitPoll() {
       this.$emit("voteSubmit", {
         pollId: this.poll.id,
         userId: "xxxx",
-        ranking: this.ranking
+        ranking: this.vote
       });
       this.voted = true;
+    },
+    shuffleArray(arr) {
+      return arr
+        .map(a => [Math.random(), a])
+        .sort((a, b) => a[0] - b[0])
+        .map(a => a[1]);
     }
   }
 };
