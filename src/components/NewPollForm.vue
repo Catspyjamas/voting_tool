@@ -37,10 +37,8 @@
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">
-        Add several options that you would like to vote on.
-      </p>
-      <PollChoiceForm @submit="addOption" />
+      <p class="instructions">Add several options that you would like to vote on.</p>
+      <PollChoiceForm @submit="addOption"/>
     </form>
     <ul>
       <transition-group
@@ -55,11 +53,7 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.addInfo }}</p>
             </div>
-            <IconButton
-              class="icon_option"
-              icon="x"
-              @click="removeOption(index)"
-            />
+            <IconButton class="icon_option" icon="x" @click="removeOption(index)"/>
           </div>
         </div>
       </transition-group>
@@ -93,9 +87,7 @@ export default {
     return {
       pollTitle: "",
       pollInfo: "",
-      pollOptions: [
-        { title: "Radlfahren", addInfo: "in Penzberg", id: "bla123" }
-      ],
+      pollOptions: [],
       pollStart: "",
       pollEnd: "",
       pollId: "",

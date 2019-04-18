@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <nav>
-      <router-link class="navlink" to="/">Home</router-link>
+      <router-link class="navlink" to="/">Polls</router-link>
       <router-link class="navlink" to="about">About</router-link>
       <router-link class="navlink" to="newPollForm">New Election</router-link>
       <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
-    <router-view :poll="polls[polls.length - 1]" @pollSubmit="addPoll" @voteSubmit="addVote" />
+    <router-view />
   </div>
 </template>
 
@@ -15,45 +15,7 @@ export default {
   name: "App",
   components: {},
   data() {
-    return {
-      polls: [
-        {
-          id: "bla-1jul80elt",
-          title: "Birthday Event",
-          start: "2019-07-28 09:30",
-          end: "2019-07-31 09:30",
-          info:
-            "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
-          options: [
-            {
-              title: "Radlfahren",
-              id: "radlfahren",
-              addInfo:
-                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-            },
-            {
-              title: "Canyoning",
-              id: "canyoning",
-              addInfo:
-                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-            },
-            {
-              title: "Europapark",
-              id: "europapark",
-              addInfo:
-                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-            },
-            {
-              title: "Go cart Driving",
-              id: "gocartdriving",
-              addInfo:
-                "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
-            }
-          ],
-          votes: []
-        }
-      ]
-    };
+    return {};
   },
   methods: {
     addPoll(newPoll) {
@@ -163,7 +125,7 @@ nav {
 }
 
 .container {
-  padding: 1em 20vw 0 20vw;
+  padding: 2em 20vw 6em 20vw;
   min-height: 100vh;
 }
 
