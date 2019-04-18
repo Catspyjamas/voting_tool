@@ -6,7 +6,7 @@
       <router-link class="navlink" to="newPollForm">New Election</router-link>
       <router-link class="navlink" to="poll">Poll</router-link>
     </nav>
-    <router-view :poll="polls[0]" @pollSubmit="addPoll" @voteSubmit="addVote" />
+    <router-view :poll="polls[polls.length - 1]" @pollSubmit="addPoll" @voteSubmit="addVote" />
   </div>
 </template>
 
