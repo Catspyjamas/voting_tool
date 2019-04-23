@@ -43,3 +43,12 @@ export async function fetchPolls() {
 export async function fetchPoll(pollId) {
   return polls.find(poll => poll.id === pollId);
 }
+
+export async function savePoll(newPollObject) {
+  const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
+  if (pollIndex === -1) {
+    polls.push(newPollObject);
+  } else {
+    polls.splice(pollIndex, 1, newPollObject);
+  }
+}

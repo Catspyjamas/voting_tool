@@ -1,11 +1,13 @@
 <template>
-  <ul>
-    <li v-for="poll of polls" :key="poll.id">
-      <router-link :to="{ name: 'poll', params: { pollId: poll.id } }">
-        {{ poll.title }}
-      </router-link>
-    </li>
-  </ul>
+  <div class="container">
+    <ul>
+      <li v-for="poll of polls" :key="poll.id">
+        <router-link :to="{ name: 'poll', params: { pollId: poll.id } }">{{
+          poll.title
+        }}</router-link>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>

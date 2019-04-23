@@ -8,37 +8,39 @@
     <form id="vote">
       <legend>Vote Title</legend>
       <FormFieldset
-        v-model="pollTitle"
+        v-model="title"
         field-id="poll_title"
         label-text="Add a title for your vote"
         placeholder="Title"
-        name="vote-title"
+        name="poll-title"
       />
       <legend>Start Time</legend>
       <form-fieldset
-        v-model="pollStart"
+        v-model="start"
         field-id="poll_start"
         label-text="When should your poll start?"
         placeholder="e.g. '2019-07-28 09:30'"
       />
       <legend>End Time</legend>
       <form-fieldset
-        v-model="pollEnd"
+        v-model="end"
         field-id="poll_end"
         label-text="When should your poll end?"
         placeholder="e.g. '2019-07-31 18:30'"
       />
       <legend>Vote Question</legend>
       <FormFieldset
-        v-model="pollInfo"
+        v-model="info"
         field-id="poll_info"
         label-text="Add all the information and questions that voters might need to make their decision"
         placeholder="Poll information"
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">Add several options that you would like to vote on.</p>
-      <PollChoiceForm @submit="addOption"/>
+      <p class="instructions">
+        Add several options that you would like to vote on.
+      </p>
+      <PollChoiceForm @submit="addOption" />
     </form>
     <ul>
       <transition-group
@@ -47,13 +49,17 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(option, index) in pollOptions" :key="option.title">
+        <div v-for="(option, index) in options" :key="option.title">
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.addInfo }}</p>
             </div>
-            <IconButton class="icon_option" icon="x" @click="removeOption(index)"/>
+            <IconButton
+              class="icon_option"
+              icon="x"
+              @click="removeOption(index)"
+            />
           </div>
         </div>
       </transition-group>
@@ -63,7 +69,7 @@
       icon="arrow-right-circle"
       text="Submit your Poll"
       form="vote"
-      @click="saveVotingInfo"
+      @click="savePollObject"
     />
   </div>
 </template>
@@ -75,6 +81,7 @@ import PollChoiceForm from "./PollChoiceForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
 import uniqid from "uniqid";
+import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPollForm",
   components: {
@@ -85,40 +92,39 @@ export default {
   },
   data() {
     return {
-      pollTitle: "",
-      pollInfo: "",
-      pollOptions: [],
-      pollStart: "",
-      pollEnd: "",
-      pollId: "",
-      polls: []
+      title: "Hüttengaudi",
+      info: "Where should we go for this year’s Hüttengaudi?",
+      options: [],
+      start: "2019-06-20 08:30",
+      end: "2019-06-20 17:30",
+      votes: []
     };
   },
   methods: {
     addOption(option) {
-      this.pollOptions.push(option);
+      this.options.push(option);
     },
     removeOption(index) {
       if (index !== -1) {
-        this.pollOptions.splice(index, 1);
+        this.options.splice(index, 1);
       }
     },
-    saveVotingInfo() {
-      const { pollTitle, pollInfo, pollOptions, pollStart, pollEnd } = this;
-      this.$emit("pollSubmit", {
-        pollTitle,
-        pollInfo,
-        pollOptions,
-        pollStart,
-        pollEnd,
-        pollId: this.createId(pollTitle)
+    savePollObject() {
+      const { title, info, options, start, end } = this;
+      console.log(title, info, options, start, end);
+      savePoll({
+        title,
+        info,
+        options,
+        start,
+        end,
+        id: this.createId(title)
       });
-      this.pollTitle = "";
-      this.pollInfo = "";
-      this.pollOptions = "";
-      this.pollStart = "";
-      this.pollEnd = "";
-      this.pollId = "";
+      this.title = "";
+      this.info = "";
+      this.options = "";
+      this.start = "";
+      this.end = "";
     },
     createId(string) {
       return uniqid(
