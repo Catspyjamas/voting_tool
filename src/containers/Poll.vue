@@ -1,14 +1,14 @@
 <template>
-  <Poll :poll="poll" />
+  <PollEdit v-if="!isLoading" :poll="poll" />
 </template>
 
 <script>
 import { fetchPoll } from "../lib/api.js";
-import Poll from "../components/Poll.vue";
+import PollEdit from "../components/PollEditForm.vue";
 
 export default {
   components: {
-    Poll
+    PollEdit
   },
   props: {
     pollId: {
@@ -20,6 +20,11 @@ export default {
     return {
       poll: null
     };
+  },
+  computed: {
+    isLoading() {
+      return this.poll === null ? true : false;
+    }
   },
   async created() {
     this.poll = await fetchPoll(this.pollId);

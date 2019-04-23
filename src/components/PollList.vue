@@ -2,9 +2,12 @@
   <div class="container">
     <ul>
       <li v-for="poll of polls" :key="poll.id">
-        <router-link :to="{ name: 'poll', params: { pollId: poll.id } }">{{
-          poll.title
-        }}</router-link>
+        <p>{{ poll.title }}</p>
+        <router-link
+          class="edit"
+          :to="{ name: 'PollEdit', params: { pollId: poll.id } }"
+          >Edit</router-link
+        >
       </li>
     </ul>
   </div>

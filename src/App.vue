@@ -2,8 +2,8 @@
   <div id="app">
     <nav>
       <router-link class="navlink" to="/">Polls</router-link>
-      <router-link class="navlink" to="about">About</router-link>
-      <router-link class="navlink" to="newPollForm"
+      <router-link class="navlink" to="/about">About</router-link>
+      <router-link class="navlink" to="/newPollForm"
         >Create New Poll</router-link
       >
     </nav>
@@ -161,6 +161,11 @@ nav {
   padding: unset;
   margin: 1em 0;
   display: unset;
+}
+
+.edit {
+  color: $mint;
+  border-color: $mint;
 }
 
 #app {

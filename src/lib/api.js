@@ -45,6 +45,7 @@ export async function fetchPoll(pollId) {
 }
 
 export async function savePoll(newPollObject) {
+  console.log(newPollObject);
   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
   if (pollIndex === -1) {
     polls.push(newPollObject);

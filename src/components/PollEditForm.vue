@@ -2,10 +2,10 @@
   <div class="container">
     <header>
       <div class="breadcrumb">
-        <span>Create new poll ></span>
+        <span>Edit {{ title }} ></span>
       </div>
     </header>
-    <form id="vote">
+    <form id="Poll">
       <legend>Vote Title</legend>
       <FormFieldset
         v-model="title"
@@ -67,8 +67,8 @@
     <TextButton
       type="submit"
       icon="arrow-right-circle"
-      text="Submit your new Poll"
-      form="vote"
+      text="Save Changes"
+      form="Poll"
       @click="savePollObject"
     />
   </div>
@@ -90,15 +90,29 @@ export default {
     TextButton,
     FormFieldset
   },
+  props: {
+    poll: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
-      title: "Hüttengaudi",
-      info: "Where should we go for this year’s Hüttengaudi?",
-      options: [],
-      start: "2019-06-20 08:30",
-      end: "2019-06-20 17:30",
-      votes: []
+      title: "",
+      info: "",
+      options: "",
+      start: "",
+      end: "",
+      id: ""
     };
+  },
+  created() {
+    this.title = this.poll.title;
+    this.info = this.poll.info;
+    this.options = this.poll.options;
+    this.start = this.poll.start;
+    this.end = this.poll.end;
+    this.id = this.poll.id;
   },
   methods: {
     addOption(option) {
@@ -111,6 +125,7 @@ export default {
     },
     savePollObject() {
       const { title, info, options, start, end } = this;
+      console.log(title, info, options, start, end);
       savePoll({
         title,
         info,
