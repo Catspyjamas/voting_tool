@@ -2,9 +2,21 @@
   <div class="container">
     <!-- ? Does Jhnns think this should be its own component? -->
     <ul class="tabs">
-      <li @click="filterPolls(tabs.ACTIVE)">Active</li>
-      <li @click="filterPolls(tabs.DRAFTS)">Drafts</li>
-      <li @click="filterPolls(tabs.PAST)">Past</li>
+      <router-link
+        :to="{ name: 'polls', params: { tab: 'active' } }"
+        @click.native="activeFilter = filterFunctions.active"
+        >Active</router-link
+      >
+      <router-link
+        :to="{ name: 'polls', params: { tab: 'drafts' } }"
+        @click.native="activeFilter = filterFunctions.drafts"
+        >Drafts</router-link
+      >
+      <router-link
+        :to="{ name: 'polls', params: { tab: 'past' } }"
+        @click.native="activeFilter = filterFunctions.past"
+        >Past</router-link
+      >
     </ul>
     <PollList :polls="filteredPolls" />
   </div>
@@ -14,48 +26,47 @@
 import { fetchPolls } from "../lib/api.js";
 import PollList from "../components/PollList.vue";
 import moment from "moment";
-const tabs = {
-  ACTIVE: "ACTIVE",
-  PAST: "PAST",
-  DRAFT: "DRAFT"
+
+// "/polls/:tab"
+// als prop: tab = "active"
+
+const filterFunctions = {
+  active(poll) {
+    return moment().isBefore(poll.end);
+  },
+  drafts(poll) {
+    return poll.active === false;
+  },
+  past(poll) {
+    return moment().isAfter(poll.end);
+  }
 };
+
 export default {
   components: {
     PollList
   },
+  props: {
+    tab: {
+      type: String,
+      required: true,
+      default: "active"
+    }
+  },
   data() {
     return {
       polls: [],
-      filteredPolls: [],
-      hasBeenFiltered: false,
-      tabs: tabs,
-      filterFunctions: {
-        ACTIVE: () => {
-          return this.polls.filter(poll => {
-            return moment().isBefore(poll.end);
-          });
-        },
-        PAST: () => {
-          return this.polls.filter(poll => {
-            return moment().isAfter(poll.end);
-          });
-        },
-        DRAFTS: () => {
-          return this.polls.filter(poll => {
-            return poll.active === true;
-          });
-        }
-      }
+      activeFilter: filterFunctions.active,
+      filterFunctions
     };
+  },
+  computed: {
+    filteredPolls() {
+      return this.polls.filter(this.activeFilter);
+    }
   },
   async created() {
     this.polls = await fetchPolls();
-    this.filteredPolls = this.polls;
-  },
-  methods: {
-    filterPolls(tab) {
-      this.filteredPolls = this.filterFunctions[tab]();
-    }
   }
 };
 </script>

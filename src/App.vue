@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav>
-      <router-link class="navlink" to="/">Polls</router-link>
+      <router-link class="navlink" to="/polls">Polls</router-link>
       <router-link class="navlink" to="/about">About</router-link>
       <router-link class="navlink" to="/newPollForm"
         >Create New Poll</router-link
