@@ -1,31 +1,15 @@
 <template>
-  <div class="container">
-    <!-- ? Does Jhnns think this should be its own component? -->
-    <ul class="tabs">
-      <router-link
-        :to="{ name: 'polls', params: { tab: 'active' } }"
-        @click.native="activeFilter = filterFunctions.active"
-        >Active</router-link
-      >
-      <router-link
-        :to="{ name: 'polls', params: { tab: 'drafts' } }"
-        @click.native="activeFilter = filterFunctions.drafts"
-        >Drafts</router-link
-      >
-      <router-link
-        :to="{ name: 'polls', params: { tab: 'past' } }"
-        @click.native="activeFilter = filterFunctions.past"
-        >Past</router-link
-      >
-    </ul>
-    <PollList :polls="filteredPolls" />
-  </div>
+  <PollTabs
+    :filtered-polls="filteredPolls"
+    :tab="tab"
+    @click="activeFilter = filterFunctions[$event]"
+  />
 </template>
 
 <script>
 import { fetchPolls } from "../lib/api.js";
-import PollList from "../components/PollList.vue";
 import moment from "moment";
+import PollTabs from "../components/PollTabs";
 
 // "/polls/:tab"
 // als prop: tab = "active"
@@ -44,13 +28,12 @@ const filterFunctions = {
 
 export default {
   components: {
-    PollList
+    PollTabs
   },
   props: {
     tab: {
       type: String,
-      required: true,
-      default: "active"
+      required: true
     }
   },
   data() {
@@ -70,14 +53,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss">
-.tabs {
-  display: flex;
-  justify-content: space-between;
-  li {
-    list-style: none;
-    cursor: pointer;
-  }
-}
-</style>

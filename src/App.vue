@@ -119,6 +119,9 @@ nav {
 .breadcrumb {
   color: $primary;
   font-size: $standard;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  padding-bottom: $xsmall;
 }
 
 .tagline {
@@ -130,14 +133,15 @@ nav {
   min-height: 100vh;
 }
 
-.breadcrumb {
-  text-transform: uppercase;
-  letter-spacing: 0.5em;
-  padding-bottom: $xsmall;
-}
-
 .feather__content {
   color: white;
+}
+
+.message {
+  display: block;
+  color: $mint;
+  margin: $large auto $large auto;
+  text-align: center;
 }
 
 .instructions {

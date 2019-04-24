@@ -71,6 +71,7 @@
       form="Poll"
       @click="savePollObject"
     />
+    <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
 
@@ -80,7 +81,6 @@ import TextButton from "./TextButton.vue";
 import PollChoiceForm from "./PollChoiceForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
-import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPollForm",
@@ -103,7 +103,8 @@ export default {
       options: "",
       start: "",
       end: "",
-      id: ""
+      id: "",
+      message: ""
     };
   },
   created() {
@@ -131,22 +132,15 @@ export default {
         info,
         options,
         start,
-        end,
-        id: this.createId(title)
+        end
       });
-      this.title = "";
-      this.info = "";
-      this.options = "";
-      this.start = "";
-      this.end = "";
-    },
-    createId(string) {
-      return uniqid(
-        string
-          .replace(/[^a-zA-Zs]/g, "")
-          .toLowerCase()
-          .slice(0, 3) + "-"
-      );
+      this.title = this.poll.title;
+      this.info = this.poll.info;
+      this.options = this.poll.options;
+      this.start = this.poll.start;
+      this.end = this.poll.end;
+      this.id = this.poll.id;
+      this.message = "Poll saved.";
     }
   }
 };

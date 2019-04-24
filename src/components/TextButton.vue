@@ -52,6 +52,10 @@ export default {
   margin: $xsmall auto $xsmall 0;
 }
 
+.right {
+  margin: $xsmall 0 $xsmall auto;
+}
+
 .button {
   font-family: "speziabold";
   letter-spacing: 0.1em;
