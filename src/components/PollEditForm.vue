@@ -2,10 +2,10 @@
   <div class="container">
     <header>
       <div class="breadcrumb">
-        <span>Create new poll ></span>
+        <span>Edit {{ title }} ></span>
       </div>
     </header>
-    <form id="vote">
+    <form id="Poll">
       <legend>Vote Title</legend>
       <FormFieldset
         v-model="title"
@@ -67,10 +67,11 @@
     <TextButton
       type="submit"
       icon="arrow-right-circle"
-      text="Submit your new Poll"
-      form="vote"
+      text="Save Changes"
+      form="Poll"
       @click="savePollObject"
     />
+    <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
 
@@ -80,7 +81,6 @@ import TextButton from "./TextButton.vue";
 import PollChoiceForm from "./PollChoiceForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
-import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPollForm",
@@ -90,15 +90,30 @@ export default {
     TextButton,
     FormFieldset
   },
+  props: {
+    poll: {
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
       title: "",
       info: "",
-      options: [],
+      options: "",
       start: "",
       end: "",
-      votes: []
+      id: "",
+      message: ""
     };
+  },
+  created() {
+    this.title = this.poll.title;
+    this.info = this.poll.info;
+    this.options = this.poll.options;
+    this.start = this.poll.start;
+    this.end = this.poll.end;
+    this.id = this.poll.id;
   },
   methods: {
     addOption(option) {
@@ -116,29 +131,15 @@ export default {
         info,
         options,
         start,
-        end,
-        id: this.createId(title)
+        end
       });
-      this.title = "";
-      this.info = "";
-      this.options = "";
-      this.start = "";
-      this.end = "";
-    },
-    createId(string) {
-      return uniqid(
-        string
-          .replace(/[^a-zA-Zs]/g, "")
-          .toLowerCase()
-          .slice(0, 3) + "-"
-      );
+      this.message = "Poll saved.";
     }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style lang="scss" scoped>
 ul {
   margin: 0;
   padding: 0;
