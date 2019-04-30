@@ -11,9 +11,6 @@ import { fetchPolls } from "../lib/api.js";
 import moment from "moment";
 import PollTabs from "../components/PollTabs";
 
-// "/polls/:tab"
-// als prop: tab = "active"
-
 const filterFunctions = {
   active(poll) {
     return moment().isBefore(poll.end);
@@ -33,7 +30,7 @@ export default {
   props: {
     tab: {
       type: String,
-      required: true
+      default: "active"
     }
   },
   data() {

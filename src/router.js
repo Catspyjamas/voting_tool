@@ -12,7 +12,7 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: "/:tab",
+      path: "/polls/:tab",
       name: "polls",
       component: Polls,
       props: true
