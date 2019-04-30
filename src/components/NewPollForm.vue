@@ -92,11 +92,11 @@ export default {
   },
   data() {
     return {
-      title: "Hüttengaudi",
-      info: "Where should we go for this year’s Hüttengaudi?",
+      title: "",
+      info: "",
       options: [],
-      start: "2019-06-20 08:30",
-      end: "2019-06-20 17:30",
+      start: "",
+      end: "",
       votes: []
     };
   },

@@ -126,7 +126,6 @@ export default {
     },
     savePollObject() {
       const { title, info, options, start, end } = this;
-      console.log(title, info, options, start, end);
       savePoll({
         title,
         info,
@@ -134,20 +133,13 @@ export default {
         start,
         end
       });
-      this.title = this.poll.title;
-      this.info = this.poll.info;
-      this.options = this.poll.options;
-      this.start = this.poll.start;
-      this.end = this.poll.end;
-      this.id = this.poll.id;
       this.message = "Poll saved.";
     }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style lang="scss" scoped>
 ul {
   margin: 0;
   padding: 0;

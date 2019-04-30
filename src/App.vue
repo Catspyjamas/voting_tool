@@ -14,22 +14,7 @@
 <script>
 export default {
   name: "App",
-  components: {},
-  data() {
-    return {};
-  },
-  methods: {
-    addPoll(newPoll) {
-      this.polls.push(newPoll);
-    },
-    addVote(newVote) {
-      for (let element of this.polls) {
-        if (element.id === newVote.pollId) {
-          element.votes.push(newVote);
-        }
-      }
-    }
-  }
+  components: {}
 };
 </script>
 
