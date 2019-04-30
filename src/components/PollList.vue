@@ -2,9 +2,17 @@
   <ul>
     <li v-for="poll of polls" :key="poll.id">
       <p>{{ poll.title }}</p>
-      <router-link :to="{ name: 'PollEdit', params: { pollId: poll.id } }">
-        <TextButton text="Edit" direction="right" />
-      </router-link>
+      <div class="poll-links">
+        <router-link :to="{ name: 'PollEdit', params: { pollId: poll.id } }">
+          <TextButton text="Edit" direction="right" />
+        </router-link>
+        <router-link
+          v-if="(poll.active = true)"
+          :to="{ name: 'Vote', params: { pollId: poll.id } }"
+        >
+          <Text-Button text="Vote" direction="right" />
+        </router-link>
+      </div>
       <p v-if="(polls.length = 0)">There are no polls in view.</p>
     </li>
   </ul>
@@ -43,5 +51,10 @@ ul {
       align-items: baseline;
     }
   }
+}
+
+.poll-links {
+  display: flex;
+  flex-wrap: nowrap;
 }
 </style>

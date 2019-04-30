@@ -33,7 +33,7 @@ const polls = [
       }
     ],
     votes: [],
-    active: false
+    active: true
   }
 ];
 
@@ -45,12 +45,23 @@ export async function fetchPoll(pollId) {
   return polls.find(poll => poll.id === pollId);
 }
 
-export async function savePoll(newPollObject) {
+export function savePoll(newPollObject) {
   console.log(newPollObject);
   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
   if (pollIndex === -1) {
     polls.push(newPollObject);
   } else {
     polls.splice(pollIndex, 1, newPollObject);
+  }
+}
+
+export function saveVote(newVoteObject) {
+  console.log(newVoteObject);
+  const pollIndex = polls.findIndex(poll => poll.id === newVoteObject.pollId);
+  const userIndex = polls[pollIndex].votes.findIndex(vote => vote.userId);
+  if (userIndex === -1) {
+    polls[pollIndex].votes.push(newVoteObject);
+  } else {
+    polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
   }
 }

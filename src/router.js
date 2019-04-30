@@ -2,6 +2,7 @@ import Vue from "vue";
 import Router from "vue-router";
 import Polls from "./containers/Polls.vue";
 import PollEdit from "./containers/Poll.vue";
+import Vote from "./containers/Vote.vue";
 import About from "./components/About.vue";
 import NewPollForm from "./components/NewPollForm.vue";
 import Submitted from "./components/Submitted.vue";
@@ -20,6 +21,12 @@ export default new Router({
       path: "/polls/:pollId/edit",
       name: "PollEdit",
       component: PollEdit,
+      props: true
+    },
+    {
+      path: "/polls/:pollId/vote",
+      name: "Vote",
+      component: Vote,
       props: true
     },
     {

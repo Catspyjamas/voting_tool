@@ -2,7 +2,7 @@
   <div v-if="!voted" class="container">
     <header>
       <div class="breadcrumb">
-        <span>Poll</span>
+        <span>Vote</span>
       </div>
       <h1>{{ poll.title }}</h1>
       <p class="subhead">{{ poll.addInfo }}</p>
@@ -30,7 +30,7 @@
           icon="arrow-right-circle"
           text="Submit your
         choice"
-          @click="submitPoll"
+          @click="submitVote"
         />
       </router-link>
     </main>
@@ -41,6 +41,7 @@
 import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
 import draggable from "vuedraggable";
+import { saveVote } from "../lib/api.js";
 export default {
   name: "Poll",
   components: {
@@ -51,17 +52,7 @@ export default {
   props: {
     poll: {
       type: Object,
-      required: true,
-      default: function() {
-        return {
-          id: "",
-          title: "",
-          start: "",
-          end: "",
-          info: "",
-          options: [{ title: "", id: "", addInfo: "" }]
-        };
-      }
+      required: true
     }
   },
   data() {
@@ -74,13 +65,22 @@ export default {
     this.vote = this.shuffleArray(this.poll.options);
   },
   methods: {
-    submitPoll() {
-      this.$emit("voteSubmit", {
+    submitVote() {
+      saveVote({
         pollId: this.poll.id,
         userId: "xxxx",
+        abstain: false,
         ranking: this.vote
       });
       this.voted = true;
+    },
+    abstainVote() {
+      saveVote({
+        pollId: this.poll.id,
+        userId: "xxxx",
+        abstain: true,
+        ranking: []
+      });
     },
     shuffleArray(arr) {
       return arr
