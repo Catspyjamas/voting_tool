@@ -32,7 +32,9 @@ const polls = [
           "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
       }
     ],
-    votes: [],
+    votes: [
+      { pollId: "bla-1jul80elt", userId: "xxxx", abstain: true, ranking: [] }
+    ],
     active: true
   }
 ];
@@ -45,7 +47,8 @@ export async function fetchPoll(pollId) {
   return polls.find(poll => poll.id === pollId);
 }
 
-export function savePoll(newPollObject) {
+export async function savePoll(newPollObject) {
+  // eslint-disable-next-line no-console
   console.log(newPollObject);
   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
   if (pollIndex === -1) {
@@ -55,13 +58,30 @@ export function savePoll(newPollObject) {
   }
 }
 
-export function saveVote(newVoteObject) {
+export async function saveVote(newVoteObject) {
+  // eslint-disable-next-line no-console
   console.log(newVoteObject);
   const pollIndex = polls.findIndex(poll => poll.id === newVoteObject.pollId);
-  const userIndex = polls[pollIndex].votes.findIndex(vote => vote.userId);
+  const userIndex = polls[pollIndex].votes.findIndex(
+    vote => vote.userId === newVoteObject.userId
+  );
   if (userIndex === -1) {
     polls[pollIndex].votes.push(newVoteObject);
   } else {
     polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
   }
+}
+
+export async function fetchVote(pollId, userId) {
+  const poll = await fetchPoll(pollId);
+  const vote = poll.votes.find(vote => {
+    return vote.userId === userId;
+  });
+  if (vote === undefined) {
+    throw new Error("notVoted");
+  }
+  if (vote.abstain === true) {
+    throw new Error("abstained");
+  }
+  return vote;
 }

@@ -6,11 +6,7 @@
       </div>
       <h1>{{ poll.title }}</h1>
       <p class="subhead">{{ poll.addInfo }}</p>
-      <p class="subhead">
-        Or, if you would you rather not vote at all and leave your vote blank,
-        you can also choose to abstain from the vote.
-      </p>
-      <TextButton text="Abstain" background-color="coral" direction="left" />
+      <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
       <draggable v-model="vote">
@@ -26,11 +22,18 @@
       </draggable>
       <router-link to="submitted" class="button-link">
         <TextButton
-          to="submitted"
           icon="arrow-right-circle"
           text="Submit your
         choice"
           @click="submitVote"
+        />
+      </router-link>
+      <router-link to="submitted" class="button-link">
+        <TextButton
+          background-color="coral"
+          icon="arrow-right-circle"
+          text="Abstain instead"
+          @click="abstainVote"
         />
       </router-link>
     </main>
@@ -41,7 +44,7 @@
 import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
 import draggable from "vuedraggable";
-import { saveVote } from "../lib/api.js";
+import { saveVote, fetchVote, fetchPoll } from "../lib/api.js";
 export default {
   name: "Poll",
   components: {
@@ -58,11 +61,36 @@ export default {
   data() {
     return {
       voted: false,
-      vote: []
+      vote: [],
+      statusText: ""
     };
   },
   created() {
-    this.vote = this.shuffleArray(this.poll.options);
+    fetchVote(this.poll.id, "xxxx").then(
+      result => {
+        this.statusText = `This is what you voted for ${
+          this.poll.title
+        }. Change the order and resubmit if you would like to change your ranking.`;
+        this.vote = result.ranking;
+      },
+      error => {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        if (error.message == "abstained") {
+          this.statusText = `You're currently abstaining. If you'd like to vote for ${
+            this.poll.title
+          } after all, please resubmit.`;
+        }
+        if (error.message == "notVoted") {
+          this.statusText = `This is the first time you're voting for ${
+            this.poll.title
+          }.`;
+        }
+        this.vote = this.shuffleArray(this.poll.options);
+        // eslint-disable-next-line no-console
+        console.log(this.vote);
+      }
+    );
   },
   methods: {
     submitVote() {

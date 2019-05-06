@@ -30,7 +30,7 @@ export default {
   props: {
     tab: {
       type: String,
-      default: "active"
+      required: true
     }
   },
   data() {
