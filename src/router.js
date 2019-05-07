@@ -19,13 +19,13 @@ export default new Router({
     },
     {
       path: "/polls/:pollId/edit",
-      name: "PollEdit",
+      name: "pollEdit",
       component: PollEdit,
       props: true
     },
     {
       path: "/polls/:pollId/vote",
-      name: "Vote",
+      name: "vote",
       component: Vote,
       props: true
     },
@@ -40,9 +40,10 @@ export default new Router({
       component: NewPollForm
     },
     {
-      path: "/submitted",
+      path: "/polls/:pollId/submitted",
       name: "submitted",
-      component: Submitted
+      component: Submitted,
+      props: true
     }
   ]
 });

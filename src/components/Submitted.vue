@@ -1,24 +1,27 @@
 <template>
   <div class="container">
     <h1>You have officially voted.</h1>
-    <p>If you've changed your mind, you can still edit your vote.</p>
-    <router-link to="poll" class="button-link">
-      <TextButton text="Edit vote" direction="left" />
+    <p v-if="!pollOver">Check or edit your choice:</p>
+    <router-link v-if="!pollOver" to="vote" class="button-link">
+      <TextButton text="Changed my mind" direction="left" />
     </router-link>
 
     <div v-if="!pollOver">
-      <p class="subhead">Now we wait until the poll is over.</p>
-      <p>End time: {{ getEnd }}</p>
+      <p>Ending time: {{ getEnd }}</p>
+      <h2>
+        <span v-if="days !== 0">{{ days }} Days,&#32;</span>
+        <span v-if="hours !== 0">{{ hours }} Hours,&#32;</span>
+        <span v-if="minutes !== 0">{{ minutes }} Minutes,&#32;</span>
+        {{ seconds }} Seconds left
+      </h2>
       <TextButton
         text="Pretend it's later"
         direction="left"
         @click="timeWarp"
       />
     </div>
-
     <div v-if="pollOver">
       <h2>It's over!</h2>
-      <router-link to="about">See the results</router-link>
     </div>
   </div>
 </template>
@@ -26,30 +29,28 @@
 <script>
 import moment from "moment";
 import TextButton from "./TextButton.vue";
+import { fetchPoll } from "../lib/api.js";
+import { setInterval } from "timers";
 export default {
   name: "Submitted",
   components: {
     TextButton
   },
   props: {
-    poll: {
-      type: Object,
+    pollId: {
+      type: String,
       required: true,
-      default: function() {
-        return {
-          id: "",
-          title: "",
-          start: "",
-          end: "",
-          info: "",
-          options: [{ title: "", id: "", addInfo: "" }]
-        };
-      }
+      countdown: 0
     }
   },
   data() {
     return {
-      pollOver: false
+      poll: {},
+      pollOver: false,
+      days: "",
+      hours: "",
+      minutes: "",
+      seconds: ""
     };
   },
   computed: {
@@ -61,6 +62,16 @@ export default {
         "dddd, MMMM Do YYYY, HH.mm"
       );
     }
+  },
+  async created() {
+    this.poll = await fetchPoll(this.pollId);
+    setInterval(() => {
+      const duration = moment.duration(moment().diff(this.poll.end));
+      this.days = -duration.get("days");
+      this.hours = -duration.get("hours");
+      this.minutes = -duration.get("minutes");
+      this.seconds = -duration.get("seconds");
+    }, 1000);
   },
   methods: {
     timeWarp() {

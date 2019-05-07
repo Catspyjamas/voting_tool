@@ -44,7 +44,7 @@
 import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
 import draggable from "vuedraggable";
-import { saveVote, fetchVote, fetchPoll } from "../lib/api.js";
+import { saveVote, fetchVote } from "../lib/api.js";
 export default {
   name: "Poll",
   components: {

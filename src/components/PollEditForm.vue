@@ -125,8 +125,9 @@ export default {
       }
     },
     savePollObject() {
-      const { title, info, options, start, end } = this;
+      const { id, title, info, options, start, end } = this;
       savePoll({
+        id,
         title,
         info,
         options,
