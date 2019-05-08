@@ -23,7 +23,7 @@ import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
 import uniqid from "uniqid";
 export default {
-  name: "PollChoiceForm",
+  name: "PollOptionsForm",
   components: {
     IconButton,
     FormFieldset
