@@ -112,10 +112,10 @@ export async function savePoll(newPollObject) {
   }
 }
 
-export async function saveVote(newVoteObject) {
+export async function saveVote(pollId, newVoteObject) {
   // eslint-disable-next-line no-console
   console.log(newVoteObject);
-  const pollIndex = polls.findIndex(poll => poll.id === newVoteObject.pollId);
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
   const userIndex = polls[pollIndex].votes.findIndex(
     vote => vote.userId === newVoteObject.userId
   );
@@ -141,8 +141,6 @@ export async function fetchVote(pollId, userId) {
 //- Clean up rankings
 // -Refactor Votes container and component
 //- Check for empty Arrays (= abstinations) in the container
-
-// Clean up votes array
 
 function getAllOptions(poll) {
   return poll.options.map(option => option.id);

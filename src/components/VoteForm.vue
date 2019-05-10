@@ -9,9 +9,9 @@
       <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
-      <draggable v-model="vote">
+      <draggable v-model="ranking">
         <PollOption
-          v-for="(option, index) in vote"
+          v-for="(option, index) in ranking"
           :id="option.id"
           :key="index"
           :index="index"
@@ -44,7 +44,6 @@
 import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
 import draggable from "vuedraggable";
-import { saveVote, fetchVote } from "../lib/api.js";
 export default {
   name: "Poll",
   components: {
@@ -56,65 +55,30 @@ export default {
     poll: {
       type: Object,
       required: true
+    },
+    vote: {
+      type: Array,
+      required: true
+    },
+    statusText: {
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       voted: false,
-      vote: [],
-      statusText: ""
+      ranking: this.vote.slice()
     };
-  },
-  created() {
-    fetchVote(this.poll.id, "xxxx").then(
-      result => {
-        this.statusText = `This is what you voted for ${
-          this.poll.title
-        }. Change the order and resubmit if you would like to change your ranking.`;
-        this.vote = result.ranking;
-      },
-      error => {
-        // eslint-disable-next-line no-console
-        console.log(error);
-        if (error.message == "abstained") {
-          this.statusText = `You're currently abstaining. If you'd like to vote for ${
-            this.poll.title
-          } after all, please resubmit.`;
-        }
-        if (error.message == "notVoted") {
-          this.statusText = `This is the first time you're voting for ${
-            this.poll.title
-          }.`;
-        }
-        this.vote = this.shuffleArray(this.poll.options);
-        // eslint-disable-next-line no-console
-        console.log(this.vote);
-      }
-    );
   },
   methods: {
     submitVote() {
-      saveVote({
-        pollId: this.poll.id,
-        userId: "xxxx",
-        abstain: false,
-        ranking: this.vote
-      });
+      this.$emit("submit", this.ranking.map(options => options.id));
       this.voted = true;
     },
     abstainVote() {
-      saveVote({
-        pollId: this.poll.id,
-        userId: "xxxx",
-        abstain: true,
-        ranking: []
-      });
-    },
-    shuffleArray(arr) {
-      return arr
-        .map(a => [Math.random(), a])
-        .sort((a, b) => a[0] - b[0])
-        .map(a => a[1]);
+      this.$emit("submit", []);
+      this.voted = true;
     }
   }
 };
