@@ -139,16 +139,16 @@ export async function fetchVote(pollId, userId) {
   return vote;
 }
 ////////////////////////////////////////////////////////
-// AFTER VOTE/COUNTING OUT VOTES
+// FUNCTIONS FOR GETTING VOTE RESULTS
 
 //////////////////////
 //HELPER FUNCTIONS
 
-function get(poll) {
+export function get(poll) {
   return poll.options.map(option => option.id);
 }
 
-function findSmallestValue(map) {
+export function findSmallestValue(map) {
   const allValues = [];
   for (const value of map.values()) {
     allValues.push(value);
@@ -156,7 +156,7 @@ function findSmallestValue(map) {
   return Math.min(...allValues);
 }
 
-function findKeyOfSmallestNumber(map, minNumber) {
+export function findKeyOfSmallestNumber(map, minNumber) {
   let minKeys = [];
   [...map].forEach(([key, value]) => {
     if (value === minNumber) {
@@ -183,9 +183,7 @@ export function collectRankingPerUserId(votesArray) {
   return rankingPerUserId;
 }
 
-// (options, topOptionPerUserId) -> Map<optionId, count>
-// !!! Add arguments/make functions "neutral"
-export function sumUpResults() {
+export function sumUpResults(remainingOptions, rankingPerUserId) {
   const summedUpResults = new Map();
   //initializes map of all remainingOptions with value of 0
   for (const optionId of remainingOptions) {
@@ -196,52 +194,37 @@ export function sumUpResults() {
     summedUpResults.set(ranking[0], summedUpResults.get(ranking[0]) + 1);
     //    Or with reference to object: summedUpResults.get(ranking[0]).count++;
   }
-
-  //save history
-  roundHistory.push({
-    roundCount,
-    minKeys: null,
-    summedUpResults,
-    rankingPerUserId
-  });
-  roundCount++;
   return summedUpResults;
 }
-//!!!Roundcount mitzählen und Endlosschleife vermeiden
-export function doWeHaveAWinner(map) {
+
+export function calculateWinner(summedUpResults) {
   let votesCount = 0;
-  map.forEach(value => {
+  summedUpResults.forEach(value => {
     votesCount = votesCount + value;
   });
-  console.log("VOTESCOUNT " + votesCount);
   const majorityLimit = votesCount / 2;
-  let winner = null;
-  map.forEach((value, key) => {
+  let result = null;
+  summedUpResults.forEach((value, key) => {
     if (value > majorityLimit) {
-      winner = key;
+      result = { winner: key, votes: value };
     }
   });
-  console.log("WINNER: " + winner);
-  return winner;
+  return result;
 }
 
-export function removeLeastFavouriteOptions() {
-  // find smallest value
-  const min = findSmallestValue(summedUpResults);
-  console.log("MIN: " + min);
-  //find Keys of smallest number
-  const minKeys = findKeyOfSmallestNumber(summedUpResults, min);
-  console.log("MINKEY: " + minKeys);
-
+export function filterSummedUpResults(summedUpResults, minValue) {
   //filter summedUpResults to exclude results with smallest number
-  summedUpResults = new Map(
-    [...summedUpResults].filter(result => result[1] !== min)
+  const filteredSummedUpResults = new Map(
+    [...summedUpResults].filter(result => result[1] !== minValue)
   );
-  console.log("SUMMEDUPRESULTS:");
-  console.log(JSON.stringify(summedUpResults, null, 2));
+  // console.log("FILTEREDSummedUpRESULTS:");
+  // console.log(JSON.stringify(filteredSummedUpResults, null, 2));
+  return filteredSummedUpResults;
+}
 
+export function filterRankingPerUserId(rankingPerUserId, minKeys) {
   //Delete minKeys from rankingPerUserId
-  rankingPerUserId = new Map(
+  const filteredRankingPerUserId = new Map(
     [...rankingPerUserId].map(([key, value]) => {
       return [
         key,
@@ -251,52 +234,95 @@ export function removeLeastFavouriteOptions() {
       ];
     })
   );
-  console.log("RANKING");
-  console.log(JSON.stringify(rankingPerUserId, null, 2));
+  // console.log("RANKING");
+  // console.log(JSON.stringify(filteredRankingPerUserId, null, 2));
+  return filteredRankingPerUserId;
+}
 
+export function filterRemainingOptions(remainingOptions, minKeys) {
   //Delete minKeys from remainingOptions
-  remainingOptions.filter(id => {
+  const filteredRemainingOptions = remainingOptions.filter(id => {
     return !minKeys.includes(id);
   });
-
-  //save in history
-  roundHistory.push({
-    roundCount,
-    minKeys,
-    summedUpResults,
-    rankingPerUserId
-  });
+  return filteredRemainingOptions;
 }
 
 ////////////////////////////////////
-// TRY OUT STUFF
+// EXCEPTIONS
+function PollException(message, history) {
+  this.message = message;
+  this.history = history;
+}
 
-//!!! CalculateResults: one global
-const roundHistory = [];
-let roundCount = 0;
-let remainingOptions = get(polls[0]);
-console.log("all Options: " + remainingOptions);
+////////////////////////////////////
+export function findWinner(poll, votes) {
+  /// PREP 1st ROUND
+  const roundHistory = [];
+  let roundCount = 0;
+  let remainingOptions = get(poll);
+  //console.log("all Options: " + remainingOptions);
+  const maxRounds = remainingOptions.length;
 
-let rankingPerUserId = collectRankingPerUserId(polls[0].votes);
-console.log("rankingPerUserId: ");
-console.log(JSON.stringify(rankingPerUserId, null, 2));
+  let rankingPerUserId = collectRankingPerUserId(votes);
+  //console.log("rankingPerUserId: ");
+  //console.log(JSON.stringify(rankingPerUserId, null, 2));
 
-let summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-console.log("summedUpResults: ");
-console.log(JSON.stringify(summedUpResults, null, 2));
+  let summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+  //console.log("summedUpResults: ");
+  //console.log(JSON.stringify(summedUpResults, null, 2));
+  let result = calculateWinner(summedUpResults);
 
-let winner;
-do {
+  let minValue;
+  //console.log("MIN: " + minValue);
+  //find Keys of smallest number
+  let minKeys;
+  //console.log("MINKEY: " + minKeys);
 
-  winner = calculateWinner(summedUpResults);
-} while (winner === null);
+  roundHistory.push({
+    roundCount,
+    remainingOptions,
+    minValue,
+    minKeys,
+    rankingPerUserId,
+    summedUpResults,
+    result
+  });
 
-doWeHaveAWinner(summedUpResults);
-removeLeastFavouriteOptions();
-console.log("____________________2______________________________");
-sumUpResults();
-doWeHaveAWinner(summedUpResults);
-removeLeastFavouriteOptions();
-console.log("____________________3______________________________");
-sumUpResults();
-doWeHaveAWinner(summedUpResults);
+  if (result === null) {
+    ////////////// START LOOP
+    do {
+      roundCount++;
+      // find smallest value
+      minValue = findSmallestValue(summedUpResults);
+      //console.log("MIN: " + minValue);
+      //find Keys of smallest number
+      minKeys = findKeyOfSmallestNumber(summedUpResults, minValue);
+      //console.log("MINKEY: " + minKeys);
+
+      summedUpResults = filterSummedUpResults(summedUpResults, minValue);
+
+      rankingPerUserId = filterRankingPerUserId(rankingPerUserId, minKeys);
+
+      remainingOptions = filterRemainingOptions(remainingOptions, minKeys);
+
+      result = calculateWinner(summedUpResults);
+
+      roundHistory.push({
+        roundCount,
+        remainingOptions,
+        minValue,
+        minKeys,
+        rankingPerUserId,
+        summedUpResults,
+        result
+      });
+    } while (result === null && roundCount < maxRounds);
+  }
+  //check if there's still no winner
+  if (result === null) {
+    throw new PollException("Couldn't find a winner", roundHistory);
+  }
+  return { roundHistory, result };
+}
+const result = findWinner(polls[0], polls[0].votes);
+console.log("HISTORY " + result.roundHistory);

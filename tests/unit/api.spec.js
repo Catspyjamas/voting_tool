@@ -1,45 +1,30 @@
 /* eslint-disable no-console */
 import {
-  sumUpResults,
   collectRankingPerUserId,
-  getTopOptionPerUserId
+  sumUpResults,
+  calculateWinner,
+  filterSummedUpResults,
+  filterRankingPerUserId,
+  filterRemainingOptions,
+  findWinner
 } from "../../src/lib/api";
+// TESTING DATASET
 const votes = [
   {
     userId: "def",
-    ranking: [
-      "rad-1jvf53jcx",
-      "eur-1jvf542o5",
-      "can-1jvf53urh",
-      "goc-1jvf54cj2"
-    ]
+    ranking: ["rad", "eur", "can", "goc"]
   },
   {
     userId: "ghi",
-    ranking: [
-      "eur-1jvf542o5",
-      "can-1jvf53urh",
-      "rad-1jvf53jcx",
-      "goc-1jvf54cj2"
-    ]
+    ranking: ["eur", "can", "rad", "goc"]
   },
   {
     userId: "jkl",
-    ranking: [
-      "rad-1jvf53jcx",
-      "eur-1jvf542o5",
-      "can-1jvf53urh",
-      "goc-1jvf54cj2"
-    ]
+    ranking: ["rad", "eur", "can", "goc"]
   },
   {
     userId: "mno",
-    ranking: [
-      "can-1jvf53urh",
-      "eur-1jvf542o5",
-      "rad-1jvf53jcx",
-      "goc-1jvf54cj2"
-    ]
+    ranking: ["can", "eur", "rad", "goc"]
   },
   {
     userId: "pqr",
@@ -47,75 +32,115 @@ const votes = [
   },
   {
     userId: "xxx",
-    ranking: [
-      "goc-1jvf54cj2",
-      "eur-1jvf542o5",
-      "rad-1jvf53jcx",
-      "can-1jvf53urh"
-    ]
+    ranking: ["goc", "eur", "rad", "can"]
   }
 ];
+const options = ["goc", "eur", "rad", "can", "hat"];
 
-const expectedRankingPerUserId = new Map([
-  ["def", ["rad-1jvf53jcx", "eur-1jvf542o5", "can-1jvf53urh", "goc-1jvf54cj2"]],
-  ["ghi", ["eur-1jvf542o5", "can-1jvf53urh", "rad-1jvf53jcx", "goc-1jvf54cj2"]],
-  ["jkl", ["rad-1jvf53jcx", "eur-1jvf542o5", "can-1jvf53urh", "goc-1jvf54cj2"]],
-  ["mno", ["can-1jvf53urh", "eur-1jvf542o5", "rad-1jvf53jcx", "goc-1jvf54cj2"]],
-  ["xxx", ["goc-1jvf54cj2", "eur-1jvf542o5", "rad-1jvf53jcx", "can-1jvf53urh"]]
+const rankingPerUserId = new Map([
+  ["def", ["rad", "eur", "can", "goc"]],
+  ["ghi", ["eur", "can", "rad", "goc"]],
+  ["jkl", ["rad", "eur", "can", "goc"]],
+  ["mno", ["can", "eur", "rad", "goc"]],
+  ["xxx", ["goc", "eur", "rad", "can"]]
 ]);
 
-const expectedTopOptionPerUserId = new Map([
-  ["def", "rad-1jvf53jcx"],
-  ["ghi", "eur-1jvf542o5"],
-  ["jkl", "rad-1jvf53jcx"],
-  ["mno", "can-1jvf53urh"],
-  ["xxx", "goc-1jvf54cj2"]
+const summedUpResults = new Map([
+  ["rad", 2],
+  ["can", 1],
+  ["eur", 1],
+  ["goc", 1],
+  ["hat", 0]
 ]);
+
+const filteredSummedUpResults = new Map([
+  ["rad", 2],
+  ["can", 1],
+  ["eur", 1],
+  ["goc", 1]
+]);
+
+const filteredRankingPerUserId = new Map([
+  ["def", ["can", "goc"]],
+  ["ghi", ["can", "goc"]],
+  ["jkl", ["can", "goc"]],
+  ["mno", ["can", "goc"]],
+  ["xxx", ["goc", "can"]]
+]);
+
+const filteredRemainingOptions = ["goc", "can", "hat"];
+
+const poll2 = {
+  options: [
+    { id: "heinz" },
+    { id: "erika" },
+    { id: "anita" },
+    { id: "franz" },
+    { id: "anna" }
+  ]
+};
+const votes2 = [
+  { userId: "abc", ranking: ["heinz", "erika", "anita", "franz", "anna"] },
+  { userId: "def", ranking: ["erika", "anita", "franz", "anna", "heinz"] },
+  { userId: "hij", ranking: ["anita", "franz", "anna", "heinz", "erika"] },
+  { userId: "klm", ranking: ["franz", "anna", "heinz", "erika", "anita"] },
+  { userId: "nop", ranking: ["anna", "heinz", "erika", "anita", "franz"] }
+];
+
+let absoluteMajorityVote = new Map([["rad", 14], ["can", 4], ["eur", 2]]);
 
 describe("collectRankingPerUserId", () => {
   it("returns a map of [userId, [ranking]] for every user who actually voted", () => {
-    expect(collectRankingPerUserId(votes)).toEqual(expectedRankingPerUserId);
-  });
-});
-
-describe("getTopOptionPerUserId", () => {
-  it("returns a map of [userId, optionId]", () => {
-    expect(getTopOptionPerUserId(expectedRankingPerUserId)).toEqual(
-      expectedTopOptionPerUserId
-    );
+    expect(collectRankingPerUserId(votes)).toEqual(rankingPerUserId);
   });
 });
 
 describe("sumUpResults", () => {
-  it("returns the map we want on first call, and then doesnt include removed things in second call", () => {
-    // * Function Parameters
-    let options = [
-      "goc-1jvf54cj2",
-      "eur-1jvf542o5",
-      "rad-1jvf53jcx",
-      "can-1jvf53urh",
-      "hat-1jvf542o8"
-    ];
+  it("returns a map of [topOptionId, sumOfTopVotes]", () => {
+    expect(sumUpResults(options, rankingPerUserId)).toEqual(summedUpResults);
+  });
+});
 
-    let expectedMap = new Map([
-      ["goc-1jvf54cj2", 1],
-      ["eur-1jvf542o5", 1],
-      ["can-1jvf53urh", 1],
-      ["hat-1jvf542o8", 0],
-      ["rad-1jvf53jcx", 2]
-    ]);
+describe("calculateWinner", () => {
+  it("returns a winner if one of the values makes up more than half of the total of all values", () => {
+    expect(calculateWinner(absoluteMajorityVote)).toEqual({
+      winner: "rad",
+      votes: 14
+    });
+  });
+  it("returns null on first voting round", () => {
+    expect(calculateWinner(summedUpResults)).toEqual(null);
+  });
+});
 
-    const summedUpResults = sumUpResults(options, expectedTopOptionPerUserId);
-    expect(summedUpResults).toEqual(expectedMap);
-    // // removes it from options, and everyones user rankings
-    // // * in reality, this is with removeLeastVoted() - or something
-    // // in our test, we can change the objects above here:
-    // options = ["goc-1jvf54cj2", "rad-1jvf53jcx"];
-    // expectedMap = new Map();
-    // expectedMap.set("goc-1jvf54cj2", 2);
-    // expectedMap.set("rad-1jvf53jcx", 1);
+describe("filterSummedUpResults", () => {
+  it("filters out the tuple with a given value from summedUpResults", () => {
+    expect(filterSummedUpResults(summedUpResults, 0)).toEqual(
+      filteredSummedUpResults
+    );
+  });
+});
 
-    // const secondResultsMap = sumUpResults(options, topOptionPerUserId);
-    // expect(secondResultsMap).toEqual(expectedMap);
+describe("filterRankingPerUserId", () => {
+  it("filters out certain keys from the remaining options in rankingPerUserId", () => {
+    expect(filterRankingPerUserId(rankingPerUserId, ["rad", "eur"])).toEqual(
+      filteredRankingPerUserId
+    );
+  });
+});
+
+describe("filterRemainingOptions", () => {
+  it("filters out certain keys from remainingOptions", () => {
+    expect(filterRemainingOptions(options, ["rad", "eur"])).toEqual(
+      filteredRemainingOptions
+    );
+  });
+});
+
+describe("findWinner", () => {
+  it("throws an error if there's no absolute majority after a certain amount of counting rounds", () => {
+    expect(() => {
+      findWinner(poll2, votes2);
+    }).toThrow();
   });
 });
