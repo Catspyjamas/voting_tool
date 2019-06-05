@@ -93,6 +93,8 @@ const polls = [
   }
 ];
 
+////////////////////////////////////////////////////////
+//FUNCTIONS FOR VOTING
 export async function fetchPolls() {
   return polls;
 }
@@ -136,29 +138,44 @@ export async function fetchVote(pollId, userId) {
   }
   return vote;
 }
+////////////////////////////////////////////////////////
+// AFTER VOTE/COUNTING OUT VOTES
 
-// TO DO:
-//- Clean up rankings
-// -Refactor Votes container and component
-//- Check for empty Arrays (= abstinations) in the container
+//////////////////////
+//HELPER FUNCTIONS
 
-function getAllOptions(poll) {
+function get(poll) {
   return poll.options.map(option => option.id);
 }
 
-const allOptions = getAllOptions(polls[0]);
-// eslint-disable-next-line no-console
-console.log("all Options:" + allOptions);
+function findSmallestValue(map) {
+  const allValues = [];
+  for (const value of map.values()) {
+    allValues.push(value);
+  }
+  return Math.min(...allValues);
+}
 
-export function collectRankingPerUserId(votes) {
+function findKeyOfSmallestNumber(map, minNumber) {
+  let minKeys = [];
+  [...map].forEach(([key, value]) => {
+    if (value === minNumber) {
+      minKeys.push(key);
+    }
+  });
+  return minKeys;
+}
+
+//////////////////////
+
+export function collectRankingPerUserId(votesArray) {
   const rankingPerUserId = new Map();
 
-  for (const vote of votes) {
+  for (const vote of votesArray) {
     if (rankingPerUserId.has(vote.userId)) {
       throw new Error(`Duplicate vote for user "${vote.userId}"`);
     }
     if (vote.ranking.length === 0) {
-      // eslint-disable-next-line no-console
       continue;
     }
     rankingPerUserId.set(vote.userId, vote.ranking);
@@ -166,48 +183,120 @@ export function collectRankingPerUserId(votes) {
   return rankingPerUserId;
 }
 
-// (rankingPerUserId) -> Map<userId, optionId>
-export function getTopOptionPerUserId(rankingPerUserId) {
-  const topOptionPerUserId = new Map();
-  for (const vote of rankingPerUserId) {
-    topOptionPerUserId.set(vote[0], vote[1][0]);
-  }
-  return topOptionPerUserId;
-}
-
 // (options, topOptionPerUserId) -> Map<optionId, count>
-
-export function sumUpResults(options, topOptionPerUserId) {
+// !!! Add arguments/make functions "neutral"
+export function sumUpResults() {
   const summedUpResults = new Map();
-  //initializes map of all options with value of 0
-  for (const option of options) {
-    summedUpResults.set(option, 0);
+  //initializes map of all remainingOptions with value of 0
+  for (const optionId of remainingOptions) {
+    summedUpResults.set(optionId, 0);
   }
-  //goes through topOptionPerUserId, gets what's at index0 of the results...
-  for (const topOption of topOptionPerUserId) {
-    // and adds up the counter of each option there is
-    summedUpResults.set(topOption[1], summedUpResults.get(topOption[1]) + 1);
+  // Counts up first options of rankingPerUserId
+  for (const ranking of rankingPerUserId.values()) {
+    summedUpResults.set(ranking[0], summedUpResults.get(ranking[0]) + 1);
+    //    Or with reference to object: summedUpResults.get(ranking[0]).count++;
+  }
 
-    //    summedUpResults.set(topOption, topOption + 1);
-  }
+  //save history
+  roundHistory.push({
+    roundCount,
+    minKeys: null,
+    summedUpResults,
+    rankingPerUserId
+  });
+  roundCount++;
   return summedUpResults;
 }
-
-// function removeLeastFavoriteOptions(options, sumUpResults) {}
-
-function getTopChoice(voteCollection) {
-  const topChoice = new Map();
-  for (let vote of voteCollection) {
-    const firstChoice = vote.ranking[0];
-    if (topChoice.has(firstChoice)) {
-      topChoice.set(firstChoice, topChoice.get(firstChoice) + 1);
-    } else {
-      topChoice.set(firstChoice, 0);
+//!!!Roundcount mitzählen und Endlosschleife vermeiden
+export function doWeHaveAWinner(map) {
+  let votesCount = 0;
+  map.forEach(value => {
+    votesCount = votesCount + value;
+  });
+  console.log("VOTESCOUNT " + votesCount);
+  const majorityLimit = votesCount / 2;
+  let winner = null;
+  map.forEach((value, key) => {
+    if (value > majorityLimit) {
+      winner = key;
     }
-  }
-  return topChoice;
+  });
+  console.log("WINNER: " + winner);
+  return winner;
 }
-// const votingTimeline = [];
-// const votesBirthday = gatherVotes(polls[0].votes);
-// eslint-disable-next-line no-console
-// console.log(votesBirthday);
+
+export function removeLeastFavouriteOptions() {
+  // find smallest value
+  const min = findSmallestValue(summedUpResults);
+  console.log("MIN: " + min);
+  //find Keys of smallest number
+  const minKeys = findKeyOfSmallestNumber(summedUpResults, min);
+  console.log("MINKEY: " + minKeys);
+
+  //filter summedUpResults to exclude results with smallest number
+  summedUpResults = new Map(
+    [...summedUpResults].filter(result => result[1] !== min)
+  );
+  console.log("SUMMEDUPRESULTS:");
+  console.log(JSON.stringify(summedUpResults, null, 2));
+
+  //Delete minKeys from rankingPerUserId
+  rankingPerUserId = new Map(
+    [...rankingPerUserId].map(([key, value]) => {
+      return [
+        key,
+        value.filter(id => {
+          return !minKeys.includes(id);
+        })
+      ];
+    })
+  );
+  console.log("RANKING");
+  console.log(JSON.stringify(rankingPerUserId, null, 2));
+
+  //Delete minKeys from remainingOptions
+  remainingOptions.filter(id => {
+    return !minKeys.includes(id);
+  });
+
+  //save in history
+  roundHistory.push({
+    roundCount,
+    minKeys,
+    summedUpResults,
+    rankingPerUserId
+  });
+}
+
+////////////////////////////////////
+// TRY OUT STUFF
+
+//!!! CalculateResults: one global
+const roundHistory = [];
+let roundCount = 0;
+let remainingOptions = get(polls[0]);
+console.log("all Options: " + remainingOptions);
+
+let rankingPerUserId = collectRankingPerUserId(polls[0].votes);
+console.log("rankingPerUserId: ");
+console.log(JSON.stringify(rankingPerUserId, null, 2));
+
+let summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+console.log("summedUpResults: ");
+console.log(JSON.stringify(summedUpResults, null, 2));
+
+let winner;
+do {
+
+  winner = calculateWinner(summedUpResults);
+} while (winner === null);
+
+doWeHaveAWinner(summedUpResults);
+removeLeastFavouriteOptions();
+console.log("____________________2______________________________");
+sumUpResults();
+doWeHaveAWinner(summedUpResults);
+removeLeastFavouriteOptions();
+console.log("____________________3______________________________");
+sumUpResults();
+doWeHaveAWinner(summedUpResults);
