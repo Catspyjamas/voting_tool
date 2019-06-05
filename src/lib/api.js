@@ -255,7 +255,7 @@ function PollException(message, history) {
 }
 
 ////////////////////////////////////
-export function findWinner(poll, votes) {
+export function findWinner(poll) {
   /// PREP 1st ROUND
   const roundHistory = [];
   let roundCount = 0;
@@ -263,7 +263,7 @@ export function findWinner(poll, votes) {
   //console.log("all Options: " + remainingOptions);
   const maxRounds = remainingOptions.length;
 
-  let rankingPerUserId = collectRankingPerUserId(votes);
+  let rankingPerUserId = collectRankingPerUserId(poll.votes);
   //console.log("rankingPerUserId: ");
   //console.log(JSON.stringify(rankingPerUserId, null, 2));
 
@@ -324,5 +324,5 @@ export function findWinner(poll, votes) {
   }
   return { roundHistory, result };
 }
-const result = findWinner(polls[0], polls[0].votes);
+const result = findWinner(polls[0]);
 console.log("HISTORY " + result.roundHistory);

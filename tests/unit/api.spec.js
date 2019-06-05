@@ -9,6 +9,100 @@ import {
   findWinner
 } from "../../src/lib/api";
 // TESTING DATASET
+
+const poll1 = {
+  id: "bla-1jul80elt",
+  title: "Birthday Event",
+  start: "2019-07-28 09:30",
+  end: "2019-07-31 09:30",
+  info:
+    "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
+  options: [
+    {
+      title: "Radlfahren",
+      id: "rad-1jvf53jcx",
+      addInfo:
+        "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+    },
+    {
+      title: "Canyoning",
+      id: "can-1jvf53urh",
+      addInfo:
+        "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+    },
+    {
+      title: "Europapark",
+      id: "eur-1jvf542o5",
+      addInfo:
+        "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+    },
+    {
+      title: "Go cart Driving",
+      id: "goc-1jvf54cj2",
+      addInfo:
+        "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+    },
+    {
+      title: "Hatedbyall",
+      id: "hat-1jvf542o8",
+      addInfo:
+        "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
+    }
+  ],
+  votes: [
+    {
+      userId: "def",
+      ranking: [
+        "rad-1jvf53jcx",
+        "eur-1jvf542o5",
+        "can-1jvf53urh",
+        "goc-1jvf54cj2"
+      ]
+    },
+    {
+      userId: "ghi",
+      ranking: [
+        "eur-1jvf542o5",
+        "can-1jvf53urh",
+        "rad-1jvf53jcx",
+        "goc-1jvf54cj2"
+      ]
+    },
+    {
+      userId: "jkl",
+      ranking: [
+        "rad-1jvf53jcx",
+        "eur-1jvf542o5",
+        "can-1jvf53urh",
+        "goc-1jvf54cj2"
+      ]
+    },
+    {
+      userId: "mno",
+      ranking: [
+        "can-1jvf53urh",
+        "eur-1jvf542o5",
+        "rad-1jvf53jcx",
+        "goc-1jvf54cj2"
+      ]
+    },
+    {
+      userId: "pqr",
+      ranking: []
+    },
+    {
+      userId: "xxx",
+      ranking: [
+        "goc-1jvf54cj2",
+        "eur-1jvf542o5",
+        "rad-1jvf53jcx",
+        "can-1jvf53urh"
+      ]
+    }
+  ],
+  active: true
+};
+
 const votes = [
   {
     userId: "def",
@@ -77,16 +171,15 @@ const poll2 = {
     { id: "anita" },
     { id: "franz" },
     { id: "anna" }
+  ],
+  votes: [
+    { userId: "abc", ranking: ["heinz", "erika", "anita", "franz", "anna"] },
+    { userId: "def", ranking: ["erika", "anita", "franz", "anna", "heinz"] },
+    { userId: "hij", ranking: ["anita", "franz", "anna", "heinz", "erika"] },
+    { userId: "klm", ranking: ["franz", "anna", "heinz", "erika", "anita"] },
+    { userId: "nop", ranking: ["anna", "heinz", "erika", "anita", "franz"] }
   ]
 };
-const votes2 = [
-  { userId: "abc", ranking: ["heinz", "erika", "anita", "franz", "anna"] },
-  { userId: "def", ranking: ["erika", "anita", "franz", "anna", "heinz"] },
-  { userId: "hij", ranking: ["anita", "franz", "anna", "heinz", "erika"] },
-  { userId: "klm", ranking: ["franz", "anna", "heinz", "erika", "anita"] },
-  { userId: "nop", ranking: ["anna", "heinz", "erika", "anita", "franz"] }
-];
-
 let absoluteMajorityVote = new Map([["rad", 14], ["can", 4], ["eur", 2]]);
 
 describe("collectRankingPerUserId", () => {
@@ -140,7 +233,11 @@ describe("filterRemainingOptions", () => {
 describe("findWinner", () => {
   it("throws an error if there's no absolute majority after a certain amount of counting rounds", () => {
     expect(() => {
-      findWinner(poll2, votes2);
+      findWinner(poll2);
     }).toThrow();
+  });
+
+  it("returns a winnerObject for a given poll", () => {
+    expect(findWinner(poll1)).toHaveProperty("result");
   });
 });
