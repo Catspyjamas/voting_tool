@@ -1,14 +1,14 @@
 <template>
-  <PollEdit v-if="!isLoading" :poll="poll" />
+  <EditPoll v-if="!isLoading" :poll="poll"/>
 </template>
 
 <script>
 import { fetchPoll } from "../lib/api.js";
-import PollEdit from "../components/PollEditForm.vue";
+import EditPoll from "../components/EditPollForm.vue";
 
 export default {
   components: {
-    PollEdit
+    EditPoll
   },
   props: {
     pollId: {

@@ -37,10 +37,8 @@
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">
-        Add several options that you would like to vote on.
-      </p>
-      <PollChoiceForm @submit="addOption" />
+      <p class="instructions">Add several options that you would like to vote on.</p>
+      <PollOptionsForm @submit="addOption"/>
     </form>
     <ul>
       <transition-group
@@ -55,11 +53,7 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.addInfo }}</p>
             </div>
-            <IconButton
-              class="icon_option"
-              icon="x"
-              @click="removeOption(index)"
-            />
+            <IconButton class="icon_option" icon="x" @click="removeOption(index)"/>
           </div>
         </div>
       </transition-group>
@@ -77,7 +71,7 @@
 <script>
 import TextButton from "./TextButton.vue";
 
-import PollChoiceForm from "./PollChoiceForm.vue";
+import PollOptionsForm from "./PollOptionsForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
 import uniqid from "uniqid";
@@ -85,7 +79,7 @@ import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPollForm",
   components: {
-    PollChoiceForm,
+    PollOptionsForm,
     IconButton,
     TextButton,
     FormFieldset
