@@ -258,71 +258,64 @@ function PollException(message, history) {
 export function findWinner(poll) {
   /// PREP 1st ROUND
   const roundHistory = [];
+  let result;
   let roundCount = 0;
-  let remainingOptions = get(poll);
-  //console.log("all Options: " + remainingOptions);
-  const maxRounds = remainingOptions.length;
+  const maxRounds = get(poll).length;
 
-  let rankingPerUserId = collectRankingPerUserId(poll.votes);
-  //console.log("rankingPerUserId: ");
-  //console.log(JSON.stringify(rankingPerUserId, null, 2));
+  do {
+    let lastRoundResults, lastRoundRanking, lastRoundRemainingOptions;
 
-  let summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-  //console.log("summedUpResults: ");
-  //console.log(JSON.stringify(summedUpResults, null, 2));
-  let result = calculateWinner(summedUpResults);
+    if (roundCount !== 0) {
+      // fancy way of destructuring into existing variables (which we rename the original objects keys to match)
+      ({
+        summedUpResults: lastRoundResults,
+        rankingPerUserId: lastRoundRanking,
+        remainingOptions: lastRoundRemainingOptions
+      } = roundHistory[roundHistory.length - 1]);
+    }
 
-  let minValue;
-  //console.log("MIN: " + minValue);
-  //find Keys of smallest number
-  let minKeys;
-  //console.log("MINKEY: " + minKeys);
+    const minValue =
+      roundCount === 0 ? null : findSmallestValue(lastRoundResults);
+    //find Keys of smallest number
+    const minKeys =
+      roundCount === 0
+        ? null
+        : findKeyOfSmallestNumber(lastRoundResults, minValue);
 
-  roundHistory.push({
-    roundCount,
-    remainingOptions,
-    minValue,
-    minKeys,
-    rankingPerUserId,
-    summedUpResults,
-    result
-  });
+    const summedUpResults =
+      roundCount === 0
+        ? sumUpResults(get(poll), collectRankingPerUserId(poll.votes))
+        : filterSummedUpResults(lastRoundResults, minValue);
 
-  if (result === null) {
-    ////////////// START LOOP
-    do {
-      roundCount++;
-      // find smallest value
-      minValue = findSmallestValue(summedUpResults);
-      //console.log("MIN: " + minValue);
-      //find Keys of smallest number
-      minKeys = findKeyOfSmallestNumber(summedUpResults, minValue);
-      //console.log("MINKEY: " + minKeys);
+    //Prepare Screenshot of remaining ranking for history
+    const rankingPerUserId =
+      roundCount === 0
+        ? collectRankingPerUserId(poll.votes)
+        : filterRankingPerUserId(lastRoundRanking, minKeys);
 
-      summedUpResults = filterSummedUpResults(summedUpResults, minValue);
+    //Prepare Screenshot of remaining options for history
+    const remainingOptions =
+      roundCount === 0
+        ? get(poll)
+        : filterRemainingOptions(lastRoundRemainingOptions, minKeys);
 
-      rankingPerUserId = filterRankingPerUserId(rankingPerUserId, minKeys);
+    result = calculateWinner(summedUpResults);
 
-      remainingOptions = filterRemainingOptions(remainingOptions, minKeys);
+    roundHistory.push({
+      roundCount,
+      remainingOptions,
+      minValue,
+      minKeys,
+      rankingPerUserId,
+      summedUpResults,
+      result
+    });
 
-      result = calculateWinner(summedUpResults);
-
-      roundHistory.push({
-        roundCount,
-        remainingOptions,
-        minValue,
-        minKeys,
-        rankingPerUserId,
-        summedUpResults,
-        result
-      });
-    } while (result === null && roundCount < maxRounds);
-  }
+    roundCount++;
+  } while (result === null && roundCount < maxRounds);
   //check if there's still no winner
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
   return { roundHistory, result };
 }
-const result = findWinner(polls[0]);
-console.log("HISTORY " + result.roundHistory);
