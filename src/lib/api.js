@@ -104,8 +104,6 @@ export async function fetchPoll(pollId) {
 }
 
 export async function savePoll(newPollObject) {
-  // eslint-disable-next-line no-console
-  console.log(newPollObject);
   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
   if (pollIndex === -1) {
     polls.push(newPollObject);
@@ -115,8 +113,6 @@ export async function savePoll(newPollObject) {
 }
 
 export async function saveVote(pollId, newVoteObject) {
-  // eslint-disable-next-line no-console
-  console.log(newVoteObject);
   const pollIndex = polls.findIndex(poll => poll.id === pollId);
   const userIndex = polls[pollIndex].votes.findIndex(
     vote => vote.userId === newVoteObject.userId
@@ -144,7 +140,7 @@ export async function fetchVote(pollId, userId) {
 //////////////////////
 //HELPER FUNCTIONS
 
-export function get(poll) {
+export function getPoll(poll) {
   return poll.options.map(option => option.id);
 }
 
@@ -158,7 +154,7 @@ export function findSmallestValue(map) {
 
 export function findKeyOfSmallestNumber(map, minNumber) {
   let minKeys = [];
-  [...map].forEach(([key, value]) => {
+  map.forEach((value, key) => {
     if (value === minNumber) {
       minKeys.push(key);
     }
@@ -260,7 +256,7 @@ export function findWinner(poll) {
   const roundHistory = [];
   let result;
   let roundCount = 0;
-  const maxRounds = get(poll).length;
+  const maxRounds = getPoll(poll).length;
 
   do {
     let lastRoundResults, lastRoundRanking, lastRoundRemainingOptions;
@@ -284,7 +280,7 @@ export function findWinner(poll) {
 
     const summedUpResults =
       roundCount === 0
-        ? sumUpResults(get(poll), collectRankingPerUserId(poll.votes))
+        ? sumUpResults(getPoll(poll), collectRankingPerUserId(poll.votes))
         : filterSummedUpResults(lastRoundResults, minValue);
 
     //Prepare Screenshot of remaining ranking for history
@@ -296,7 +292,7 @@ export function findWinner(poll) {
     //Prepare Screenshot of remaining options for history
     const remainingOptions =
       roundCount === 0
-        ? get(poll)
+        ? getPoll(poll)
         : filterRemainingOptions(lastRoundRemainingOptions, minKeys);
 
     result = calculateWinner(summedUpResults);

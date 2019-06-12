@@ -57,16 +57,12 @@ export default {
         });
       }
     } catch (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
       if (error.message == "notVoted") {
         this.statusText = `This is the first time you're voting for ${
           this.poll.title
         }.`;
         this.vote = this.shuffleArray(this.poll.options);
       }
-      // eslint-disable-next-line no-console
-      console.log(this.vote);
     }
   },
   methods: {
