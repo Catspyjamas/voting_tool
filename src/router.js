@@ -6,11 +6,17 @@ import Vote from "./containers/Vote.vue";
 import About from "./components/About.vue";
 import NewPollForm from "./components/NewPollForm.vue";
 import Submitted from "./components/Submitted.vue";
+import Results from "./containers/Results.vue";
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
+    {
+      path: "/polls/results",
+      name: "results",
+      component: Results
+    },
     {
       path: "/polls/:tab",
       name: "polls",

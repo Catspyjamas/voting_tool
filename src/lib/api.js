@@ -1,3 +1,5 @@
+const randomColor = require("randomcolor");
+
 const polls = [
   {
     id: "bla-1jul80elt",
@@ -100,7 +102,9 @@ export async function fetchPolls() {
 }
 
 export async function fetchPoll(pollId) {
-  return polls.find(poll => poll.id === pollId);
+  const poll = polls.find(poll => poll.id === pollId);
+  if (!poll) throw new Error(`No poll found with pollId ${pollId}`);
+  else return poll;
 }
 
 export async function savePoll(newPollObject) {
@@ -134,6 +138,16 @@ export async function fetchVote(pollId, userId) {
   }
   return vote;
 }
+
+export async function fetchOption(pollId, optionId) {
+  const poll = await fetchPoll(pollId);
+  return poll.options.find(option => option.id === optionId);
+}
+
+export function getOption(poll, optionId) {
+  return poll.options.find(option => option.id === optionId);
+}
+
 ////////////////////////////////////////////////////////
 // FUNCTIONS FOR GETTING VOTE RESULTS
 
@@ -314,4 +328,52 @@ export function findWinner(poll) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
   return { roundHistory, result };
+}
+
+export function prepareRoundCharts(poll, roundHistory) {
+
+  return roundHistory.map(round => {
+    function countPercentage(array, number) {
+      const total = array.reduce((accumulator, currentValue) =>{
+        return accumulator + currentValue
+      })
+      return number*100/total
+    }
+    //make array from counts per round
+    const numbersPerVote = Array.from(round.summedUpResults.values());
+    //make array from optionIds
+    const optionsPerVote = Array.from(round.summedUpResults.keys());
+    const titleOfOptionsPerVote = optionsPerVote
+      //get titles from optionIds
+      .map((optionId, index) => {
+        return `${getOption(poll, optionId).title}`;
+      }
+      );
+      const readableSummedUpResults = titleOfOptionsPerVote.map((optionTitle, index) => {
+        return [optionTitle,numbersPerVote[index], countPercentage(numbersPerVote, numbersPerVote[index])] 
+      })
+    //make array from options that were selected out
+    const minKeyTitles = round.minKeys
+      ? //if there are several optionIds, get their titles
+        round.minKeys.map(optionId => {
+          return getOption(poll, optionId).title;
+        })
+      : null;
+    //create a singular color per sees/id
+    const colorsPerTitle = optionsPerVote.map(optionId => {
+      return randomColor({
+        seed: optionId
+      });
+    });
+    return {
+      chartData: {
+        datasets: [{ data: numbersPerVote, backgroundColor: colorsPerTitle, borderWidth: 0 }],
+        labels: titleOfOptionsPerVote
+      },
+      summedUpResults: readableSummedUpResults,
+      roundCount: round.roundCount,
+      minKeys: minKeyTitles,
+      result: round.result
+    };
+  });
 }
