@@ -208,16 +208,6 @@ export function calculateWinner(summedUpResults) {
   return result;
 }
 
-export function filterSummedUpResults(summedUpResults, minValue) {
-  //filter summedUpResults to exclude results with smallest number
-  const filteredSummedUpResults = new Map(
-    [...summedUpResults].filter(result => result[1] !== minValue)
-  );
-  // console.log("FILTEREDSummedUpRESULTS:");
-  // console.log(JSON.stringify(filteredSummedUpResults, null, 2));
-  return filteredSummedUpResults;
-}
-
 export function filterRankingPerUserId(rankingPerUserId, minKeys) {
   //Delete minKeys from rankingPerUserId
   const filteredRankingPerUserId = new Map(
@@ -259,8 +249,23 @@ export function findWinner(poll) {
   const maxRounds = getPoll(poll).length;
 
   do {
-    let lastRoundResults, lastRoundRanking, lastRoundRemainingOptions;
-
+    let lastRoundResults,
+      lastRoundRanking,
+      lastRoundRemainingOptions,
+      summedUpResults,
+      rankingPerUserId,
+      minValue,
+      minKeys,
+      remainingOptions;
+    //Preparation in first round
+    if (roundCount === 0) {
+      remainingOptions = getPoll(poll);
+      rankingPerUserId = collectRankingPerUserId(poll.votes);
+      summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+    }
+    //There wasn't a winner in the last round.
+    //So we need to filter out the least favourite options from last round's results
+    //And redistribute people's rankings among the options that are still available
     if (roundCount !== 0) {
       // fancy way of destructuring into existing variables (which we rename the original objects keys to match)
       ({
@@ -268,32 +273,16 @@ export function findWinner(poll) {
         rankingPerUserId: lastRoundRanking,
         remainingOptions: lastRoundRemainingOptions
       } = roundHistory[roundHistory.length - 1]);
+
+      minValue = findSmallestValue(lastRoundResults);
+      minKeys = findKeyOfSmallestNumber(lastRoundResults, minValue);
+      rankingPerUserId = filterRankingPerUserId(lastRoundRanking, minKeys);
+      remainingOptions = filterRemainingOptions(
+        lastRoundRemainingOptions,
+        minKeys
+      );
+      summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
     }
-
-    const minValue =
-      roundCount === 0 ? null : findSmallestValue(lastRoundResults);
-    //find Keys of smallest number
-    const minKeys =
-      roundCount === 0
-        ? null
-        : findKeyOfSmallestNumber(lastRoundResults, minValue);
-
-    const summedUpResults =
-      roundCount === 0
-        ? sumUpResults(getPoll(poll), collectRankingPerUserId(poll.votes))
-        : filterSummedUpResults(lastRoundResults, minValue);
-
-    //Prepare Screenshot of remaining ranking for history
-    const rankingPerUserId =
-      roundCount === 0
-        ? collectRankingPerUserId(poll.votes)
-        : filterRankingPerUserId(lastRoundRanking, minKeys);
-
-    //Prepare Screenshot of remaining options for history
-    const remainingOptions =
-      roundCount === 0
-        ? getPoll(poll)
-        : filterRemainingOptions(lastRoundRemainingOptions, minKeys);
 
     result = calculateWinner(summedUpResults);
 
