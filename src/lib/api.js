@@ -240,60 +240,66 @@ function PollException(message, history) {
   this.history = history;
 }
 
+function firstRound(poll) {
+  const remainingOptions = getPoll(poll);
+  const rankingPerUserId = collectRankingPerUserId(poll.votes);
+  const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+  const result = calculateWinner(summedUpResults);
+  return {
+    minValue: null,
+    minKeys: null,
+    remainingOptions,
+    rankingPerUserId,
+    summedUpResults,
+    result
+  };
+}
+
+function nextRound(
+  lastRoundResults,
+  lastRoundRanking,
+  lastRoundRemainingOptions
+) {
+  const minValue = findSmallestValue(lastRoundResults);
+  const minKeys = findKeyOfSmallestNumber(lastRoundResults, minValue);
+  const rankingPerUserId = filterRankingPerUserId(lastRoundRanking, minKeys);
+  const remainingOptions = filterRemainingOptions(
+    lastRoundRemainingOptions,
+    minKeys
+  );
+  const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+  const result = calculateWinner(summedUpResults);
+  return {
+    minValue,
+    minKeys,
+    remainingOptions,
+    rankingPerUserId,
+    summedUpResults,
+    result
+  };
+}
 ////////////////////////////////////
 export function findWinner(poll) {
-  /// PREP 1st ROUND
   const roundHistory = [];
-  let result;
   const maxRounds = getPoll(poll).length;
 
-  do {
-    let lastRoundResults;
-    let lastRoundRanking;
-    let lastRoundRemainingOptions;
-    let summedUpResults;
-    let rankingPerUserId;
-    let minValue;
-    let minKeys;
-    let remainingOptions;
-    //Preparation in first round
-    if (roundHistory.length === 0) {
-      remainingOptions = getPoll(poll);
-      rankingPerUserId = collectRankingPerUserId(poll.votes);
-      summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-    }
-    //There wasn't a winner in the last round.
-    //So we need to filter out the least favourite options from last round's results
-    //And redistribute people's rankings among the options that are still available
-    else {
-      // fancy way of destructuring into existing variables (which we rename the original objects keys to match)
-      ({
-        summedUpResults: lastRoundResults,
-        rankingPerUserId: lastRoundRanking,
-        remainingOptions: lastRoundRemainingOptions
-      } = roundHistory[roundHistory.length - 1]);
+  const firstRoundResults = firstRound(poll);
+  roundHistory.push(firstRoundResults);
 
-      minValue = findSmallestValue(lastRoundResults);
-      minKeys = findKeyOfSmallestNumber(lastRoundResults, minValue);
-      rankingPerUserId = filterRankingPerUserId(lastRoundRanking, minKeys);
-      remainingOptions = filterRemainingOptions(
-        lastRoundRemainingOptions,
-        minKeys
-      );
-      summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-    }
-
-    result = calculateWinner(summedUpResults);
-
-    roundHistory.push({
-      remainingOptions,
-      minValue,
-      minKeys,
-      rankingPerUserId,
+  while (
+    roundHistory[roundHistory.length - 1].result === null &&
+    roundHistory.length < maxRounds
+  ) {
+    const {
       summedUpResults,
-      result
-    });
-  } while (result === null && roundHistory.length < maxRounds);
+      rankingPerUserId,
+      remainingOptions
+    } = roundHistory[roundHistory.length - 1];
+    roundHistory.push(
+      nextRound(summedUpResults, rankingPerUserId, remainingOptions)
+    );
+  }
+  const result = roundHistory[roundHistory.length - 1].result;
   //check if there's still no winner
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
