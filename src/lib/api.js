@@ -245,20 +245,19 @@ export function findWinner(poll) {
   /// PREP 1st ROUND
   const roundHistory = [];
   let result;
-  let roundCount = 0;
   const maxRounds = getPoll(poll).length;
 
   do {
-    let lastRoundResults,
-      lastRoundRanking,
-      lastRoundRemainingOptions,
-      summedUpResults,
-      rankingPerUserId,
-      minValue,
-      minKeys,
-      remainingOptions;
+    let lastRoundResults;
+    let lastRoundRanking;
+    let lastRoundRemainingOptions;
+    let summedUpResults;
+    let rankingPerUserId;
+    let minValue;
+    let minKeys;
+    let remainingOptions;
     //Preparation in first round
-    if (roundCount === 0) {
+    if (roundHistory.length === 0) {
       remainingOptions = getPoll(poll);
       rankingPerUserId = collectRankingPerUserId(poll.votes);
       summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
@@ -266,7 +265,7 @@ export function findWinner(poll) {
     //There wasn't a winner in the last round.
     //So we need to filter out the least favourite options from last round's results
     //And redistribute people's rankings among the options that are still available
-    if (roundCount !== 0) {
+    else {
       // fancy way of destructuring into existing variables (which we rename the original objects keys to match)
       ({
         summedUpResults: lastRoundResults,
@@ -287,7 +286,6 @@ export function findWinner(poll) {
     result = calculateWinner(summedUpResults);
 
     roundHistory.push({
-      roundCount,
       remainingOptions,
       minValue,
       minKeys,
@@ -295,9 +293,7 @@ export function findWinner(poll) {
       summedUpResults,
       result
     });
-
-    roundCount++;
-  } while (result === null && roundCount < maxRounds);
+  } while (result === null && roundHistory.length < maxRounds);
   //check if there's still no winner
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
