@@ -2,7 +2,6 @@ import {
   collectRankingPerUserId,
   sumUpResults,
   calculateWinner,
-  filterSummedUpResults,
   filterRankingPerUserId,
   filterRemainingOptions,
   findWinner
@@ -146,13 +145,6 @@ const summedUpResults = new Map([
   ["hat", 0]
 ]);
 
-const filteredSummedUpResults = new Map([
-  ["rad", 2],
-  ["can", 1],
-  ["eur", 1],
-  ["goc", 1]
-]);
-
 const filteredRankingPerUserId = new Map([
   ["def", ["can", "goc"]],
   ["ghi", ["can", "goc"]],
@@ -205,14 +197,6 @@ describe("calculateWinner", () => {
   });
 });
 
-describe("filterSummedUpResults", () => {
-  it("filters out the tuple with a given value from summedUpResults", () => {
-    expect(filterSummedUpResults(summedUpResults, 0)).toEqual(
-      filteredSummedUpResults
-    );
-  });
-});
-
 describe("filterRankingPerUserId", () => {
   it("filters out certain keys from the remaining options in rankingPerUserId", () => {
     expect(filterRankingPerUserId(rankingPerUserId, ["rad", "eur"])).toEqual(
@@ -238,5 +222,8 @@ describe("findWinner", () => {
 
   it("returns a winnerObject for a given poll", () => {
     expect(findWinner(poll1)).toHaveProperty("result");
+  });
+  it("returns five votes for the given winner", () => {
+    expect(findWinner(poll1).result.votes).toEqual(5);
   });
 });
