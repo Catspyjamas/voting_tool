@@ -1,36 +1,51 @@
 <template>
   <div v-if="loaded" class="container">
+    <div id="winner">
+      <h2>And the winner is...</h2>
+      <h1>{{ winner.title }}</h1>
+    </div>
     <div v-for="pollResult in pollResults" :key="pollResult.roundCount">
-      <div id="headline">
+      <div class="headline">
         <h2 v-if="pollResult.roundCount === 0">
           This is what we started out with:
         </h2>
         <h2 v-else>Round # {{ pollResult.roundCount }}</h2>
       </div>
-        <li v-for="summedUpResult in pollResult.summedUpResults">
-          {{summedUpResult[1]}}
-          {{summedUpResult[0]}}
-          {{summedUpResult[2]}}
+      <div class="info">
+        <li
+          v-for="(summedUpResult, index2) in pollResult.summedUpResults"
+          :key="index2"
+        >
+          <span>{{ summedUpResult[1] }} votes for</span>
+          <span>{{ summedUpResult[0] }}</span>
+          <span>{{ summedUpResult[2] }}%</span>
         </li>
-      <div v-if="pollResult.minKeys">
-        <p>Didn't get enough votes to make it into the next round:</p>
-        <li v-for="minKey in pollResult.minKeys" :key="minKey.index">
-          {{ minKey }}
-        </li>
+        <div v-if="pollResult.minKeys" class="additional-info">
+          <p>
+            As we didn't have a majprity, the one(s) with the least votes got
+            voted out. In this case, it's
+          </p>
+          <span
+            v-for="minKey in pollResult.minKeys"
+            :key="minKey.index"
+            class="option"
+            >{{ minKey }}</span
+          >
+        </div>
       </div>
-      <doughnut class="chart" :chartdata="pollResult.chartData" :options="chartOptions" />
-    </div>
-    <div id="winner">
-      <h2>And we have an absolute majority:</h2>
-      <p>{{ winner.title }}</p>
+      <doughnut
+        class="chart"
+        :chartdata="pollResult.chartData"
+        :options="chartOptions"
+      />
     </div>
   </div>
 </template>
 <script>
-import Doughnut from "../components/Result";
+import Doughnut from "../components/DoughnutChart";
 import { fetchPoll } from "../lib/api.js";
 import { findWinner } from "../lib/api.js";
-import { prepareRoundCharts } from "../lib/api.js";
+import { prepareRoundInfo } from "../lib/api.js";
 import { fetchOption } from "../lib/api.js";
 export default {
   components: {
@@ -57,7 +72,7 @@ export default {
     try {
       const poll = await fetchPoll("bla-1jul80elt");
       const result = await findWinner(poll);
-      this.pollResults = prepareRoundCharts(poll, result.roundHistory);
+      this.pollResults = prepareRoundInfo(poll, result.roundHistory);
       this.winner = await fetchOption("bla-1jul80elt", result.result.winner);
       this.loaded = true;
     } catch (e) {
@@ -72,7 +87,7 @@ h2 {
 }
 .chart {
   margin: $small 0 $medium 0;
-  padding-bottom: $medium;
+  padding: $medium 0 $medium 0;
   border-bottom: 1px solid white;
 }
 </style>

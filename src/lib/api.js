@@ -176,6 +176,13 @@ export function findKeyOfSmallestNumber(map, minNumber) {
   return minKeys;
 }
 
+function countPercentage(array, number) {
+  const total = array.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+  });
+  return (number * 100) / total;
+}
+
 //////////////////////
 
 export function collectRankingPerUserId(votesArray) {
@@ -327,52 +334,56 @@ export function findWinner(poll) {
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
+
   return { roundHistory, result };
 }
 
-export function prepareRoundCharts(poll, roundHistory) {
-
+export function prepareRoundInfo(poll, roundHistory) {
   return roundHistory.map(round => {
-    function countPercentage(array, number) {
-      const total = array.reduce((accumulator, currentValue) =>{
-        return accumulator + currentValue
-      })
-      return number*100/total
-    }
-    //make array from counts per round
-    const numbersPerVote = Array.from(round.summedUpResults.values());
-    //make array from optionIds
-    const optionsPerVote = Array.from(round.summedUpResults.keys());
-    const titleOfOptionsPerVote = optionsPerVote
-      //get titles from optionIds
-      .map((optionId, index) => {
-        return `${getOption(poll, optionId).title}`;
+    //Make array from counts per round
+    const numbersPerRound = Array.from(round.summedUpResults.values());
+    //Make array from optionIds
+    const optionsPerRound = Array.from(round.summedUpResults.keys());
+    const titleOfOptionsPerRound = optionsPerRound.map(optionId => {
+      return `${getOption(poll, optionId).title}`;
+    });
+    const arraysFromSummedUpResults = titleOfOptionsPerRound.map(
+      (optionTitle, index) => {
+        return [
+          optionTitle,
+          numbersPerRound[index],
+          countPercentage(numbersPerRound, numbersPerRound[index])
+        ];
       }
-      );
-      const readableSummedUpResults = titleOfOptionsPerVote.map((optionTitle, index) => {
-        return [optionTitle,numbersPerVote[index], countPercentage(numbersPerVote, numbersPerVote[index])] 
-      })
-    //make array from options that were selected out
-    const minKeyTitles = round.minKeys
+    );
+    //Make array from options that were selected out
+    const minKeyTitlesPerRound = round.minKeys
       ? //if there are several optionIds, get their titles
         round.minKeys.map(optionId => {
           return getOption(poll, optionId).title;
         })
       : null;
     //create a singular color per sees/id
-    const colorsPerTitle = optionsPerVote.map(optionId => {
+    const colorsPerTitle = optionsPerRound.map(optionId => {
       return randomColor({
         seed: optionId
       });
     });
     return {
+      //Prepare data for chartjs
       chartData: {
-        datasets: [{ data: numbersPerVote, backgroundColor: colorsPerTitle, borderWidth: 0 }],
-        labels: titleOfOptionsPerVote
+        datasets: [
+          {
+            data: numbersPerRound,
+            backgroundColor: colorsPerTitle,
+            borderWidth: 0
+          }
+        ],
+        labels: titleOfOptionsPerRound
       },
-      summedUpResults: readableSummedUpResults,
+      summedUpResults: arraysFromSummedUpResults,
       roundCount: round.roundCount,
-      minKeys: minKeyTitles,
+      minKeys: minKeyTitlesPerRound,
       result: round.result
     };
   });
