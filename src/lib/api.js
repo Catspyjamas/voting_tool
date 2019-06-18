@@ -208,16 +208,6 @@ export function calculateWinner(summedUpResults) {
   return result;
 }
 
-export function filterSummedUpResults(summedUpResults, minValue) {
-  //filter summedUpResults to exclude results with smallest number
-  const filteredSummedUpResults = new Map(
-    [...summedUpResults].filter(result => result[1] !== minValue)
-  );
-  // console.log("FILTEREDSummedUpRESULTS:");
-  // console.log(JSON.stringify(filteredSummedUpResults, null, 2));
-  return filteredSummedUpResults;
-}
-
 export function filterRankingPerUserId(rankingPerUserId, minKeys) {
   //Delete minKeys from rankingPerUserId
   const filteredRankingPerUserId = new Map(
@@ -250,65 +240,66 @@ function PollException(message, history) {
   this.history = history;
 }
 
+function firstRound(poll) {
+  const remainingOptions = getPoll(poll);
+  const rankingPerUserId = collectRankingPerUserId(poll.votes);
+  const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+  const result = calculateWinner(summedUpResults);
+  return {
+    minValue: null,
+    minKeys: null,
+    remainingOptions,
+    rankingPerUserId,
+    summedUpResults,
+    result
+  };
+}
+
+function nextRound(
+  lastRoundResults,
+  lastRoundRanking,
+  lastRoundRemainingOptions
+) {
+  const minValue = findSmallestValue(lastRoundResults);
+  const minKeys = findKeyOfSmallestNumber(lastRoundResults, minValue);
+  const rankingPerUserId = filterRankingPerUserId(lastRoundRanking, minKeys);
+  const remainingOptions = filterRemainingOptions(
+    lastRoundRemainingOptions,
+    minKeys
+  );
+  const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
+  const result = calculateWinner(summedUpResults);
+  return {
+    minValue,
+    minKeys,
+    remainingOptions,
+    rankingPerUserId,
+    summedUpResults,
+    result
+  };
+}
 ////////////////////////////////////
 export function findWinner(poll) {
-  /// PREP 1st ROUND
   const roundHistory = [];
-  let result;
-  let roundCount = 0;
   const maxRounds = getPoll(poll).length;
 
-  do {
-    let lastRoundResults, lastRoundRanking, lastRoundRemainingOptions;
+  const firstRoundResults = firstRound(poll);
+  roundHistory.push(firstRoundResults);
 
-    if (roundCount !== 0) {
-      // fancy way of destructuring into existing variables (which we rename the original objects keys to match)
-      ({
-        summedUpResults: lastRoundResults,
-        rankingPerUserId: lastRoundRanking,
-        remainingOptions: lastRoundRemainingOptions
-      } = roundHistory[roundHistory.length - 1]);
-    }
-
-    const minValue =
-      roundCount === 0 ? null : findSmallestValue(lastRoundResults);
-    //find Keys of smallest number
-    const minKeys =
-      roundCount === 0
-        ? null
-        : findKeyOfSmallestNumber(lastRoundResults, minValue);
-
-    const summedUpResults =
-      roundCount === 0
-        ? sumUpResults(getPoll(poll), collectRankingPerUserId(poll.votes))
-        : filterSummedUpResults(lastRoundResults, minValue);
-
-    //Prepare Screenshot of remaining ranking for history
-    const rankingPerUserId =
-      roundCount === 0
-        ? collectRankingPerUserId(poll.votes)
-        : filterRankingPerUserId(lastRoundRanking, minKeys);
-
-    //Prepare Screenshot of remaining options for history
-    const remainingOptions =
-      roundCount === 0
-        ? getPoll(poll)
-        : filterRemainingOptions(lastRoundRemainingOptions, minKeys);
-
-    result = calculateWinner(summedUpResults);
-
-    roundHistory.push({
-      roundCount,
-      remainingOptions,
-      minValue,
-      minKeys,
-      rankingPerUserId,
+  while (
+    roundHistory[roundHistory.length - 1].result === null &&
+    roundHistory.length < maxRounds
+  ) {
+    const {
       summedUpResults,
-      result
-    });
-
-    roundCount++;
-  } while (result === null && roundCount < maxRounds);
+      rankingPerUserId,
+      remainingOptions
+    } = roundHistory[roundHistory.length - 1];
+    roundHistory.push(
+      nextRound(summedUpResults, rankingPerUserId, remainingOptions)
+    );
+  }
+  const result = roundHistory[roundHistory.length - 1].result;
   //check if there's still no winner
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
