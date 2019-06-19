@@ -13,9 +13,14 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: "/polls/results",
+      path: "/polls/:pollId/results",
       name: "results",
-      component: Results
+      component: Results,
+      props: true
+    },
+    {
+      path: "/polls",
+      redirect: "/polls/active"
     },
     {
       path: "/polls/:tab",

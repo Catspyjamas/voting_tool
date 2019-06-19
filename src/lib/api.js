@@ -1,4 +1,4 @@
-const randomColor = require("randomcolor");
+import randomColor from "randomcolor";
 
 const polls = [
   {
@@ -91,14 +91,15 @@ const polls = [
         ]
       }
     ],
-    active: true
+    active: false,
+    hasbeenactive: true
   }
 ];
 
 ////////////////////////////////////////////////////////
 //FUNCTIONS FOR VOTING
-export async function fetchPolls() {
-  return polls;
+export function fetchPolls() {
+  return [...polls];
 }
 
 export async function fetchPoll(pollId) {
@@ -147,6 +148,27 @@ export async function fetchOption(pollId, optionId) {
 export function getOption(poll, optionId) {
   return poll.options.find(option => option.id === optionId);
 }
+
+// export function checkTime(polls) {
+//   const now = moment();
+//   return polls.map(p => ({
+//     ...p,
+//     ended: now.isAfter(p.end)
+//   }));
+//   // console.log(polls);
+//   // return polls.map(poll => {
+//   //   console.log(poll.end);
+//   //   poll.ended = Math.random() > 0.5;
+//   // });
+//   // // for (const poll of polls) {
+//   //   const now = moment();
+//   //   if (now.isAfter(poll.end)) {
+//   //     poll.ended = true;
+//   //   } else {
+//   //     poll.ended = false;
+//   //   }
+//   // }
+// }
 
 ////////////////////////////////////////////////////////
 // FUNCTIONS FOR GETTING VOTE RESULTS

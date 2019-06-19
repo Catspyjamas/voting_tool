@@ -2,7 +2,7 @@
   <PollTabs
     :filtered-polls="filteredPolls"
     :tab="tab"
-    @click="activeFilter = filterFunctions[$event]"
+    @click="handleChangeFilter"
   />
 </template>
 
@@ -30,7 +30,7 @@ export default {
   props: {
     tab: {
       type: String,
-      required: true
+      default: "active"
     }
   },
   data() {
@@ -45,8 +45,17 @@ export default {
       return this.polls.filter(this.activeFilter);
     }
   },
-  async created() {
-    this.polls = await fetchPolls();
+  mounted() {
+    const now = moment();
+    this.polls = fetchPolls().map(p => ({
+      ...p,
+      ended: now.isAfter(p.end)
+    }));
+  },
+  methods: {
+    handleChangeFilter(filterName) {
+      this.activeFilter = filterFunctions[filterName];
+    }
   }
 };
 </script>

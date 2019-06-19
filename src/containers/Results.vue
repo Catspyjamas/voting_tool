@@ -1,6 +1,7 @@
 <template>
   <div v-if="loaded" class="container">
     <result
+      :poll-title="poll.title"
       :poll-results="pollResults"
       :chart-data="chartData"
       :winner="winner"
@@ -18,8 +19,15 @@ export default {
   components: {
     Result
   },
+  props: {
+    pollId: {
+      type: String,
+      default: ""
+    }
+  },
   data() {
     return {
+      poll: null,
       winner: null,
       loaded: false,
       pollResults: null,
@@ -38,7 +46,9 @@ export default {
     this.loaded = false;
 
     try {
-      const poll = await fetchPoll("bla-1jul80elt");
+      //get id from URL
+      const poll = await fetchPoll(this.pollId);
+      this.poll = poll;
       const result = await findWinner(poll);
       this.pollResults = prepareRoundInfo(poll, result.roundHistory);
       this.winner = await fetchOption("bla-1jul80elt", result.result.winner);

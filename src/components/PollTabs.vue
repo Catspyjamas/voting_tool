@@ -48,7 +48,7 @@ export default {
 <style lang="scss">
 .tabs {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   border-bottom: 1px solid $mint;
   .tab {
     list-style: none;
@@ -56,6 +56,7 @@ export default {
     margin: 0;
     padding: 0 $large $xsmall $large;
     border-bottom: none;
+    flex-wrap: wrap;
   }
   .router-link-exact-active {
     color: $mint;

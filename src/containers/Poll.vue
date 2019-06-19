@@ -1,5 +1,5 @@
 <template>
-  <EditPoll v-if="!isLoading" :poll="poll"/>
+  <EditPoll v-if="!isLoading" :poll="poll" />
 </template>
 
 <script>

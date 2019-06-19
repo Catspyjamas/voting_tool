@@ -59,7 +59,6 @@ export default {
 .button {
   font-family: "speziabold";
   letter-spacing: 0.1em;
-  background-color: $mint;
   display: flex;
   align-items: center;
   border: none;

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav>
-      <router-link class="navlink" to="/polls/active">Polls</router-link>
+      <router-link class="navlink" to="/polls">Polls</router-link>
       <router-link class="navlink" to="/about">About</router-link>
       <router-link class="navlink" to="/newPollForm"
         >Create New Poll</router-link
@@ -56,6 +56,9 @@ p {
   font-weight: normal;
   margin-top: unset;
   margin-bottom: $xsmall;
+}
+body {
+  margin: 0;
 }
 
 h1 {
@@ -137,6 +140,7 @@ nav {
   color: $primary;
 }
 
+.router-link-active,
 .router-link-exact-active {
   font-family: "speziabold";
   border-bottom: 2px solid $dark;

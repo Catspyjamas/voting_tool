@@ -1,7 +1,7 @@
 <template>
   <div>
     <div id="winner">
-      <h2>And the winner is...</h2>
+      <h2>The winner of the poll "{{ pollTitle }}" is...</h2>
       <h1>{{ winner.title }}</h1>
     </div>
 
@@ -70,6 +70,10 @@ export default {
     DoughnutChart
   },
   props: {
+    pollTitle: {
+      type: String,
+      default: ""
+    },
     pollResults: {
       type: Array,
       default: () => []
