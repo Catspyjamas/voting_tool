@@ -4,8 +4,8 @@ const polls = [
   {
     id: "bla-1jul80elt",
     title: "Birthday Event",
-    start: "2019-07-28 09:30",
-    end: "2019-07-31 09:30",
+    start: "2019-06-18 09:30",
+    end: "2019-06-19 09:30",
     info:
       "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
     options: [
@@ -261,6 +261,9 @@ function PollException(message, history) {
   this.history = history;
 }
 
+//////////////////////////////////////
+//Helper Functions for findWinner
+
 function firstRound(poll) {
   const remainingOptions = getPoll(poll);
   const rankingPerUserId = collectRankingPerUserId(poll.votes);
@@ -367,7 +370,8 @@ export function prepareRoundInfo(poll, roundHistory) {
           {
             data: numbersPerRound,
             backgroundColor: colorsPerTitle,
-            borderWidth: 0
+            borderWidth: 0,
+            responsive: true
           }
         ],
         labels: titleOfOptionsPerRound
