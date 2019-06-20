@@ -132,7 +132,8 @@ export default {
         info,
         options,
         start,
-        end
+        end,
+        status: "DRAFT"
       });
       this.message = "Poll saved.";
     }

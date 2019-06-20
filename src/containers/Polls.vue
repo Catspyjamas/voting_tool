@@ -1,26 +1,16 @@
 <template>
-  <PollTabs
-    :filtered-polls="filteredPolls"
-    :tab="tab"
-    @click="handleChangeFilter"
-  />
+  <PollTabs :filtered-polls="filteredPolls" />
 </template>
 
 <script>
 import { fetchPolls } from "../lib/api.js";
-import moment from "moment";
 import PollTabs from "../components/PollTabs";
+import { isOpen, isDraft, isClosed } from "../lib/api.js";
 
-const filterFunctions = {
-  active(poll) {
-    return moment().isBefore(poll.end);
-  },
-  drafts(poll) {
-    return poll.active === false;
-  },
-  past(poll) {
-    return moment().isAfter(poll.end);
-  }
+const mapTabToFilterFunction = {
+  open: isOpen,
+  drafts: isDraft,
+  closed: isClosed
 };
 
 export default {
@@ -30,32 +20,24 @@ export default {
   props: {
     tab: {
       type: String,
-      default: "active"
+      default: "open"
     }
   },
   data() {
     return {
-      polls: [],
-      activeFilter: filterFunctions.active,
-      filterFunctions
+      polls: []
     };
   },
   computed: {
     filteredPolls() {
       return this.polls.filter(this.activeFilter);
+    },
+    activeFilter() {
+      return mapTabToFilterFunction[this.tab];
     }
   },
-  mounted() {
-    const now = moment();
-    this.polls = fetchPolls().map(p => ({
-      ...p,
-      ended: now.isAfter(p.end)
-    }));
-  },
-  methods: {
-    handleChangeFilter(filterName) {
-      this.activeFilter = filterFunctions[filterName];
-    }
+  async mounted() {
+    this.polls = await fetchPolls();
   }
 };
 </script>

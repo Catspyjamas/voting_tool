@@ -20,7 +20,7 @@ export default new Router({
     },
     {
       path: "/polls",
-      redirect: "/polls/active"
+      redirect: "/polls/open"
     },
     {
       path: "/polls/:tab",

@@ -1,19 +1,22 @@
 <template>
-  <ul>
+  <ul class="poll-list">
     <li v-for="poll of polls" :key="poll.id">
       <p>{{ poll.title }}</p>
       <div class="poll-links">
-        <router-link :to="{ name: 'EditPoll', params: { pollId: poll.id } }">
+        <router-link
+          v-if="isDraft(poll)"
+          :to="{ name: 'EditPoll', params: { pollId: poll.id } }"
+        >
           <TextButton text="Edit" direction="right" />
         </router-link>
         <router-link
-          v-if="poll.active === true && poll.ended === false"
+          v-if="isOpen(poll)"
           :to="{ name: 'vote', params: { pollId: poll.id } }"
         >
           <Text-Button text="Vote" direction="right" />
         </router-link>
         <router-link
-          v-if="poll.hasbeenactive === true"
+          v-if="isClosed(poll)"
           :to="{ name: 'results', params: { pollId: poll.id } }"
         >
           <Text-Button
@@ -32,6 +35,8 @@
 
 <script>
 import TextButton from "./TextButton";
+import { isClosed, isOpen, isDraft } from "../lib/api.js";
+
 export default {
   components: {
     TextButton
@@ -41,6 +46,13 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  data() {
+    return {
+      isClosed,
+      isOpen,
+      isDraft
+    };
   }
 };
 </script>
@@ -73,5 +85,9 @@ ul {
 
 .no-polls {
   padding-top: 1em;
+}
+
+.poll-list {
+  flex-wrap: wrap;
 }
 </style>

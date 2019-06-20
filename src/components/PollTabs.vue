@@ -1,23 +1,18 @@
 <template>
   <div class="container">
     <ul class="tabs">
-      <router-link
-        class="tab"
-        :to="{ name: 'polls', params: { tab: 'active' } }"
-        @click.native="$emit('click', 'active')"
-        >Active</router-link
+      <router-link class="tab" :to="{ name: 'polls', params: { tab: 'open' } }"
+        >Open</router-link
       >
       <router-link
         class="tab"
         :to="{ name: 'polls', params: { tab: 'drafts' } }"
-        @click.native="$emit('click', 'drafts')"
         >Drafts</router-link
       >
       <router-link
         class="tab"
-        :to="{ name: 'polls', params: { tab: 'past' } }"
-        @click.native="$emit('click', 'past')"
-        >Past</router-link
+        :to="{ name: 'polls', params: { tab: 'closed' } }"
+        >Closed</router-link
       >
     </ul>
     <PollList v-if="filteredPolls" :polls="filteredPolls" />
@@ -31,10 +26,6 @@ export default {
     PollList
   },
   props: {
-    tab: {
-      type: String,
-      required: true
-    },
     filteredPolls: {
       type: Array,
       required: true

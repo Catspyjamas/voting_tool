@@ -98,7 +98,7 @@ const poll1 = {
       ]
     }
   ],
-  active: true
+  status: "OPEN"
 };
 
 const votes = [

@@ -91,13 +91,12 @@ const polls = [
         ]
       }
     ],
-    active: false,
-    hasbeenactive: true
+    status: "CLOSED"
   }
 ];
 
 ////////////////////////////////////////////////////////
-//FUNCTIONS FOR VOTING
+//FUNCTIONS FOR Saving and Fetching
 export function fetchPolls() {
   return [...polls];
 }
@@ -149,32 +148,20 @@ export function getOption(poll, optionId) {
   return poll.options.find(option => option.id === optionId);
 }
 
-// export function checkTime(polls) {
-//   const now = moment();
-//   return polls.map(p => ({
-//     ...p,
-//     ended: now.isAfter(p.end)
-//   }));
-//   // console.log(polls);
-//   // return polls.map(poll => {
-//   //   console.log(poll.end);
-//   //   poll.ended = Math.random() > 0.5;
-//   // });
-//   // // for (const poll of polls) {
-//   //   const now = moment();
-//   //   if (now.isAfter(poll.end)) {
-//   //     poll.ended = true;
-//   //   } else {
-//   //     poll.ended = false;
-//   //   }
-//   // }
-// }
+// Filtering Functions for Polls
 
-////////////////////////////////////////////////////////
-// FUNCTIONS FOR GETTING VOTE RESULTS
+export function isOpen(poll) {
+  return poll.status === "OPEN";
+}
+export function isDraft(poll) {
+  return poll.status === "DRAFT";
+}
+export function isClosed(poll) {
+  return poll.status === "CLOSED";
+}
 
 //////////////////////
-//HELPER FUNCTIONS
+// Helper Functions for getting vote Results
 
 export function getPoll(poll) {
   return poll.options.map(option => option.id);
