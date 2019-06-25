@@ -1,6 +1,12 @@
 import randomColor from "randomcolor";
 
-const polls = [
+const possiblePollStates = {
+  OPEN: "OPEN",
+  DRAFT: "DRAFT",
+  CLOSED: "CLOSED"
+};
+
+const polls = readFromLocalStorage() || [
   {
     id: "bla-1jul80elt",
     title: "Birthday Event",
@@ -94,7 +100,16 @@ const polls = [
     status: "CLOSED"
   }
 ];
+////////////////////////////////////////////////////////
+//localStorage Functions
 
+function saveToLocalStorage() {
+  localStorage.setItem("polls", JSON.stringify(polls));
+}
+
+function readFromLocalStorage() {
+  return JSON.parse(localStorage.getItem("polls"));
+}
 ////////////////////////////////////////////////////////
 //FUNCTIONS FOR Saving and Fetching
 export function fetchPolls() {
@@ -114,6 +129,7 @@ export async function savePoll(newPollObject) {
   } else {
     polls.splice(pollIndex, 1, newPollObject);
   }
+  saveToLocalStorage();
 }
 
 export async function saveVote(pollId, newVoteObject) {
@@ -126,6 +142,7 @@ export async function saveVote(pollId, newVoteObject) {
   } else {
     polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
   }
+  saveToLocalStorage();
 }
 
 export async function fetchVote(pollId, userId) {
@@ -149,17 +166,28 @@ export function getOption(poll, optionId) {
 }
 
 // Filtering Functions for Polls
-
+//! Build in Buttons for Opening and Closing
 export function isOpen(poll) {
-  return poll.status === "OPEN";
+  return poll.status === possiblePollStates.OPEN;
 }
 export function isDraft(poll) {
-  return poll.status === "DRAFT";
+  return poll.status === possiblePollStates.DRAFT;
 }
 export function isClosed(poll) {
-  return poll.status === "CLOSED";
+  return poll.status === possiblePollStates.CLOSED;
 }
 
+export async function openPoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.OPEN;
+  saveToLocalStorage();
+}
+
+export async function closePoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.CLOSED;
+  saveToLocalStorage();
+}
 //////////////////////
 // Helper Functions for getting vote Results
 
@@ -263,11 +291,11 @@ export function filterRemainingOptions(remainingOptions, minKeys) {
   return filteredRemainingOptions;
 }
 
-////////////////////////////////////
-// EXCEPTIONS
-function PollException(message, history) {
-  this.message = message;
-  this.history = history;
+class PollException extends Error {
+  constructor(message, history) {
+    super(message);
+    this.history = history;
+  }
 }
 
 //////////////////////////////////////

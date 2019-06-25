@@ -32,6 +32,7 @@
     </p>
   </ul>
 </template>
+//! Build in Buttons for Opening and Closing
 
 <script>
 import TextButton from "./TextButton";
