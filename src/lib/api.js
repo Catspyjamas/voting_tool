@@ -118,8 +118,9 @@ export function fetchPolls() {
 
 export async function fetchPoll(pollId) {
   const poll = polls.find(poll => poll.id === pollId);
-  if (!poll) throw new Error(`No poll found with pollId ${pollId}`);
-  else return poll;
+  if (!poll) {
+    throw new Error(`No poll found with pollId ${pollId}`);
+  } else return poll;
 }
 
 export async function savePoll(newPollObject) {
@@ -144,16 +145,25 @@ export async function deletePoll(pollId) {
 }
 
 export async function saveVote(pollId, newVoteObject) {
-  const pollIndex = polls.findIndex(poll => poll.id === pollId);
-  const userIndex = polls[pollIndex].votes.findIndex(
-    vote => vote.userId === newVoteObject.userId
-  );
-  if (userIndex === -1) {
-    polls[pollIndex].votes.push(newVoteObject);
-  } else {
-    polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
+  try {
+    const pollIndex = await polls.findIndex(poll => poll.id === pollId);
+    //add poll.votes if it doesn't exist
+    if (!polls[pollIndex].votes) {
+      polls[pollIndex].votes = [];
+    }
+    const userIndex = polls[pollIndex].votes.findIndex(
+      vote => vote.userId === newVoteObject.userId
+    );
+    if (userIndex === -1) {
+      polls[pollIndex].votes.push(newVoteObject);
+    } else {
+      polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
+    }
+    saveToLocalStorage();
+  } catch (error) {
+    console.log("BOO");
+    console.log(error);
   }
-  saveToLocalStorage();
 }
 
 export async function fetchVote(pollId, userId) {
@@ -161,7 +171,7 @@ export async function fetchVote(pollId, userId) {
   const vote = poll.votes.find(vote => {
     return vote.userId === userId;
   });
-  if (vote === undefined) {
+  if (!vote) {
     throw new Error("notVoted");
   }
   return vote;

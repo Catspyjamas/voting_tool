@@ -40,7 +40,7 @@ export default {
   async created() {
     this.poll = await fetchPoll(this.pollId);
     try {
-      const result = await fetchVote(this.poll.id, "xxx");
+      const result = await fetchVote(this.pollId, "xxx");
       if (result.ranking.length === 0) {
         this.statusText = `You're currently abstaining. If you'd like to vote for ${
           this.poll.title
