@@ -1,30 +1,64 @@
 <template>
   <ul class="poll-list">
-    <li v-for="poll of polls" :key="poll.id">
-      <p>{{ poll.title }}</p>
-      <div class="poll-links">
-        <router-link
-          v-if="isDraft(poll)"
-          :to="{ name: 'EditPoll', params: { pollId: poll.id } }"
-        >
-          <TextButton text="Edit" direction="right" />
-        </router-link>
-        <router-link
-          v-if="isOpen(poll)"
-          :to="{ name: 'vote', params: { pollId: poll.id } }"
-        >
-          <Text-Button text="Vote" direction="right" />
-        </router-link>
-        <router-link
-          v-if="isClosed(poll)"
-          :to="{ name: 'results', params: { pollId: poll.id } }"
-        >
-          <Text-Button
-            text="Results"
+    <li v-for="poll of polls" :key="poll.id" class="polls">
+      <div class="poll-head">
+        <h2>{{ poll.title }}</h2>
+        <div class="poll-links">
+          <router-link
+            v-if="isDraft(poll)"
+            :to="{ name: 'EditPoll', params: { pollId: poll.id } }"
+          >
+            <TextButton text="Edit" direction="right" />
+          </router-link>
+          <TextButton
+            v-if="isDraft(poll)"
+            text="Open Vote"
             direction="right"
-            background-color="#2B239E"
+            background-color="#646464"
+            @click="openPoll(poll.id)"
           />
-        </router-link>
+          <router-link
+            v-if="isOpen(poll)"
+            :to="{ name: 'vote', params: { pollId: poll.id } }"
+          >
+            <Text-Button text="Vote" direction="right" />
+          </router-link>
+          <TextButton
+            v-if="isOpen(poll)"
+            text="Close Poll"
+            direction="right"
+            background-color="#646464"
+            @click="closePoll(poll.id)"
+          />
+          <router-link
+            v-if="isClosed(poll)"
+            :to="{ name: 'results', params: { pollId: poll.id } }"
+          >
+            <Text-Button
+              text="Results"
+              direction="right"
+              background-color="#2B239E"
+            />
+          </router-link>
+          <TextButton
+            v-if="isClosed(poll) || isOpen(poll)"
+            text="Cancel Vote"
+            direction="right"
+            background-color="#505050"
+            @click="draftPoll(poll.id)"
+          />
+          <TextButton
+            text="Delete"
+            direction="right"
+            background-color="#ff7a7a"
+            @click="deletePoll(poll.id)"
+          />
+        </div>
+      </div>
+      <div class="poll-content">
+        <p>Start: {{ poll.start }}</p>
+        <p>End: {{ poll.end }}</p>
+        <p>Status: {{ poll.status }}</p>
       </div>
     </li>
     <p v-if="polls.length === 0" class="no-polls">
@@ -32,11 +66,18 @@
     </p>
   </ul>
 </template>
-//! Build in Buttons for Opening and Closing
 
 <script>
 import TextButton from "./TextButton";
-import { isClosed, isOpen, isDraft } from "../lib/api.js";
+import {
+  isClosed,
+  isOpen,
+  isDraft,
+  closePoll,
+  openPoll,
+  draftPoll,
+  deletePoll
+} from "../lib/api.js";
 
 export default {
   components: {
@@ -54,6 +95,21 @@ export default {
       isOpen,
       isDraft
     };
+  },
+  methods: {
+    openPoll(id) {
+      openPoll(id);
+    },
+    closePoll(id) {
+      closePoll(id);
+    },
+    draftPoll(id) {
+      draftPoll(id);
+    },
+    deletePoll(id) {
+      deletePoll(id);
+      this.$forceUpdate();
+    }
   }
 };
 </script>
@@ -62,26 +118,41 @@ export default {
 ul {
   display: flex;
   justify-content: left;
-  li {
-    flex-wrap: nowrap;
-    align-items: baseline;
+}
+
+.polls {
+  width: 100%;
+  border: 1px solid white;
+  margin: $standard 0 $standard 0;
+  padding: 0 $standard 0 $standard;
+  flex-direction: column;
+}
+
+.poll-head {
+  align-items: baseline;
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid white;
+  margin-bottom: $standard;
+  h2 {
+    display: block;
     width: 100%;
-    p {
-      display: block;
-    }
-    a {
-      border: 0;
-      margin: 0;
-      display: flex;
-      align-items: baseline;
-      padding-left: $small;
-    }
+  }
+  a {
+    border: 0;
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    padding-left: $small;
   }
 }
 
 .poll-links {
   display: flex;
   flex-wrap: nowrap;
+  a {
+    padding: 0;
+  }
 }
 
 .no-polls {

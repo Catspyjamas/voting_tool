@@ -57,12 +57,10 @@ export default {
         });
       }
     } catch (error) {
-      if (error.message == "notVoted") {
-        this.statusText = `This is the first time you're voting for ${
-          this.poll.title
-        }.`;
-        this.vote = this.shuffleArray(this.poll.options);
-      }
+      this.statusText = `This is the first time you're voting for ${
+        this.poll.title
+      }.`;
+      this.vote = this.shuffleArray(this.poll.options);
     }
   },
   methods: {

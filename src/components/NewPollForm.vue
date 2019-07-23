@@ -120,6 +120,7 @@ export default {
         start,
         end,
         id: this.createId(title),
+        votes: [],
         status: "DRAFT"
       });
       this.title = "";
