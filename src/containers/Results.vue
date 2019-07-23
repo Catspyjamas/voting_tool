@@ -51,7 +51,7 @@ export default {
       this.poll = poll;
       const result = await findWinner(poll);
       this.pollResults = prepareRoundInfo(poll, result.roundHistory);
-      this.winner = await fetchOption("bla-1jul80elt", result.result.winner);
+      this.winner = await fetchOption(this.pollId, result.result.winner);
       this.loaded = true;
     } catch (e) {
       console.error(e);

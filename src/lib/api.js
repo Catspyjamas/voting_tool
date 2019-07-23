@@ -177,7 +177,6 @@ export function getOption(poll, optionId) {
 }
 
 // Filtering Functions for Polls
-//! Build in Buttons for Opening and Closing
 export function isOpen(poll) {
   return poll.status === possiblePollStates.OPEN;
 }

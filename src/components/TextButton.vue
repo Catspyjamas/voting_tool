@@ -68,6 +68,7 @@ export default {
   padding: $xsmall;
   bottom: 0;
   cursor: pointer;
+  white-space: nowrap;
 }
 </style>
 
