@@ -132,6 +132,17 @@ export async function savePoll(newPollObject) {
   saveToLocalStorage();
 }
 
+export async function deletePoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  if (pollIndex === -1) {
+    throw new Error(`No poll found with pollId ${pollId}`);
+  } else {
+    confirm("Are you sure you want to delete this poll?");
+    polls.splice(pollIndex, 1);
+  }
+  saveToLocalStorage();
+}
+
 export async function saveVote(pollId, newVoteObject) {
   const pollIndex = polls.findIndex(poll => poll.id === pollId);
   const userIndex = polls[pollIndex].votes.findIndex(
@@ -188,6 +199,13 @@ export async function closePoll(pollId) {
   polls[pollIndex].status = possiblePollStates.CLOSED;
   saveToLocalStorage();
 }
+
+export async function draftPoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.DRAFT;
+  saveToLocalStorage();
+}
+
 //////////////////////
 // Helper Functions for getting vote Results
 
