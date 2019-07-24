@@ -69,7 +69,6 @@
 
 <script>
 import TextButton from "./TextButton";
-import IconButton from "./IconButton.vue";
 
 import {
   isClosed,
@@ -83,8 +82,7 @@ import {
 
 export default {
   components: {
-    TextButton,
-    IconButton
+    TextButton
   },
   props: {
     polls: {
