@@ -1,29 +1,34 @@
 <template>
   <div class="container">
     <ul class="tabs">
-      <router-link class="tab" :to="{ name: 'polls', params: { tab: 'open' } }"
+      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'open' } }"
         >Open</router-link
       >
       <router-link
         class="tab"
-        :to="{ name: 'polls', params: { tab: 'drafts' } }"
+        :to="{ name: 'Polls', params: { tab: 'drafts' } }"
         >Drafts</router-link
       >
       <router-link
         class="tab"
-        :to="{ name: 'polls', params: { tab: 'closed' } }"
+        :to="{ name: 'Polls', params: { tab: 'closed' } }"
         >Closed</router-link
       >
     </ul>
     <PollList v-if="filteredPolls" :polls="filteredPolls" />
+    <router-link :to="{ name: 'NewPoll' }" class="button-link">
+      <IconButton icon="plus" />
+    </router-link>
   </div>
 </template>
 
 <script>
 import PollList from "./PollList";
+import IconButton from "./IconButton";
 export default {
   components: {
-    PollList
+    PollList,
+    IconButton
   },
   props: {
     filteredPolls: {

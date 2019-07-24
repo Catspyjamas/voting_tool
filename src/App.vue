@@ -3,9 +3,7 @@
     <nav>
       <router-link class="navlink" to="/polls">Polls</router-link>
       <router-link class="navlink" to="/about">About</router-link>
-      <router-link class="navlink" to="/newPollForm"
-        >Create New Poll</router-link
-      >
+      <router-link class="navlink" to="/newPoll">Create New Poll</router-link>
     </nav>
     <router-view />
   </div>

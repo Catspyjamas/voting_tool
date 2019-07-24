@@ -6,7 +6,7 @@
         <div class="poll-links">
           <router-link
             v-if="isDraft(poll)"
-            :to="{ name: 'EditPoll', params: { pollId: poll.id } }"
+            :to="{ name: 'EditPoll', params: { poll: poll, pollId: poll.id } }"
           >
             <TextButton text="Edit" direction="right" />
           </router-link>
@@ -19,7 +19,7 @@
           />
           <router-link
             v-if="isOpen(poll)"
-            :to="{ name: 'vote', params: { pollId: poll.id } }"
+            :to="{ name: 'Vote', params: { pollId: poll.id } }"
           >
             <Text-Button text="Vote" direction="right" />
           </router-link>
@@ -32,7 +32,7 @@
           />
           <router-link
             v-if="isClosed(poll)"
-            :to="{ name: 'results', params: { pollId: poll.id } }"
+            :to="{ name: 'Results', params: { pollId: poll.id } }"
           >
             <Text-Button
               text="Results"
@@ -42,7 +42,7 @@
           </router-link>
           <TextButton
             v-if="isClosed(poll) || isOpen(poll)"
-            text="Cancel Vote"
+            text="Move in Drafts"
             direction="right"
             background-color="#505050"
             @click="draftPoll(poll.id)"
@@ -69,6 +69,8 @@
 
 <script>
 import TextButton from "./TextButton";
+import IconButton from "./IconButton.vue";
+
 import {
   isClosed,
   isOpen,
@@ -81,7 +83,8 @@ import {
 
 export default {
   components: {
-    TextButton
+    TextButton,
+    IconButton
   },
   props: {
     polls: {
@@ -161,5 +164,6 @@ ul {
 
 .poll-list {
   flex-wrap: wrap;
+  flex-direction: column;
 }
 </style>

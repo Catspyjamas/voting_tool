@@ -37,7 +37,7 @@ export default {
     },
     direction: {
       type: String,
-      default: "center"
+      default: "left"
     }
   }
 };

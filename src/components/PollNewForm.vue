@@ -84,7 +84,7 @@ import FormFieldset from "./FormFieldset.vue";
 import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
-  name: "NewPollForm",
+  name: "NewPoll",
   components: {
     PollOptionsForm,
     IconButton,

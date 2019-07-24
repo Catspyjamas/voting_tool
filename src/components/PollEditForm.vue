@@ -83,7 +83,7 @@ import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
 import { savePoll } from "../lib/api.js";
 export default {
-  name: "NewPollForm",
+  name: "EditPoll",
   components: {
     PollOptionsForm,
     IconButton,
