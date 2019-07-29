@@ -284,13 +284,13 @@ export function calculateWinner(summedUpResults) {
     votesCount = votesCount + value;
   });
   const majorityLimit = votesCount / 2;
-  let result = null;
+  let doWeHaveAWinner = null;
   summedUpResults.forEach((value, key) => {
     if (value > majorityLimit) {
-      result = { winner: key, votes: value };
+      doWeHaveAWinner = key;
     }
   });
-  return result;
+  return doWeHaveAWinner;
 }
 
 export function filterRankingPerUserId(rankingPerUserId, minKeys) {
@@ -332,14 +332,14 @@ function firstRound(poll) {
   const remainingOptions = getPoll(poll);
   const rankingPerUserId = collectRankingPerUserId(poll.votes);
   const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-  const result = calculateWinner(summedUpResults);
+  const doWeHaveAWinner = calculateWinner(summedUpResults);
   return {
     minValue: null,
     minKeys: null,
     remainingOptions,
     rankingPerUserId,
     summedUpResults,
-    result
+    doWeHaveAWinner
   };
 }
 
@@ -356,14 +356,14 @@ function nextRound(
     minKeys
   );
   const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-  const result = calculateWinner(summedUpResults);
+  const doWeHaveAWinner = calculateWinner(summedUpResults);
   return {
     minValue,
     minKeys,
     remainingOptions,
     rankingPerUserId,
     summedUpResults,
-    result
+    doWeHaveAWinner
   };
 }
 ////////////////////////////////////
@@ -375,7 +375,7 @@ export function findWinner(poll) {
   roundHistory.push(firstRoundResults);
 
   while (
-    roundHistory[roundHistory.length - 1].result === null &&
+    roundHistory[roundHistory.length - 1].doWeHaveAWinner === null &&
     roundHistory.length < maxRounds
   ) {
     const {
@@ -387,13 +387,16 @@ export function findWinner(poll) {
       nextRound(summedUpResults, rankingPerUserId, remainingOptions)
     );
   }
-  const result = roundHistory[roundHistory.length - 1].result;
+  const winner = roundHistory[roundHistory.length - 1].doWeHaveAWinner;
   //check if there's still no winner
-  if (result === null) {
+  if (winner === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
 
-  return { roundHistory, result };
+  return {
+    roundHistory,
+    winnerOption: getOption(poll, winner)
+  };
 }
 
 export function prepareRoundInfo(poll, roundHistory) {
@@ -405,13 +408,16 @@ export function prepareRoundInfo(poll, roundHistory) {
     const titleOfOptionsPerRound = optionsPerRound.map(optionId => {
       return `${getOption(poll, optionId).title}`;
     });
-    const arraysFromSummedUpResults = titleOfOptionsPerRound.map(
+    const summedUpResultsPerOption = titleOfOptionsPerRound.map(
       (optionTitle, index) => {
-        return [
+        return {
           optionTitle,
-          numbersPerRound[index],
-          countPercentage(numbersPerRound, numbersPerRound[index])
-        ];
+          numberOfVoters: numbersPerRound[index],
+          percentageofVoters: countPercentage(
+            numbersPerRound,
+            numbersPerRound[index]
+          )
+        };
       }
     );
     //Make array from options that were selected out
@@ -440,10 +446,10 @@ export function prepareRoundInfo(poll, roundHistory) {
         ],
         labels: titleOfOptionsPerRound
       },
-      summedUpResults: arraysFromSummedUpResults,
+      summedUpResultsPerOption,
       roundCount: round.roundCount,
       minKeys: minKeyTitlesPerRound,
-      result: round.result
+      doWeHaveAWinner: round.doWeHaveAWinner
     };
   });
 }

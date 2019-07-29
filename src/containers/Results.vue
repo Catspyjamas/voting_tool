@@ -2,9 +2,9 @@
   <div v-if="loaded" class="container">
     <result
       :poll-title="poll.title"
-      :poll-results="pollResults"
+      :poll-results-info="pollResultsInfo"
       :chart-data="chartData"
-      :winner="winner"
+      :winner-option="winnerOption"
       :chart-options="chartOptions"
     />
   </div>
@@ -14,7 +14,6 @@ import Result from "../components/Result";
 import { fetchPoll } from "../lib/api.js";
 import { findWinner } from "../lib/api.js";
 import { prepareRoundInfo } from "../lib/api.js";
-import { fetchOption } from "../lib/api.js";
 export default {
   components: {
     Result
@@ -28,9 +27,9 @@ export default {
   data() {
     return {
       poll: null,
-      winner: null,
+      winnerOption: null,
       loaded: false,
-      pollResults: null,
+      pollResultsInfo: null,
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false
@@ -39,7 +38,7 @@ export default {
   },
   computed: {
     chartData: function() {
-      return this.pollResults.chartData;
+      return this.pollResultsInfo.chartData;
     }
   },
   async mounted() {
@@ -49,9 +48,9 @@ export default {
       //get id from URL
       const poll = await fetchPoll(this.pollId);
       this.poll = poll;
-      const result = await findWinner(poll);
-      this.pollResults = prepareRoundInfo(poll, result.roundHistory);
-      this.winner = await fetchOption(this.pollId, result.result.winner);
+      const pollResults = await findWinner(poll);
+      this.pollResultsInfo = prepareRoundInfo(poll, pollResults.roundHistory);
+      this.winnerOption = pollResults.winnerOption;
       this.loaded = true;
     } catch (e) {
       console.error(e);
