@@ -187,10 +187,7 @@ describe("sumUpResults", () => {
 
 describe("calculateWinner", () => {
   it("returns a winner if one of the values makes up more than half of the total of all values", () => {
-    expect(calculateWinner(absoluteMajorityVote)).toEqual({
-      winner: "rad",
-      votes: 14
-    });
+    expect(calculateWinner(absoluteMajorityVote)).toEqual("rad");
   });
   it("returns null on first voting round", () => {
     expect(calculateWinner(summedUpResults)).toEqual(null);
@@ -221,9 +218,6 @@ describe("findWinner", () => {
   });
 
   it("returns a winnerObject for a given poll", () => {
-    expect(findWinner(poll1)).toHaveProperty("result");
-  });
-  it("returns five votes for the given winner", () => {
-    expect(findWinner(poll1).result.votes).toEqual(5);
+    expect(findWinner(poll1)).toHaveProperty("winnerOption");
   });
 });
