@@ -161,8 +161,7 @@ export async function saveVote(pollId, newVoteObject) {
     }
     saveToLocalStorage();
   } catch (error) {
-    console.log("BOO");
-    console.log(error);
+    throw error;
   }
 }
 
