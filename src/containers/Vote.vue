@@ -40,7 +40,7 @@ export default {
   async created() {
     this.poll = await fetchPoll(this.pollId);
     try {
-      const result = await fetchVote(this.poll.id, "xxx");
+      const result = await fetchVote(this.pollId, "xxx");
       if (result.ranking.length === 0) {
         this.statusText = `You're currently abstaining. If you'd like to vote for ${
           this.poll.title
@@ -57,12 +57,10 @@ export default {
         });
       }
     } catch (error) {
-      if (error.message == "notVoted") {
-        this.statusText = `This is the first time you're voting for ${
-          this.poll.title
-        }.`;
-        this.vote = this.shuffleArray(this.poll.options);
-      }
+      this.statusText = `This is the first time you're voting for ${
+        this.poll.title
+      }.`;
+      this.vote = this.shuffleArray(this.poll.options);
     }
   },
   methods: {

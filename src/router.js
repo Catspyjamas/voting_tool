@@ -1,19 +1,30 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Polls from "./containers/Polls.vue";
-import EditPoll from "./containers/Poll.vue";
+import EditPoll from "./components/PollEditForm.vue";
 import Vote from "./containers/Vote.vue";
 import About from "./components/About.vue";
-import NewPollForm from "./components/NewPollForm.vue";
+import NewPoll from "./components/PollNewForm.vue";
 import Submitted from "./components/Submitted.vue";
+import Results from "./containers/Results.vue";
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
+      path: "/polls/:pollId/results",
+      name: "Results",
+      component: Results,
+      props: true
+    },
+    {
+      path: "/polls",
+      redirect: "/polls/open"
+    },
+    {
       path: "/polls/:tab",
-      name: "polls",
+      name: "Polls",
       component: Polls,
       props: true
     },
@@ -25,23 +36,23 @@ export default new Router({
     },
     {
       path: "/polls/:pollId/vote",
-      name: "vote",
+      name: "Vote",
       component: Vote,
       props: true
     },
     {
       path: "/about",
-      name: "about",
+      name: "About",
       component: About
     },
     {
-      path: "/newPollForm",
-      name: "newPollForm",
-      component: NewPollForm
+      path: "/newPoll",
+      name: "NewPoll",
+      component: NewPoll
     },
     {
       path: "/polls/:pollId/submitted",
-      name: "submitted",
+      name: "Submitted",
       component: Submitted,
       props: true
     }

@@ -17,11 +17,13 @@
       <TextButton
         text="Pretend it's later"
         direction="left"
-        @click="timeWarp"
+        @click="closePoll"
       />
     </div>
     <div v-if="pollOver">
-      <h2>It's over!</h2>
+      <router-link :to="{ name: 'results', params: { pollId: pollId } }">
+        <h2>Go to results</h2>
+      </router-link>
     </div>
   </div>
 </template>
@@ -31,6 +33,7 @@ import moment from "moment";
 import TextButton from "./TextButton.vue";
 import { fetchPoll } from "../lib/api.js";
 import { setInterval } from "timers";
+import { closePoll } from "../lib/api.js";
 export default {
   name: "Submitted",
   components: {
@@ -74,8 +77,10 @@ export default {
     }, 1000);
   },
   methods: {
-    timeWarp() {
+    async closePoll() {
+      closePoll(this.pollId);
       this.pollOver = true;
+      this.poll = await fetchPoll(this.pollId);
     }
   }
 };

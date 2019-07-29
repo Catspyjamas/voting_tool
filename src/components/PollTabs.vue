@@ -1,40 +1,36 @@
 <template>
   <div class="container">
     <ul class="tabs">
-      <router-link
-        class="tab"
-        :to="{ name: 'polls', params: { tab: 'active' } }"
-        @click.native="$emit('click', 'active')"
-        >Active</router-link
+      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'open' } }"
+        >Open</router-link
       >
       <router-link
         class="tab"
-        :to="{ name: 'polls', params: { tab: 'drafts' } }"
-        @click.native="$emit('click', 'drafts')"
+        :to="{ name: 'Polls', params: { tab: 'drafts' } }"
         >Drafts</router-link
       >
       <router-link
         class="tab"
-        :to="{ name: 'polls', params: { tab: 'past' } }"
-        @click.native="$emit('click', 'past')"
-        >Past</router-link
+        :to="{ name: 'Polls', params: { tab: 'closed' } }"
+        >Closed</router-link
       >
     </ul>
     <PollList v-if="filteredPolls" :polls="filteredPolls" />
+    <router-link :to="{ name: 'NewPoll' }" class="button-link">
+      <IconButton icon="plus" />
+    </router-link>
   </div>
 </template>
 
 <script>
 import PollList from "./PollList";
+import IconButton from "./IconButton";
 export default {
   components: {
-    PollList
+    PollList,
+    IconButton
   },
   props: {
-    tab: {
-      type: String,
-      required: true
-    },
     filteredPolls: {
       type: Array,
       required: true
@@ -48,7 +44,7 @@ export default {
 <style lang="scss">
 .tabs {
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   border-bottom: 1px solid $mint;
   .tab {
     list-style: none;
@@ -56,6 +52,7 @@ export default {
     margin: 0;
     padding: 0 $large $xsmall $large;
     border-bottom: none;
+    flex-wrap: wrap;
   }
   .router-link-exact-active {
     color: $mint;

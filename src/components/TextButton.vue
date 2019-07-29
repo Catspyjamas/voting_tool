@@ -37,7 +37,7 @@ export default {
     },
     direction: {
       type: String,
-      default: "center"
+      default: "left"
     }
   }
 };
@@ -59,7 +59,6 @@ export default {
 .button {
   font-family: "speziabold";
   letter-spacing: 0.1em;
-  background-color: $mint;
   display: flex;
   align-items: center;
   border: none;
@@ -69,6 +68,7 @@ export default {
   padding: $xsmall;
   bottom: 0;
   cursor: pointer;
+  white-space: nowrap;
 }
 </style>
 

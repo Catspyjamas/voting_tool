@@ -37,8 +37,10 @@
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">Add several options that you would like to vote on.</p>
-      <PollOptionsForm @submit="addOption"/>
+      <p class="instructions">
+        Add several options that you would like to vote on.
+      </p>
+      <PollOptionsForm @submit="addOption" />
     </form>
     <ul>
       <transition-group
@@ -53,7 +55,11 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.addInfo }}</p>
             </div>
-            <IconButton class="icon_option" icon="x" @click="removeOption(index)"/>
+            <IconButton
+              class="icon_option"
+              icon="x"
+              @click="removeOption(index)"
+            />
           </div>
         </div>
       </transition-group>
@@ -65,6 +71,7 @@
       form="vote"
       @click="savePollObject"
     />
+    <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
 
@@ -77,7 +84,7 @@ import FormFieldset from "./FormFieldset.vue";
 import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
-  name: "NewPollForm",
+  name: "NewPoll",
   components: {
     PollOptionsForm,
     IconButton,
@@ -91,7 +98,8 @@ export default {
       options: [],
       start: "",
       end: "",
-      votes: []
+      votes: [],
+      message: ""
     };
   },
   methods: {
@@ -111,13 +119,16 @@ export default {
         options,
         start,
         end,
-        id: this.createId(title)
+        id: this.createId(title),
+        votes: [],
+        status: "DRAFT"
       });
       this.title = "";
       this.info = "";
       this.options = "";
       this.start = "";
       this.end = "";
+      this.message = "Poll saved.";
     },
     createId(string) {
       return uniqid(

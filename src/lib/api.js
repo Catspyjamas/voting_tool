@@ -1,9 +1,17 @@
-const polls = [
+import randomColor from "randomcolor";
+
+const possiblePollStates = {
+  OPEN: "OPEN",
+  DRAFT: "DRAFT",
+  CLOSED: "CLOSED"
+};
+
+const polls = readFromLocalStorage() || [
   {
     id: "bla-1jul80elt",
     title: "Birthday Event",
-    start: "2019-07-28 09:30",
-    end: "2019-07-31 09:30",
+    start: "2019-06-18 09:30",
+    end: "2019-06-19 09:30",
     info:
       "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
     options: [
@@ -89,18 +97,30 @@ const polls = [
         ]
       }
     ],
-    active: true
+    status: "CLOSED"
   }
 ];
-
 ////////////////////////////////////////////////////////
-//FUNCTIONS FOR VOTING
-export async function fetchPolls() {
-  return polls;
+//localStorage Functions
+
+function saveToLocalStorage() {
+  localStorage.setItem("polls", JSON.stringify(polls));
+}
+
+function readFromLocalStorage() {
+  return JSON.parse(localStorage.getItem("polls"));
+}
+////////////////////////////////////////////////////////
+//FUNCTIONS FOR Saving and Fetching
+export function fetchPolls() {
+  return [...polls];
 }
 
 export async function fetchPoll(pollId) {
-  return polls.find(poll => poll.id === pollId);
+  const poll = polls.find(poll => poll.id === pollId);
+  if (!poll) {
+    throw new Error(`No poll found with pollId ${pollId}`);
+  } else return poll;
 }
 
 export async function savePoll(newPollObject) {
@@ -110,17 +130,38 @@ export async function savePoll(newPollObject) {
   } else {
     polls.splice(pollIndex, 1, newPollObject);
   }
+  saveToLocalStorage();
+}
+
+export async function deletePoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  if (pollIndex === -1) {
+    throw new Error(`No poll found with pollId ${pollId}`);
+  } else {
+    confirm("Are you sure you want to delete this poll?");
+    polls.splice(pollIndex, 1);
+  }
+  saveToLocalStorage();
 }
 
 export async function saveVote(pollId, newVoteObject) {
-  const pollIndex = polls.findIndex(poll => poll.id === pollId);
-  const userIndex = polls[pollIndex].votes.findIndex(
-    vote => vote.userId === newVoteObject.userId
-  );
-  if (userIndex === -1) {
-    polls[pollIndex].votes.push(newVoteObject);
-  } else {
-    polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
+  try {
+    const pollIndex = await polls.findIndex(poll => poll.id === pollId);
+    //add poll.votes if it doesn't exist
+    if (!polls[pollIndex].votes) {
+      polls[pollIndex].votes = [];
+    }
+    const userIndex = polls[pollIndex].votes.findIndex(
+      vote => vote.userId === newVoteObject.userId
+    );
+    if (userIndex === -1) {
+      polls[pollIndex].votes.push(newVoteObject);
+    } else {
+      polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
+    }
+    saveToLocalStorage();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -129,16 +170,52 @@ export async function fetchVote(pollId, userId) {
   const vote = poll.votes.find(vote => {
     return vote.userId === userId;
   });
-  if (vote === undefined) {
+  if (!vote) {
     throw new Error("notVoted");
   }
   return vote;
 }
-////////////////////////////////////////////////////////
-// FUNCTIONS FOR GETTING VOTE RESULTS
+
+export async function fetchOption(pollId, optionId) {
+  const poll = await fetchPoll(pollId);
+  return poll.options.find(option => option.id === optionId);
+}
+
+export function getOption(poll, optionId) {
+  return poll.options.find(option => option.id === optionId);
+}
+
+// Filtering Functions for Polls
+export function isOpen(poll) {
+  return poll.status === possiblePollStates.OPEN;
+}
+export function isDraft(poll) {
+  return poll.status === possiblePollStates.DRAFT;
+}
+export function isClosed(poll) {
+  return poll.status === possiblePollStates.CLOSED;
+}
+
+export async function openPoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.OPEN;
+  saveToLocalStorage();
+}
+
+export async function closePoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.CLOSED;
+  saveToLocalStorage();
+}
+
+export async function draftPoll(pollId) {
+  const pollIndex = polls.findIndex(poll => poll.id === pollId);
+  polls[pollIndex].status = possiblePollStates.DRAFT;
+  saveToLocalStorage();
+}
 
 //////////////////////
-//HELPER FUNCTIONS
+// Helper Functions for getting vote Results
 
 export function getPoll(poll) {
   return poll.options.map(option => option.id);
@@ -160,6 +237,13 @@ export function findKeyOfSmallestNumber(map, minNumber) {
     }
   });
   return minKeys;
+}
+
+function countPercentage(array, number) {
+  const total = array.reduce((accumulator, currentValue) => {
+    return accumulator + currentValue;
+  });
+  return (number * 100) / total;
 }
 
 //////////////////////
@@ -199,13 +283,13 @@ export function calculateWinner(summedUpResults) {
     votesCount = votesCount + value;
   });
   const majorityLimit = votesCount / 2;
-  let result = null;
+  let doWeHaveAWinner = null;
   summedUpResults.forEach((value, key) => {
     if (value > majorityLimit) {
-      result = { winner: key, votes: value };
+      doWeHaveAWinner = key;
     }
   });
-  return result;
+  return doWeHaveAWinner;
 }
 
 export function filterRankingPerUserId(rankingPerUserId, minKeys) {
@@ -233,25 +317,28 @@ export function filterRemainingOptions(remainingOptions, minKeys) {
   return filteredRemainingOptions;
 }
 
-////////////////////////////////////
-// EXCEPTIONS
-function PollException(message, history) {
-  this.message = message;
-  this.history = history;
+class PollException extends Error {
+  constructor(message, history) {
+    super(message);
+    this.history = history;
+  }
 }
+
+//////////////////////////////////////
+//Helper Functions for findWinner
 
 function firstRound(poll) {
   const remainingOptions = getPoll(poll);
   const rankingPerUserId = collectRankingPerUserId(poll.votes);
   const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-  const result = calculateWinner(summedUpResults);
+  const doWeHaveAWinner = calculateWinner(summedUpResults);
   return {
     minValue: null,
     minKeys: null,
     remainingOptions,
     rankingPerUserId,
     summedUpResults,
-    result
+    doWeHaveAWinner
   };
 }
 
@@ -268,14 +355,14 @@ function nextRound(
     minKeys
   );
   const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
-  const result = calculateWinner(summedUpResults);
+  const doWeHaveAWinner = calculateWinner(summedUpResults);
   return {
     minValue,
     minKeys,
     remainingOptions,
     rankingPerUserId,
     summedUpResults,
-    result
+    doWeHaveAWinner
   };
 }
 ////////////////////////////////////
@@ -287,7 +374,7 @@ export function findWinner(poll) {
   roundHistory.push(firstRoundResults);
 
   while (
-    roundHistory[roundHistory.length - 1].result === null &&
+    roundHistory[roundHistory.length - 1].doWeHaveAWinner === null &&
     roundHistory.length < maxRounds
   ) {
     const {
@@ -299,10 +386,69 @@ export function findWinner(poll) {
       nextRound(summedUpResults, rankingPerUserId, remainingOptions)
     );
   }
-  const result = roundHistory[roundHistory.length - 1].result;
+  const winner = roundHistory[roundHistory.length - 1].doWeHaveAWinner;
   //check if there's still no winner
-  if (result === null) {
+  if (winner === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
-  return { roundHistory, result };
+
+  return {
+    roundHistory,
+    winnerOption: getOption(poll, winner)
+  };
+}
+
+export function prepareRoundInfo(poll, roundHistory) {
+  return roundHistory.map(round => {
+    //Make array from counts per round
+    const numbersPerRound = Array.from(round.summedUpResults.values());
+    //Make array from optionIds
+    const optionsPerRound = Array.from(round.summedUpResults.keys());
+    const titleOfOptionsPerRound = optionsPerRound.map(optionId => {
+      return `${getOption(poll, optionId).title}`;
+    });
+    const summedUpResultsPerOption = titleOfOptionsPerRound.map(
+      (optionTitle, index) => {
+        return {
+          optionTitle,
+          numberOfVoters: numbersPerRound[index],
+          percentageofVoters: countPercentage(
+            numbersPerRound,
+            numbersPerRound[index]
+          )
+        };
+      }
+    );
+    //Make array from options that were selected out
+    const minKeyTitlesPerRound = round.minKeys
+      ? //if there are several optionIds, get their titles
+        round.minKeys.map(optionId => {
+          return getOption(poll, optionId).title;
+        })
+      : null;
+    //create a singular color per sees/id
+    const colorsPerTitle = optionsPerRound.map(optionId => {
+      return randomColor({
+        seed: optionId
+      });
+    });
+    return {
+      //Prepare data for chartjs
+      chartData: {
+        datasets: [
+          {
+            data: numbersPerRound,
+            backgroundColor: colorsPerTitle,
+            borderWidth: 0,
+            responsive: true
+          }
+        ],
+        labels: titleOfOptionsPerRound
+      },
+      summedUpResultsPerOption,
+      roundCount: round.roundCount,
+      minKeys: minKeyTitlesPerRound,
+      doWeHaveAWinner: round.doWeHaveAWinner
+    };
+  });
 }
