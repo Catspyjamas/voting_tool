@@ -1,4 +1,5 @@
 import randomColor from "randomcolor";
+import axios from "axios";
 
 const possiblePollStates = {
   OPEN: "OPEN",
@@ -113,7 +114,18 @@ function readFromLocalStorage() {
 ////////////////////////////////////////////////////////
 //FUNCTIONS FOR Saving and Fetching
 export function fetchPolls() {
-  return [...polls];
+  console.log("fetchPolls");
+  return axios
+    .get("http://127.0.0.1:7999/polls")
+    .then(function(response) {
+      console.log("first then");
+      console.log("resp ", response);
+      return response.data.polls;
+    })
+    .catch(error => {
+      console.log("AHHHHHH");
+      console.log(error);
+    });
 }
 
 export async function fetchPoll(pollId) {
