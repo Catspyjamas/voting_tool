@@ -30,16 +30,14 @@
       />
       <legend>Vote Question</legend>
       <FormFieldset
-        v-model="info"
+        v-model="description"
         field-id="poll_info"
         label-text="Add all the information and questions that voters might need to make their decision"
         placeholder="Poll information"
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">
-        Add several options that you would like to vote on.
-      </p>
+      <p class="instructions">Add several options that you would like to vote on.</p>
       <PollOptionsForm @submit="addOption" />
     </form>
     <ul>
@@ -53,13 +51,9 @@
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
-              <p>{{ option.addInfo }}</p>
+              <p>{{ option.description }}</p>
             </div>
-            <IconButton
-              class="icon_option"
-              icon="x"
-              @click="removeOption(index)"
-            />
+            <IconButton class="icon_option" icon="x" @click="removeOption(index)" />
           </div>
         </div>
       </transition-group>
@@ -99,7 +93,7 @@ export default {
   data() {
     return {
       title: "",
-      info: "",
+      description: "",
       options: "",
       start: "",
       end: "",
@@ -109,7 +103,7 @@ export default {
   },
   created() {
     this.title = this.poll.title;
-    this.info = this.poll.info;
+    this.description = this.poll.description;
     this.options = this.poll.options;
     this.start = this.poll.start;
     this.end = this.poll.end;
@@ -125,11 +119,11 @@ export default {
       }
     },
     savePollObject() {
-      const { id, title, info, options, start, end } = this;
+      const { id, title, description, options, start, end } = this;
       savePoll({
         id,
         title,
-        info,
+        description,
         options,
         start,
         end,

@@ -5,7 +5,7 @@
         <span>Vote</span>
       </div>
       <h1>{{ poll.title }}</h1>
-      <p class="subhead">{{ poll.addInfo }}</p>
+      <p class="subhead">{{ poll.description }}</p>
       <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
@@ -16,7 +16,7 @@
           :key="index"
           :index="index"
           :title="option.title"
-          :add-info="option.addInfo"
+          :description="option.description"
           class="option"
         />
       </draggable>
