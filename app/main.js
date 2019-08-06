@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const { catchErrors } = require("./handlers/errorHandlers");
+const authHandler = require("./handlers/authHandler");
 const bodyParser = require("body-parser");
 
 mongoose.connect("mongodb://127.0.0.1:27017");
@@ -10,10 +11,9 @@ mongoose.connection.on("error", err => {
   console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
 });
 
-//Remember: require schema and controller BEFORE creating express app
-require("./models/Polls");
-
 const pollController = require("./controllers/pollController");
+
+const userController = require("./controllers/userController");
 
 // create our Express app
 const app = express();
@@ -22,13 +22,25 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.get("/polls", (req, res) => {
-  console.log("It hit");
-  // TODO: Database request
-  return res.send("Received a GET HTTP method");
-});
+app.get("/polls", catchErrors(pollController.getPolls));
 
-app.post("/add", catchErrors(pollController.createPoll));
+// GET /polls - holt alle Polls
+// POST /polls - erstellt ein neues Poll
+// GET /polls/:id - holt ein Poll mit der ID
+// PUT /polls/:id - updated ein Poll mit der ID -- aber ersetzt immer das ganze Object in der Datenbank
+// PATCH /polls/:id - updated ein Attribut im Poll mit der ID. Values, die nicht geupdated werden sollen, werden bei der Request rausgelassen
+
+// DELETE /polls/:id - löscht ein Poll mit der ID
+
+app.post("/polls", catchErrors(pollController.createPoll));
+
+app.get("/polls/:id", catchErrors(pollController.getPoll));
+
+app.patch(
+  "/polls/:id",
+  catchErrors(authHandler.findUser),
+  catchErrors(pollController.updatePoll)
+);
 
 // import environmental variables from our variables.env file
 // require("dotenv").config({ path: "variables.env" });
