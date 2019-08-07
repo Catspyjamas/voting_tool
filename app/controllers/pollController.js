@@ -4,15 +4,15 @@ const Poll = require("../models/Poll");
 const User = require("../models/User");
 
 exports.createPoll = async (req, res) => {
-  if (Array.isArray(req.body.votes) && req.body.votes.length === 0) {
-    const poll = await new Poll(req.body).save();
-    console.log("It works!");
-    res.status(201);
-    //201: for created
-    res.json(poll);
-  } else {
+  if (Array.isArray(req.body.votes) === false && req.body.votes.length > 0) {
     throw new Error("Votes must be an empty Array.");
   }
+  //delete _id from request so mongoose lets us save more instances of the same object
+  delete req.body._id;
+  const poll = await new Poll(req.body).save();
+  res.status(201);
+  //201: for created
+  res.json(poll);
 };
 
 exports.getPolls = async (req, res) => {
@@ -22,10 +22,10 @@ exports.getPolls = async (req, res) => {
 };
 
 exports.getPoll = async (req, res) => {
-  const poll = await Poll.findOne({ _id: req.params.id });
+  const poll = await Poll.findOne({ _id: req.params.pollId });
 
   if (!poll) {
-    throw new Error(`Couldn't find a poll with id ${req.params.id}`);
+    throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
   }
 
   res.json(poll);
@@ -38,10 +38,10 @@ exports.updatePoll = async (req, res) => {
   if (req.body.votes !== undefined) {
     throw new Error("Votes must be undefined on patch requests");
   }
-  const oldPoll = await Poll.findOne({ _id: req.params.id });
+  const oldPoll = await Poll.findOne({ _id: req.params.pollId });
   //check if poll exists
   if (!oldPoll) {
-    throw new Error(`Couldn't find a poll with id ${req.params.id}`);
+    throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
   }
   //Check if user is the one who created the poll (.toString because mongoose only gives us back object ids)
   if (oldPoll.creator.toString() !== user._id.toString()) {
@@ -52,10 +52,11 @@ exports.updatePoll = async (req, res) => {
     throw new Error("Cannot set options when status is not 'DRAFT'");
   }
   if (oldPoll.status !== "DRAFT" && req.body.status === "DRAFT") {
+    //! refactor with new model "Votes"
     req.body.votes = [];
   }
   const updatedPoll = await Poll.findOneAndUpdate(
-    { _id: req.params.id },
+    { _id: req.params.pollId },
     req.body,
     {
       new: true, //return the new store instead of the old one
@@ -67,10 +68,10 @@ exports.updatePoll = async (req, res) => {
 
 exports.deletePoll = async (req, res) => {
   const user = res.locals.user;
-  const oldPoll = await Poll.findOne({ _id: req.params.id });
+  const oldPoll = await Poll.findOne({ _id: req.params.pollId });
   //check if poll exists
   if (!oldPoll) {
-    throw new Error(`Couldn't find a poll with id ${req.params.id}`);
+    throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
   }
   //Check if user is the one who created the poll (.toString because mongoose only gives us back object ids)
   if (oldPoll.creator.toString() !== user._id.toString()) {
@@ -80,6 +81,6 @@ exports.deletePoll = async (req, res) => {
   if (oldPoll.status !== "DRAFT") {
     throw new Error("Cannot delete when status is not 'DRAFT'");
   }
-  const deletedPoll = await Poll.findOneAndDelete({ _id: req.params.id });
+  const deletedPoll = await Poll.findOneAndDelete({ _id: req.params.pollId });
   res.json(deletedPoll);
 };

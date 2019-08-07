@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: "node",
-  setupFilesAfterEnv: [require.resolve("./app/tests/db.js")],
+  // setupFilesAfterEnv: [require.resolve("./app/tests/db.js")],
   moduleFileExtensions: ["js", "jsx", "json", "vue"],
   transform: {
     "^.+\\.vue$": "vue-jest",

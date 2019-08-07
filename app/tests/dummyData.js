@@ -1,6 +1,14 @@
 const User = require("../models/User");
 const Poll = require("../models/Poll");
 
+require("./db.js");
+
+//mongoose only gives us database objects. If we compare those to plain old JavaScript APi objects, tests will fail
+//in our app, the data is stringified by res.json, JSON.parse is done by supertest
+function toPojo(object) {
+  return JSON.parse(JSON.stringify(object));
+}
+
 async function createDummyData() {
   const asterix = await new User({ firstName: "Asterix", token: "a" }).save();
   const obelix = await new User({ firstName: "Obelix", token: "b" }).save();
@@ -47,10 +55,10 @@ async function createDummyData() {
   }).save();
 
   return {
-    asterix,
-    obelix,
-    miraculix,
-    poll
+    asterix: toPojo(asterix),
+    obelix: toPojo(obelix),
+    miraculix: toPojo(miraculix),
+    poll: toPojo(poll)
   };
 }
 
