@@ -12,8 +12,14 @@ mongoose.connection.on("error", err => {
 });
 
 async function saveDummyData() {
-  await mongoose.connection.dropCollection("users");
-  await mongoose.connection.dropCollection("polls");
+  try {
+    await mongoose.connection.dropCollection("users");
+    await mongoose.connection.dropCollection("polls");
+  } catch (error) {
+    if (error.message !== "ns not found") {
+      throw error;
+    }
+  }
   const asterix = await new User({ firstName: "Asterix", token: "a" }).save();
   const obelix = await new User({ firstName: "Obelix", token: "b" }).save();
   const miraculix = await new User({
@@ -58,6 +64,13 @@ async function saveDummyData() {
     status: "OPEN"
   }).save();
   await mongoose.disconnect();
+
+  return {
+    asterix,
+    obelix,
+    miraculix,
+    poll
+  };
 }
 
-saveDummyData().catch(console.error);
+module.exports = saveDummyData();

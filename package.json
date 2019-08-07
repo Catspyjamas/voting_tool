@@ -44,7 +44,9 @@
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-vue": "^5.0.0",
+    "jest": "^24.8.0",
     "nodemon": "^1.19.1",
+    "supertest": "^4.0.2",
     "vue-cli-plugin-styleguidist": "^3.11.4",
     "vue-template-compiler": "^2.6.10"
   },
