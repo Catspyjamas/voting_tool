@@ -1,15 +1,10 @@
 const express = require("express");
 const cors = require("cors");
-const mongoose = require("mongoose");
 const { catchErrors } = require("./handlers/errorHandlers");
 const authHandler = require("./handlers/authHandler");
 const bodyParser = require("body-parser");
 
-mongoose.connect("mongodb://127.0.0.1:27017");
-mongoose.Promise = global.Promise;
-mongoose.connection.on("error", err => {
-  console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
-});
+require("./db");
 
 const pollController = require("./controllers/pollController");
 

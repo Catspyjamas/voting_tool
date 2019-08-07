@@ -1,14 +1,14 @@
 const request = require("supertest");
 const app = require("./app");
-const dummyDataPromise = require("../tools/dummyData");
+const {createDummyData} = require("./tests/dummyData");
 
 let dummyData;
 
 beforeAll(async () => {
-  dummyData = await dummyDataPromise;
+  dummyData = await createDummyData();
 });
 
-test.only("GET /polls returns an array of all polls", async () => {
+test("GET /polls returns an array of all polls", async () => {
   const response = await request(app)
     .get("/polls")
     .expect(200)
@@ -17,6 +17,4 @@ test.only("GET /polls returns an array of all polls", async () => {
   const polls = response.body;
 
   expect(polls).toHaveLength(1);
-
-  console.log("end");
 });

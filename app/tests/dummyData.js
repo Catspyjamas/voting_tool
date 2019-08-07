@@ -1,25 +1,7 @@
-const mongoose = require("mongoose");
-require("../app/models/User");
-require("../app/models/Poll");
-const User = mongoose.model("User");
-const Poll = mongoose.model("Poll");
+const User = require("../models/User");
+const Poll = require("../models/Poll");
 
-mongoose.connect("mongodb://127.0.0.1:27017");
-
-mongoose.Promise = global.Promise;
-mongoose.connection.on("error", err => {
-  console.error(`🙅 🚫 🙅 🚫 🙅 🚫 🙅 🚫 → ${err.message}`);
-});
-
-async function saveDummyData() {
-  try {
-    await mongoose.connection.dropCollection("users");
-    await mongoose.connection.dropCollection("polls");
-  } catch (error) {
-    if (error.message !== "ns not found") {
-      throw error;
-    }
-  }
+async function createDummyData() {
   const asterix = await new User({ firstName: "Asterix", token: "a" }).save();
   const obelix = await new User({ firstName: "Obelix", token: "b" }).save();
   const miraculix = await new User({
@@ -63,7 +45,6 @@ async function saveDummyData() {
     votes: [],
     status: "OPEN"
   }).save();
-  await mongoose.disconnect();
 
   return {
     asterix,
@@ -73,4 +54,6 @@ async function saveDummyData() {
   };
 }
 
-module.exports = saveDummyData();
+module.exports = {
+  createDummyData
+};
