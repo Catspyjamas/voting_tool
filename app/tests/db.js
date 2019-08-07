@@ -1,10 +1,15 @@
 const { connection } = require("../db");
 
-beforeAll(async () => {
+async function resetDb() {
   await connection;
   await connection.db.dropDatabase();
-});
+}
 
-afterAll(async () => {
+async function closeConnection() {
   await connection.close();
-});
+}
+
+module.exports = {
+  resetDb,
+  closeConnection
+};
