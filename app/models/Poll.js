@@ -9,17 +9,11 @@ const pollSchema = new Schema({
   },
   creator: { type: Schema.Types.ObjectId, ref: "User", required: true },
   date: { type: Date, default: Date.now },
-  //!check if compatible with data from moment
   start: { type: Date },
   end: { type: Date },
   description: String,
   options: [{ title: String, description: String }],
-  votes: [
-    {
-      userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-      ranking: [String]
-    }
-  ],
+  votes: [{ type: Schema.Types.ObjectId, ref: "Vote", required: true }],
   status: {
     type: String,
     enum: ["OPEN", "DRAFT", "CLOSED"]

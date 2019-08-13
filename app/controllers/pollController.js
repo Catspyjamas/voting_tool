@@ -1,15 +1,15 @@
-const mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
 const Poll = require("../models/Poll");
 const User = require("../models/User");
 
 exports.createPoll = async (req, res) => {
-  if (Array.isArray(req.body.votes) === false && req.body.votes.length > 0) {
-    throw new Error("Votes must be an empty Array.");
+  //check if user is authorized
+  const user = res.locals.user;
+  if (Array.isArray(req.body.votes) === true && req.body.votes.length > 0) {
+    throw new Error("You cannot create a poll with votes.");
   }
   //delete _id from request so mongoose lets us save more instances of the same object
   delete req.body._id;
-  const poll = await new Poll(req.body).save();
+  const poll = await new Poll({ ...req.body, creator: user._id }).save();
   res.status(201);
   //201: for created
   res.json(poll);
@@ -17,17 +17,14 @@ exports.createPoll = async (req, res) => {
 
 exports.getPolls = async (req, res) => {
   const polls = await Poll.find();
-  console.log("has been called");
   res.json(polls);
 };
 
 exports.getPoll = async (req, res) => {
-  const poll = await Poll.findOne({ _id: req.params.pollId });
-
-  if (!poll) {
-    throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
+  const poll = res.locals.poll;
+  if (poll.status !== "CLOSED") {
+    poll.votes = [];
   }
-
   res.json(poll);
 };
 
@@ -52,14 +49,13 @@ exports.updatePoll = async (req, res) => {
     throw new Error("Cannot set options when status is not 'DRAFT'");
   }
   if (oldPoll.status !== "DRAFT" && req.body.status === "DRAFT") {
-    //! refactor with new model "Votes"
     req.body.votes = [];
   }
   const updatedPoll = await Poll.findOneAndUpdate(
     { _id: req.params.pollId },
     req.body,
     {
-      new: true, //return the new store instead of the old one
+      new: true, //return the new poll instead of the old one
       runValidators: true
     }
   );

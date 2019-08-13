@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+mongoose.set("useFindAndModify", false);
 
 const env = process.env.NODE_ENV || "development";
 
