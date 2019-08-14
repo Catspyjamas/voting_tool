@@ -1,6 +1,7 @@
 module.exports = {
   env: {
-    node: true
+    node: true,
+    jest: true
   },
   extends: [
     // add more generic rulesets here, such as:
