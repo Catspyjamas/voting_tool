@@ -70,6 +70,7 @@ test("PATCH /polls/:pollId updates the poll and returns it", async () => {
   expect(poll.status).toBe("DRAFT");
   const { __v, title, ...expectedPoll } = dummyData.draftPoll;
   expect(poll).toMatchObject(expectedPoll);
+  expect(poll.title).toEqual("Birthday Event Changed");
 });
 
 //Nice test, but we need some votes data later on, so disabled by default

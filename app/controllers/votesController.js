@@ -8,7 +8,7 @@ exports.getVote = async (req, res) => {
   const user = res.locals.user;
   if (user.id !== req.params.userId) {
     res.status(401);
-    throw new Error(`Not authorized.`);
+    throw new Error(`Please log in`);
   }
   // if so, get vote with userId
   const vote = await Vote.findOne({ userId: req.params.userId });
@@ -26,7 +26,7 @@ exports.getVotes = async (req, res) => {
   const queriedPoll = res.locals.poll;
   //check if status is CLOSED at all
   if (queriedPoll.status !== "CLOSED") {
-    res.status(401);
+    res.status(403);
     throw new Error(
       "You can only look at the results when the poll is closed."
     );
@@ -68,7 +68,7 @@ exports.updateVote = async (req, res) => {
     throw new Error("You can only update your own votes");
   }
   if (poll.status !== "OPEN") {
-    res.status(401);
+    res.status(403);
     throw new Error("You can only update your vote when the poll is open.");
   }
   const newVote = await Vote.findOneAndUpdate({ userId: user._id }, vote, {
@@ -86,7 +86,7 @@ exports.deleteVote = async (req, res) => {
     throw new Error("You can only delete your own votes");
   }
   if (poll.status !== "OPEN") {
-    res.status(401);
+    res.status(403);
     throw new Error("You can only update your vote when the poll is open.");
   }
   const deletedVote = await Vote.findOneAndDelete({ userId: user._id });

@@ -1,5 +1,4 @@
 const Poll = require("../models/Poll");
-const User = require("../models/User");
 
 exports.createPoll = async (req, res) => {
   //check if user is authorized
