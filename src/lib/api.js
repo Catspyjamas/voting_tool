@@ -7,6 +7,9 @@ const possiblePollStates = {
   CLOSED: "CLOSED"
 };
 
+const authToken = "a";
+
+const url = "http://127.0.0.1:7999";
 const polls = readFromLocalStorage() || [
   {
     id: "bla-1jul80elt",
@@ -112,37 +115,83 @@ function readFromLocalStorage() {
   return JSON.parse(localStorage.getItem("polls"));
 }
 ////////////////////////////////////////////////////////
-//FUNCTIONS FOR Saving and Fetching
-export function fetchPolls() {
-  console.log("fetchPolls");
-  return axios
-    .get("http://127.0.0.1:7999/polls")
-    .then(function(response) {
-      console.log("first then");
-      console.log("resp ", response);
-      return response.data.polls;
-    })
-    .catch(error => {
-      console.log("AHHHHHH");
-      console.log(error);
-    });
+
+// export function fetchPolls() {
+//   console.log("fetchPolls");
+//   return axios
+//     .get(`${url}/polls`)
+//     .then(function(response) {
+//       console.log("first then");
+//       console.log("resp ", response);
+//       return response.data.polls;
+//     })
+//     .catch(error => {
+//       console.log("AHHHHHH");
+//       console.log(error);
+//     });
+// }
+
+export async function fetchPolls() {
+  try {
+    const response = await axios.get(`${url}/polls`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 export async function fetchPoll(pollId) {
-  const poll = polls.find(poll => poll.id === pollId);
-  if (!poll) {
-    throw new Error(`No poll found with pollId ${pollId}`);
-  } else return poll;
+  try {
+    const response = await axios.get(`${url}/polls/${pollId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
-export async function savePoll(newPollObject) {
-  const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
-  if (pollIndex === -1) {
-    polls.push(newPollObject);
-  } else {
-    polls.splice(pollIndex, 1, newPollObject);
+// export async function savePoll(newPollObject) {
+//   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
+//   if (pollIndex === -1) {
+//     polls.push(newPollObject);
+//   } else {
+//     polls.splice(pollIndex, 1, newPollObject);
+//   }
+//   saveToLocalStorage();
+// }
+
+export async function savePoll(newPollObject, pollId) {
+  // if there's no pollId, it's a post request
+  if (!pollId) {
+    try {
+      const response = await axios.post(`${url}/polls`, newPollObject, {
+        headers: {
+          Authorization: authToken,
+          ContentType: "application/json"
+        },
+        responseType: "json"
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
-  saveToLocalStorage();
+  // if there is a pollId, it's a patch request
+  try {
+    const response = await axios.patch(
+      `${url}/polls/${pollId}`,
+      newPollObject,
+      {
+        headers: {
+          Authorization: authToken,
+          ContentType: "application/json"
+        },
+        responseType: "json"
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 export async function deletePoll(pollId) {

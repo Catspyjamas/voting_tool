@@ -37,7 +37,9 @@
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">Add several options that you would like to vote on.</p>
+      <p class="instructions">
+        Add several options that you would like to vote on.
+      </p>
       <PollOptionsForm @submit="addOption" />
     </form>
     <ul>
@@ -53,7 +55,11 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.description }}</p>
             </div>
-            <IconButton class="icon_option" icon="x" @click="removeOption(index)" />
+            <IconButton
+              class="icon_option"
+              icon="x"
+              @click="removeOption(index)"
+            />
           </div>
         </div>
       </transition-group>
@@ -75,7 +81,6 @@ import TextButton from "./TextButton.vue";
 import PollOptionsForm from "./PollOptionsForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
-import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPoll",
@@ -92,7 +97,6 @@ export default {
       options: [],
       start: "",
       end: "",
-      votes: [],
       message: ""
     };
   },
@@ -113,24 +117,15 @@ export default {
         options,
         start,
         end,
-        id: this.createId(title),
         votes: [],
         status: "DRAFT"
       });
       this.title = "";
       this.description = "";
-      this.options = "";
+      this.options = [];
       this.start = "";
       this.end = "";
       this.message = "Poll saved.";
-    },
-    createId(string) {
-      return uniqid(
-        string
-          .replace(/[^a-zA-Zs]/g, "")
-          .toLowerCase()
-          .slice(0, 3) + "-"
-      );
     }
   }
 };

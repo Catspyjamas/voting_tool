@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 mongoose.set("useFindAndModify", false);
 
-const env = process.env.NODE_ENV || "development";
+const env = process.env.NODE_ENV || "test";
 
 mongoose.connect("mongodb://127.0.0.1:27017/voting-tool-" + env, {
   useNewUrlParser: true

@@ -1,12 +1,12 @@
 <template>
   <ul class="poll-list">
-    <li v-for="poll of polls" :key="poll.id" class="polls">
+    <li v-for="poll of polls" :key="poll._id" class="polls">
       <div class="poll-head">
         <h2>{{ poll.title }}</h2>
         <div class="poll-links">
           <router-link
             v-if="isDraft(poll)"
-            :to="{ name: 'EditPoll', params: { poll: poll, pollId: poll.id } }"
+            :to="{ name: 'EditPoll', params: { poll: poll, pollId: poll._id } }"
           >
             <TextButton text="Edit" direction="right" />
           </router-link>
@@ -15,11 +15,11 @@
             text="Open Vote"
             direction="right"
             background-color="#646464"
-            @click="openPoll(poll.id)"
+            @click="openPoll(poll._id)"
           />
           <router-link
             v-if="isOpen(poll)"
-            :to="{ name: 'Vote', params: { pollId: poll.id } }"
+            :to="{ name: 'Vote', params: { pollId: poll._id } }"
           >
             <Text-Button text="Vote" direction="right" />
           </router-link>
@@ -28,11 +28,11 @@
             text="Close Poll"
             direction="right"
             background-color="#646464"
-            @click="closePoll(poll.id)"
+            @click="closePoll(poll._id)"
           />
           <router-link
             v-if="isClosed(poll)"
-            :to="{ name: 'Results', params: { pollId: poll.id } }"
+            :to="{ name: 'Results', params: { pollId: poll._id } }"
           >
             <Text-Button
               text="Results"
@@ -45,13 +45,13 @@
             text="Move in Drafts"
             direction="right"
             background-color="#505050"
-            @click="draftPoll(poll.id)"
+            @click="draftPoll(poll._id)"
           />
           <TextButton
             text="Delete"
             direction="right"
             background-color="#ff7a7a"
-            @click="deletePoll(poll.id)"
+            @click="deletePoll(poll._id)"
           />
         </div>
       </div>

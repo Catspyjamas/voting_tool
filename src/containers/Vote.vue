@@ -65,7 +65,7 @@ export default {
   },
   methods: {
     saveVote(ranking) {
-      saveVote(this.poll.id, {
+      saveVote(this.poll._id, {
         userId: "xxx",
         ranking
       });

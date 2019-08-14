@@ -37,7 +37,9 @@
         :textarea="true"
         name="vote-question"
       />
-      <p class="instructions">Add several options that you would like to vote on.</p>
+      <p class="instructions">
+        Add several options that you would like to vote on.
+      </p>
       <PollOptionsForm @submit="addOption" />
     </form>
     <ul>
@@ -53,7 +55,11 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.description }}</p>
             </div>
-            <IconButton class="icon_option" icon="x" @click="removeOption(index)" />
+            <IconButton
+              class="icon_option"
+              icon="x"
+              @click="removeOption(index)"
+            />
           </div>
         </div>
       </transition-group>
@@ -97,7 +103,6 @@ export default {
       options: "",
       start: "",
       end: "",
-      id: "",
       message: ""
     };
   },
@@ -107,7 +112,7 @@ export default {
     this.options = this.poll.options;
     this.start = this.poll.start;
     this.end = this.poll.end;
-    this.id = this.poll.id;
+    this.pollId = this.poll._id;
   },
   methods: {
     addOption(option) {
@@ -119,16 +124,18 @@ export default {
       }
     },
     savePollObject() {
-      const { id, title, description, options, start, end } = this;
-      savePoll({
-        id,
-        title,
-        description,
-        options,
-        start,
-        end,
-        status: "DRAFT"
-      });
+      const { title, description, options, start, end } = this;
+      savePoll(
+        {
+          title,
+          description,
+          options,
+          start,
+          end,
+          status: "DRAFT"
+        },
+        this.pollId
+      );
       this.message = "Poll saved.";
     }
   }
