@@ -1,11 +1,6 @@
 import randomColor from "randomcolor";
 import axios from "axios";
-
-const possiblePollStates = {
-  OPEN: "OPEN",
-  DRAFT: "DRAFT",
-  CLOSED: "CLOSED"
-};
+import possiblePollStates from "./poll";
 
 const authToken = "a";
 
@@ -132,54 +127,90 @@ function readFromLocalStorage() {
 // }
 
 export async function fetchPolls() {
-  try {
-    const response = await axios.get(`${url}/polls`);
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
+  const response = await axios.get(`${url}/polls`);
+  return response.data;
 }
 
 export async function fetchPoll(pollId) {
-  try {
-    const response = await axios.get(`${url}/polls/${pollId}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
-  }
+  const response = await axios.get(`${url}/polls/${pollId}`);
+  return response.data;
 }
-
-// export async function savePoll(newPollObject) {
-//   const pollIndex = polls.findIndex(poll => poll.id === newPollObject.id);
-//   if (pollIndex === -1) {
-//     polls.push(newPollObject);
-//   } else {
-//     polls.splice(pollIndex, 1, newPollObject);
-//   }
-//   saveToLocalStorage();
-// }
 
 export async function savePoll(newPollObject, pollId) {
   // if there's no pollId, it's a post request
+  //! Check: Is authToken enough for ID check? Do we always have to pass in pollId?
   if (!pollId) {
-    try {
-      const response = await axios.post(`${url}/polls`, newPollObject, {
-        headers: {
-          Authorization: authToken,
-          ContentType: "application/json"
-        },
-        responseType: "json"
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error);
-    }
+    const response = await axios.post(`${url}/polls`, newPollObject, {
+      headers: {
+        Authorization: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    return response.data;
   }
   // if there is a pollId, it's a patch request
-  try {
-    const response = await axios.patch(
-      `${url}/polls/${pollId}`,
-      newPollObject,
+  const response = await axios.patch(`${url}/polls/${pollId}`, newPollObject, {
+    headers: {
+      Authorization: authToken,
+      ContentType: "application/json"
+    },
+    responseType: "json"
+  });
+  return response.data;
+}
+
+export async function deletePoll(pollId) {
+  const response = await axios.delete(`${url}/polls/${pollId}`, {
+    headers: {
+      Authorization: authToken,
+      ContentType: "application/json"
+    },
+    responseType: "json"
+  });
+  console.log("DELETED", response.data);
+  return response.data;
+}
+
+// export async function saveVote(pollId, newVoteObject) {
+
+// }
+
+export async function fetchVote(pollId, userId) {
+  //!Refactor with Authentication: Here we get the UserId by token
+  //if there's no userId passed in, get it from the database with the token
+  if (!userId) {
+    const userByToken = await axios.get(`${url}/user`, {
+      headers: {
+        Authorization: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    userId = userByToken.data._id;
+  }
+  //then GET request with userId
+  const responseVote = await axios.get(
+    `${url}/polls/${pollId}/votes/${userId}`,
+    {
+      headers: {
+        Authorization: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    }
+  );
+  const vote = responseVote.data;
+  return vote;
+}
+
+export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
+  // If it's the user's first vote, it's a post
+  //! usersFirstVote: enough for checking if post/patch?
+  if (usersFirstVote) {
+    const responseVote = await axios.post(
+      `${url}/polls/${pollId}/votes`,
+      rankedOptions,
       {
         headers: {
           Authorization: authToken,
@@ -188,54 +219,20 @@ export async function savePoll(newPollObject, pollId) {
         responseType: "json"
       }
     );
-    return response.data;
-  } catch (error) {
-    throw new Error(error);
+    return responseVote.data;
   }
-}
-
-export async function deletePoll(pollId) {
-  const pollIndex = polls.findIndex(poll => poll.id === pollId);
-  if (pollIndex === -1) {
-    throw new Error(`No poll found with pollId ${pollId}`);
-  } else {
-    confirm("Are you sure you want to delete this poll?");
-    polls.splice(pollIndex, 1);
-  }
-  saveToLocalStorage();
-}
-
-export async function saveVote(pollId, newVoteObject) {
-  try {
-    const pollIndex = await polls.findIndex(poll => poll.id === pollId);
-    //add poll.votes if it doesn't exist
-    if (!polls[pollIndex].votes) {
-      polls[pollIndex].votes = [];
+  const responseVote = await axios.patch(
+    `${url}/polls/${pollId}/votes/${userId}`,
+    { ranking: rankedOptions },
+    {
+      headers: {
+        Authorization: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
     }
-    const userIndex = polls[pollIndex].votes.findIndex(
-      vote => vote.userId === newVoteObject.userId
-    );
-    if (userIndex === -1) {
-      polls[pollIndex].votes.push(newVoteObject);
-    } else {
-      polls[pollIndex].votes.splice(userIndex, 1, newVoteObject);
-    }
-    saveToLocalStorage();
-  } catch (error) {
-    console.log("BOO");
-    console.log(error);
-  }
-}
-
-export async function fetchVote(pollId, userId) {
-  const poll = await fetchPoll(pollId);
-  const vote = poll.votes.find(vote => {
-    return vote.userId === userId;
-  });
-  if (!vote) {
-    throw new Error("notVoted");
-  }
-  return vote;
+  );
+  return responseVote.data;
 }
 
 export async function fetchOption(pollId, optionId) {
@@ -247,17 +244,7 @@ export function getOption(poll, optionId) {
   return poll.options.find(option => option.id === optionId);
 }
 
-// Filtering Functions for Polls
-export function isOpen(poll) {
-  return poll.status === possiblePollStates.OPEN;
-}
-export function isDraft(poll) {
-  return poll.status === possiblePollStates.DRAFT;
-}
-export function isClosed(poll) {
-  return poll.status === possiblePollStates.CLOSED;
-}
-
+/// OPEN/CLOSE POLLS
 export async function openPoll(pollId) {
   const pollIndex = polls.findIndex(poll => poll.id === pollId);
   polls[pollIndex].status = possiblePollStates.OPEN;

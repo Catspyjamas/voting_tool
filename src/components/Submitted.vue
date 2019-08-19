@@ -2,7 +2,14 @@
   <div class="container">
     <h1>You have officially voted.</h1>
     <p v-if="!pollOver">Check or edit your choice:</p>
-    <router-link v-if="!pollOver" to="vote" class="button-link">
+    <router-link
+      v-if="!pollOver"
+      :to="{
+        name: 'EditVote',
+        params: { pollId: pollId, userIdByParams: userId }
+      }"
+      class="button-link"
+    >
       <TextButton text="Changed my mind" direction="left" />
     </router-link>
 
@@ -44,6 +51,10 @@ export default {
       type: String,
       required: true,
       countdown: 0
+    },
+    userId: {
+      type: String,
+      required: true
     }
   },
   data() {

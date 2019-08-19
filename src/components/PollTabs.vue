@@ -15,7 +15,14 @@
         >Closed</router-link
       >
     </ul>
-    <PollList v-if="filteredPolls" :polls="filteredPolls" />
+    <PollList
+      v-if="filteredPolls"
+      :polls="filteredPolls"
+      @close-poll="$emit('close-poll')"
+      @open-poll="$emit('open-poll')"
+      @draft-poll="$emit('draft-poll')"
+      @delete-poll="$emit('delete-poll')"
+    />
     <router-link :to="{ name: 'NewPoll' }" class="button-link">
       <IconButton icon="plus" />
     </router-link>

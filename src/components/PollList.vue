@@ -6,7 +6,7 @@
         <div class="poll-links">
           <router-link
             v-if="isDraft(poll)"
-            :to="{ name: 'EditPoll', params: { poll: poll, pollId: poll._id } }"
+            :to="{ name: 'EditPoll', params: { pollId: poll._id } }"
           >
             <TextButton text="Edit" direction="right" />
           </router-link>
@@ -15,7 +15,7 @@
             text="Open Vote"
             direction="right"
             background-color="#646464"
-            @click="openPoll(poll._id)"
+            @click="$emit('open-poll', key)"
           />
           <router-link
             v-if="isOpen(poll)"
@@ -28,7 +28,7 @@
             text="Close Poll"
             direction="right"
             background-color="#646464"
-            @click="closePoll(poll._id)"
+            @click="$emit('close-poll', poll._id)"
           />
           <router-link
             v-if="isClosed(poll)"
@@ -45,13 +45,14 @@
             text="Move in Drafts"
             direction="right"
             background-color="#505050"
-            @click="draftPoll(poll._id)"
+            @click="$emit('draft-poll', poll._id)"
           />
           <TextButton
+            v-if="isDraft(poll)"
             text="Delete"
             direction="right"
             background-color="#ff7a7a"
-            @click="deletePoll(poll._id)"
+            @click="$emit('delete-poll', poll._id)"
           />
         </div>
       </div>
@@ -70,15 +71,7 @@
 <script>
 import TextButton from "./TextButton";
 
-import {
-  isClosed,
-  isOpen,
-  isDraft,
-  closePoll,
-  openPoll,
-  draftPoll,
-  deletePoll
-} from "../lib/api.js";
+import { isClosed, isOpen, isDraft } from "../lib/poll.js";
 
 export default {
   components: {
@@ -96,21 +89,24 @@ export default {
       isOpen,
       isDraft
     };
-  },
-  methods: {
-    openPoll(id) {
-      openPoll(id);
-    },
-    closePoll(id) {
-      closePoll(id);
-    },
-    draftPoll(id) {
-      draftPoll(id);
-    },
-    deletePoll(id) {
-      deletePoll(id);
-      this.$forceUpdate();
-    }
+    // },
+    // methods: {
+    //   openPoll(id) {
+    //     openPoll(id);
+    //   },
+    //   closePoll(id) {
+    //     closePoll(id);
+    //   },
+    //   draftPoll(id) {
+    //     draftPoll(id);
+    //   },
+    //   deletePoll(id) {
+    //     deletePoll(id);
+    //     //TODO: Doesn't work without reload yet. Also emit event to grandparent in order to remove poll from polls props
+    //     //! PRO TIP: Use Scoped Slots
+    //     // const pollIndex = this.polls.findIndex(poll => poll._id === id);
+    //     // this.polls.splice(pollIndex, 1);
+    //   }
   }
 };
 </script>

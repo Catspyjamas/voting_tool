@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!voted" class="container">
+  <div class="container">
     <header>
       <div class="breadcrumb">
         <span>Vote</span>
@@ -9,18 +9,22 @@
       <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
-      <draggable v-model="ranking">
+      <draggable v-model="rankedOptions">
         <PollOption
-          v-for="(option, index) in ranking"
-          :id="option.id"
-          :key="index"
+          v-for="(option, index) in rankedOptions"
+          :id="option._id"
+          :key="option._id"
           :index="index"
           :title="option.title"
           :description="option.description"
           class="option"
         />
       </draggable>
-      <router-link to="submitted" class="button-link">
+      <router-link
+        :to="{ name: 'Submitted', params: { userId: userId } }"
+        class="button-link"
+        :user-id="userId"
+      >
         <TextButton
           icon="arrow-right-circle"
           text="Submit your
@@ -28,7 +32,10 @@
           @click="submitVote"
         />
       </router-link>
-      <router-link to="submitted" class="button-link">
+      <router-link
+        :to="{ name: 'Submitted', params: { userId: userId } }"
+        class="button-link"
+      >
         <TextButton
           background-color="coral"
           icon="arrow-right-circle"
@@ -45,7 +52,7 @@ import TextButton from "./TextButton.vue";
 import PollOption from "./PollOption.vue";
 import draggable from "vuedraggable";
 export default {
-  name: "Poll",
+  name: "VoteForm",
   components: {
     TextButton,
     PollOption,
@@ -56,11 +63,15 @@ export default {
       type: Object,
       required: true
     },
-    vote: {
+    initialRankedOptions: {
       type: Array,
       required: true
     },
     statusText: {
+      type: String,
+      required: true
+    },
+    userId: {
       type: String,
       required: true
     }
@@ -68,16 +79,16 @@ export default {
   data() {
     return {
       voted: false,
-      ranking: this.vote.slice()
+      rankedOptions: [...this.initialRankedOptions]
     };
   },
   methods: {
     submitVote() {
-      this.$emit("submit", this.ranking.map(options => options.id));
+      this.$emit("submitVote", this.rankedOptions.map(options => options._id));
       this.voted = true;
     },
     abstainVote() {
-      this.$emit("submit", []);
+      this.$emit("submitVote", []);
       this.voted = true;
     }
   }
