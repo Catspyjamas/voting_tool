@@ -9,6 +9,7 @@ require("./db");
 
 const pollController = require("./controllers/pollController");
 const votesController = require("./controllers/votesController");
+const userController = require("./controllers/userController");
 
 // create our Express app
 const app = express();
@@ -16,6 +17,12 @@ const app = express();
 app.use(cors());
 
 app.use(bodyParser.json());
+
+app.get(
+  "/user",
+  catchErrors(authHandler.findUser),
+  catchErrors(userController.getUser)
+);
 
 app.get("/polls", catchErrors(pollController.getPolls));
 

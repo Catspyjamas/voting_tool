@@ -15,7 +15,14 @@ exports.createPoll = async (req, res) => {
 };
 
 exports.getPolls = async (req, res) => {
-  const polls = await Poll.find();
+  const polls = (await Poll.find()).map(pollDocument => {
+    const poll = pollDocument.toJSON();
+
+    if (poll.status !== "CLOSED") {
+      poll.votes = [];
+    }
+    return poll;
+  });
   res.json(polls);
 };
 

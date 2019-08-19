@@ -13,11 +13,12 @@ exports.getVote = async (req, res) => {
   // if so, get vote with userId
   const vote = await Vote.findOne({ userId: req.params.userId });
   if (!vote) {
-    throw new Error(
-      `Couldn't find a vote for poll ${poll.title} and user Id ${
-        req.params.userId
-      }`
-    );
+    // throw new Error(
+    //   `Couldn't find a vote for poll ${poll.title} and user Id ${
+    //     req.params.userId
+    //   }`
+    // );
+    res.json({ usersFirstVote: true });
   }
   res.json(vote);
 };
@@ -63,7 +64,7 @@ exports.createVote = async (req, res) => {
 exports.updateVote = async (req, res) => {
   const poll = res.locals.poll;
   const user = res.locals.user;
-  const vote = { ...req.body, userId: user._id };
+  const ranking = req.body.ranking;
   if (user.id !== req.params.userId) {
     throw new Error("You can only update your own votes");
   }
@@ -71,10 +72,14 @@ exports.updateVote = async (req, res) => {
     res.status(403);
     throw new Error("You can only update your vote when the poll is open.");
   }
-  const newVote = await Vote.findOneAndUpdate({ userId: user._id }, vote, {
-    new: true,
-    runValidators: true
-  }).exec();
+  const newVote = await Vote.findOneAndUpdate(
+    { userId: user._id },
+    { ranking: ranking },
+    {
+      new: true,
+      runValidators: true
+    }
+  ).exec();
 
   res.json(newVote);
 };

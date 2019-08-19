@@ -21,7 +21,6 @@ test("GET /polls returns an array of all polls", async () => {
 
   expect(polls).toHaveLength(3);
   expect(polls).toContainEqual(dummyData.draftPoll);
-  expect(polls).toContainEqual(dummyData.openPoll);
   expect(polls).toContainEqual(dummyData.closedPoll);
 });
 

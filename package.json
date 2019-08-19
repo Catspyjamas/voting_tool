@@ -10,7 +10,8 @@
     "styleguide": "vue-cli-service styleguidist",
     "styleguide:build": "vue-cli-service styleguidist:build",
     "test:unit": "vue-cli-service test:unit",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "setup:dummy-data": "node tools/dummyData.js"
   },
   "dependencies": {
     "axios": "^0.19.0",
