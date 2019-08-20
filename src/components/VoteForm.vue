@@ -72,8 +72,7 @@ export default {
       required: true
     },
     userId: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data() {

@@ -6,12 +6,12 @@ exports.getVote = async (req, res) => {
   const poll = res.locals.poll;
   //check if user is authorized to get this vote (token matches param)
   const user = res.locals.user;
-  if (user.id !== req.params.userId) {
+  if (req.params.userId && user.id !== req.params.userId) {
     res.status(401);
-    throw new Error(`Please log in`);
+    throw new Error(`You cannot vote for another user`);
   }
   // if so, get vote with userId
-  const vote = await Vote.findOne({ userId: req.params.userId });
+  const vote = await Vote.findOne({ userId: user._id });
   if (!vote) {
     // throw new Error(
     //   `Couldn't find a vote for poll ${poll.title} and user Id ${
@@ -19,8 +19,9 @@ exports.getVote = async (req, res) => {
     //   }`
     // );
     res.json({ usersFirstVote: true });
+  } else {
+    res.json(vote);
   }
-  res.json(vote);
 };
 
 exports.getVotes = async (req, res) => {

@@ -23,14 +23,13 @@ export default {
       required: true
     },
     userIdByParams: {
-      type: String,
-      default: undefined
+      type: String
     }
   },
   data() {
     return {
       rankedOptions: [],
-      usersFirstVote: undefined,
+      usersFirstVote: false,
       voted: false,
       statusText: "",
       poll: null,
@@ -47,6 +46,7 @@ export default {
       fetchVote(this.pollId, this.userId),
       fetchPoll(this.pollId)
     ]);
+    console.log("VOTE", vote, "POLL", poll);
     this.poll = poll;
     this.userId = vote.userId;
     if (vote.usersFirstVote) {
