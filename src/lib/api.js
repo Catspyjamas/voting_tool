@@ -1,6 +1,6 @@
 import randomColor from "randomcolor";
 import axios from "axios";
-import possiblePollStates from "./poll";
+import { possiblePollStates } from "./poll";
 
 const authToken = "a";
 
@@ -138,7 +138,7 @@ export async function fetchPoll(pollId) {
 
 export async function savePoll(newPollObject, pollId) {
   // if there's no pollId, it's a post request
-  //! Check: Is authToken enough for ID check? Do we always have to pass in pollId?
+  //! Authentication check: Is authToken enough for ID check? Do we always have to pass in pollId?
   if (!pollId) {
     const response = await axios.post(`${url}/polls`, newPollObject, {
       headers: {
@@ -177,7 +177,7 @@ export async function deletePoll(pollId) {
 // }
 
 export async function fetchVote(pollId, userId) {
-  //!Refactor with Authentication: Here we get the UserId by token
+  //! Authentication: Here we get the UserId by token
   //if there's no userId passed in, get it from the database with the token
   if (!userId) {
     const userByToken = await axios.get(`${url}/user`, {
@@ -206,7 +206,7 @@ export async function fetchVote(pollId, userId) {
 
 export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
   // If it's the user's first vote, it's a post
-  //! usersFirstVote: enough for checking if post/patch?
+  //! Authentication: usersFirstVote: enough for checking if post/patch?
   if (usersFirstVote) {
     const responseVote = await axios.post(
       `${url}/polls/${pollId}/votes`,
@@ -235,20 +235,27 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
   return responseVote.data;
 }
 
-export async function fetchOption(pollId, optionId) {
-  const poll = await fetchPoll(pollId);
-  return poll.options.find(option => option.id === optionId);
-}
-
-export function getOption(poll, optionId) {
-  return poll.options.find(option => option.id === optionId);
-}
-
 /// OPEN/CLOSE POLLS
-export async function openPoll(pollId) {
-  const pollIndex = polls.findIndex(poll => poll.id === pollId);
-  polls[pollIndex].status = possiblePollStates.OPEN;
-  saveToLocalStorage();
+
+export async function changePollStatus(pollId, status) {
+  if (!possiblePollStates[status]) {
+    throw new Error(
+      "The status can only be one of these:",
+      ...possiblePollStates.values()
+    );
+  }
+  const response = await axios.patch(
+    `${url}/polls/${pollId}`,
+    { status: status },
+    {
+      headers: {
+        Authorization: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    }
+  );
+  return response.data;
 }
 
 export async function closePoll(pollId) {
@@ -265,6 +272,10 @@ export async function draftPoll(pollId) {
 
 //////////////////////
 // Helper Functions for getting vote Results
+
+function getOption(poll, optionId) {
+  return poll.options.find(option => option.id === optionId);
+}
 
 export function getPoll(poll) {
   return poll.options.map(option => option.id);

@@ -15,7 +15,7 @@
             text="Open Vote"
             direction="right"
             background-color="#646464"
-            @click="$emit('open-poll', key)"
+            @click="$emit('status-change', poll._id, 'OPEN')"
           />
           <router-link
             v-if="isOpen(poll)"
@@ -28,7 +28,7 @@
             text="Close Poll"
             direction="right"
             background-color="#646464"
-            @click="$emit('close-poll', poll._id)"
+            @click="$emit('status-change', poll._id, 'CLOSED')"
           />
           <router-link
             v-if="isClosed(poll)"
@@ -45,7 +45,7 @@
             text="Move in Drafts"
             direction="right"
             background-color="#505050"
-            @click="$emit('draft-poll', poll._id)"
+            @click="$emit('status-change', poll._id, 'DRAFT')"
           />
           <TextButton
             v-if="isDraft(poll)"
@@ -70,7 +70,6 @@
 
 <script>
 import TextButton from "./TextButton";
-
 import { isClosed, isOpen, isDraft } from "../lib/poll.js";
 
 export default {

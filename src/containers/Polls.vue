@@ -1,21 +1,13 @@
 <template>
   <PollTabs
     :filtered-polls="filteredPolls"
-    @close-poll="closePoll"
-    @open-poll="openPoll"
-    @draft-poll="draftPoll"
+    @status-change="onStatusChange"
     @delete-poll="deletePoll"
   />
 </template>
 
 <script>
-import {
-  fetchPolls,
-  closePoll,
-  openPoll,
-  draftPoll,
-  deletePoll
-} from "../lib/api.js";
+import { fetchPolls, changePollStatus, deletePoll } from "../lib/api.js";
 import PollTabs from "../components/PollTabs";
 import { isOpen, isDraft, isClosed } from "../lib/poll.js";
 
@@ -52,17 +44,16 @@ export default {
     this.polls = await fetchPolls();
   },
   methods: {
-    async closePoll(pollId) {
-      await closePoll(pollId);
-    },
-    async openPoll(pollId) {
-      await openPoll(pollId);
-    },
-    async draftPoll(pollId) {
-      await draftPoll(pollId);
+    async onStatusChange(pollId, status) {
+      console.log("STATUS CHANGE REQUESTED", pollId, status);
+      await changePollStatus(pollId, status);
+      this.polls = await fetchPolls();
     },
     async deletePoll(pollId) {
-      await deletePoll(pollId);
+      if (confirm("Are you sure you want to delete this poll?")) {
+        await deletePoll(pollId);
+        this.polls = await fetchPolls();
+      }
     }
   }
 };
