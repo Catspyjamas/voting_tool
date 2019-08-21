@@ -28,7 +28,6 @@ export default {
     return {
       poll: null,
       winnerOptions: null,
-      winnerIdsAndVotes: null,
       loaded: false,
       pollResults: null,
       chartOptions: {
@@ -50,7 +49,6 @@ export default {
       const pollResults = prepareRoundInfo(poll, pollData.roundHistory);
       this.pollResults = pollResults;
       const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
-      this.winnerIdsAndVotes = winnerIdsAndVotes;
       const winnerOptions = [];
       winnerIdsAndVotes.forEach(winnerIdAndVote => {
         poll.options.forEach(option => {
