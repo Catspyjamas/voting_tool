@@ -21,6 +21,34 @@ async function createDummyData() {
     firstName: "Verleihnix",
     token: "d"
   }).save();
+  const gutemine = await new User({
+    firstName: "Gutemine",
+    token: "e"
+  }).save();
+  const automatix = await new User({
+    firstName: "Automatix",
+    token: "f"
+  }).save();
+  const troubadix = await new User({
+    firstName: "Troubardix",
+    token: "g"
+  }).save();
+  const idefix = await new User({
+    firstName: "Troubardix",
+    token: "h"
+  }).save();
+  const majestix = await new User({
+    firstName: "Troubardix",
+    token: "i"
+  }).save();
+  const falbala = await new User({
+    firstName: "Falbala",
+    token: "j"
+  }).save();
+  const methusalix = await new User({
+    firstName: "Methusalix",
+    token: "k"
+  }).save();
   const draftPoll = await new Poll({
     title: "Birthday Event Draft",
     start: "2019-06-18 09:30",
@@ -165,9 +193,98 @@ async function createDummyData() {
       openPoll.options[2]._id
     ]
   }).save();
+  const vote4 = await new Vote({
+    userId: verleihnix._id,
+    ranking: [
+      closedPoll.options[4]._id,
+      closedPoll.options[3]._id,
+      closedPoll.options[1]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[2]._id
+    ]
+  }).save();
+  const vote5 = await new Vote({
+    userId: gutemine._id,
+    ranking: [
+      closedPoll.options[3]._id,
+      closedPoll.options[2]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[1]._id,
+      closedPoll.options[4]._id
+    ]
+  }).save();
+  const vote6 = await new Vote({
+    userId: automatix._id,
+    ranking: [
+      closedPoll.options[1]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[4]._id,
+      closedPoll.options[2]._id,
+      closedPoll.options[3]._id
+    ]
+  }).save();
+  const vote7 = await new Vote({
+    userId: troubadix._id,
+    ranking: [
+      closedPoll.options[0]._id,
+      closedPoll.options[2]._id,
+      closedPoll.options[1]._id,
+      closedPoll.options[4]._id,
+      closedPoll.options[3]._id
+    ]
+  }).save();
+  const vote8 = await new Vote({
+    userId: idefix._id,
+    ranking: [
+      closedPoll.options[0]._id,
+      closedPoll.options[1]._id,
+      closedPoll.options[4]._id,
+      closedPoll.options[2]._id,
+      closedPoll.options[3]._id
+    ]
+  }).save();
+  const vote9 = await new Vote({
+    userId: majestix._id,
+    ranking: [
+      closedPoll.options[1]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[4]._id,
+      closedPoll.options[3]._id,
+      closedPoll.options[2]._id
+    ]
+  }).save();
+  const vote10 = await new Vote({
+    userId: falbala._id,
+    ranking: [
+      closedPoll.options[4]._id,
+      closedPoll.options[3]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[2]._id,
+      closedPoll.options[1]._id
+    ]
+  }).save();
+  const vote11 = await new Vote({
+    userId: methusalix._id,
+    ranking: [
+      closedPoll.options[1]._id,
+      closedPoll.options[0]._id,
+      closedPoll.options[3]._id,
+      closedPoll.options[4]._id,
+      closedPoll.options[2]._id
+    ]
+  }).save();
   openPoll.votes.push(vote1._id, vote2._id);
   await openPoll.save();
-  closedPoll.votes.push(vote1._id, vote2._id, vote3._id);
+  closedPoll.votes.push(
+    vote4._id,
+    vote5._id,
+    vote6._id,
+    vote7._id,
+    vote8._id,
+    vote9._id,
+    vote10._id,
+    vote11._id
+  );
   await closedPoll.save();
   return {
     asterix: toPojo(asterix),

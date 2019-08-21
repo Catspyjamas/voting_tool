@@ -4,17 +4,16 @@
       :poll-title="poll.title"
       :poll-results="pollResults"
       :chart-data="chartData"
-      :winner="winner"
+      :winner-options="winnerOptions"
       :chart-options="chartOptions"
     />
   </div>
 </template>
 <script>
 import Result from "../components/Result";
-import { fetchPoll } from "../lib/api.js";
-import { findWinner } from "../lib/api.js";
-import { prepareRoundInfo } from "../lib/api.js";
-import { fetchOption } from "../lib/api.js";
+import { fetchPollResults } from "../lib/api.js";
+import { findWinner } from "../lib/poll.js";
+import { prepareRoundInfo } from "../lib/poll.js";
 export default {
   components: {
     Result
@@ -22,13 +21,14 @@ export default {
   props: {
     pollId: {
       type: String,
-      default: ""
+      required: true
     }
   },
   data() {
     return {
       poll: null,
-      winner: null,
+      winnerOptions: null,
+      winnerIdsAndVotes: null,
       loaded: false,
       pollResults: null,
       chartOptions: {
@@ -43,20 +43,26 @@ export default {
     }
   },
   async mounted() {
-    this.loaded = false;
-
     try {
-      //get id from URL
-      const poll = await fetchPoll(this.pollId);
+      const poll = await fetchPollResults(this.pollId);
       this.poll = poll;
-      const result = await findWinner(poll);
-      this.pollResults = prepareRoundInfo(poll, result.roundHistory);
-      this.winner = poll.options.find(
-        option => option.id === result.result.winner
-      );
+      const pollData = findWinner(poll);
+      const pollResults = prepareRoundInfo(poll, pollData.roundHistory);
+      this.pollResults = pollResults;
+      const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
+      this.winnerIdsAndVotes = winnerIdsAndVotes;
+      const winnerOptions = [];
+      winnerIdsAndVotes.forEach(winnerIdAndVote => {
+        poll.options.forEach(option => {
+          if (winnerIdAndVote.winnerId === option._id) {
+            winnerOptions.push(option);
+          }
+        });
+      });
+      this.winnerOptions = winnerOptions;
       this.loaded = true;
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 };
