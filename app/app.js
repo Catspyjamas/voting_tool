@@ -74,7 +74,6 @@ app.get(
 app.get(
   "/polls/:pollId/votes/:userId",
   catchErrors(authHandler.findUser),
-  catchErrors(pollHandler.findPoll),
   catchErrors(votesController.getVote)
 );
 
@@ -87,7 +86,6 @@ app.post(
 app.patch(
   "/polls/:pollId/votes/:userId",
   catchErrors(authHandler.findUser),
-  catchErrors(pollHandler.findPoll),
   catchErrors(votesController.updateVote)
 );
 app.delete(

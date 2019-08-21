@@ -118,7 +118,7 @@ test("GET /polls/:pollId/votes/ with status CLOSED returns the poll including al
     .expect(200);
   const poll = response.body;
   const { votes, ...expectedPoll } = dummyData.closedPoll;
-  expect(poll.votes).toHaveLength(3);
+  expect(poll.votes).toHaveLength(8);
   expect(poll).toMatchObject(expectedPoll);
 });
 
