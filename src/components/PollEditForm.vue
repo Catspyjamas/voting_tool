@@ -168,7 +168,7 @@ li {
   display: flex;
   justify-content: space-between;
   position: relative;
-  border-top: 1px solid $primary;
+  border-top: 1px solid $grey1;
   margin-top: 2em;
 }
 

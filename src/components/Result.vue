@@ -130,7 +130,7 @@ h2 {
   margin-bottom: $small;
 }
 span {
-  color: $primary;
+  color: $grey1;
   font-weight: normal;
   font-size: 1.25rem;
 }

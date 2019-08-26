@@ -35,9 +35,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .option {
-  color: $primary;
+  color: $grey1;
   display: flex;
-  border-top: 1px solid $primary;
+  border-top: 1px solid $grey1;
   padding-top: 1em;
   position: relative;
   cursor: move;

@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <nav>
-      <router-link class="navlink" to="/polls">Polls</router-link>
-      <router-link class="navlink" to="/about">About</router-link>
-      <router-link class="navlink" to="/newPoll">Create New Poll</router-link>
+      <div class="navlinks">
+        <router-link class="navlink" to="/polls">Polls</router-link>
+        <router-link class="navlink" to="/about">About</router-link>
+      </div>
     </nav>
     <router-view />
   </div>
@@ -31,17 +32,11 @@ h4 {
   color: white;
 }
 
-h2 {
-  font-size: 1.6em;
-}
-
 a {
-  font-family: "speziabook";
+  font-family: "nexablack";
   text-decoration: none;
-  border-bottom: 1px solid;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: $mint;
   padding: $xsmall 0;
   margin: $standard 0;
   display: inline-block;
@@ -49,9 +44,8 @@ a {
 
 body,
 p {
-  font-family: "speziabook", sans-serif;
-  color: $primary;
-  font-weight: normal;
+  font-family: "plex-light", sans-serif;
+  color: $grey1;
   margin-top: unset;
   margin-bottom: $xsmall;
 }
@@ -67,9 +61,10 @@ h1 {
 }
 
 h2 {
-  font-size: 1.6em;
+  font-size: 1.8em;
   margin-top: unset;
   margin-bottom: unset;
+  line-height: 110%;
 }
 
 body {
@@ -80,30 +75,47 @@ body {
 }
 
 p {
-  font-size: $small;
+  font-size: 1.3em;
 }
 
 nav {
   background-color: white;
-  margin: 0 auto 0 auto;
   position: sticky;
+}
+
+.navlinks {
+  margin: 0 auto 0 auto;
   display: flex;
-  padding: 0 20vw 0 20vw;
+
+  max-width: 70vw;
+  @media (max-width: 750px) {
+    max-width: 90vw;
+  }
   align-items: center;
+  justify-content: space-between;
 }
 
 .navlink {
-  margin: $standard $small $standard 0;
-  padding: 0.1em 0 0.1em 0;
-  display: inline-block;
+  transition: 200ms box-shadow ease-out, 200ms font-weight ease;
+  margin: $standard $xsmall $standard 0;
+  padding: 0.1em $xsmall 0 $xsmall;
+  min-width: min-content;
+  display: flex;
   text-decoration: none;
   color: $dark;
-  text-transform: uppercase;
-  font-family: "speziabook";
+  font-family: "plex-light";
+  letter-spacing: unset;
+  text-transform: none;
+  font-size: $small;
+  box-shadow: inset 0 0px 0 0 $mint;
+  &:hover {
+    box-shadow: inset 0 -0.6em 0 0 #0bb3a25d;
+    font-weight: 500;
+  }
 }
 
 .breadcrumb {
-  color: $primary;
+  color: $grey1;
   font-size: $standard;
   text-transform: uppercase;
   letter-spacing: 0.5em;
@@ -115,7 +127,12 @@ nav {
 }
 
 .container {
-  padding: 2em 20vw 6em 20vw;
+  padding: 2em 0 6em 0;
+  margin: 0 auto 0 auto;
+  max-width: 70vw;
+  @media (max-width: 750px) {
+    max-width: 90vw;
+  }
   min-height: 100vh;
 }
 
@@ -133,16 +150,15 @@ nav {
 .instructions {
   padding: 0 0 0 $xsmall;
   margin-bottom: 1em;
-  border-left: 1px solid $primary;
+  border-left: 1px solid $grey1;
   display: block;
-  color: $primary;
+  color: $grey1;
 }
 
 .router-link-active,
 .router-link-exact-active {
-  font-family: "speziabold";
-  border-bottom: 2px solid $dark;
   color: $dark;
+  font-family: "plex-medium";
 }
 
 .button-link {

@@ -61,7 +61,7 @@ legend {
 label,
 input,
 textarea {
-  font-family: "speziabook", sans-serif;
+  font-family: "plex-light", sans-serif;
   font-weight: 300;
   margin-top: unset;
   margin-bottom: 1em;
@@ -77,9 +77,9 @@ textarea {
 }
 
 label {
-  color: $primary;
+  color: $grey1;
   font-size: $small;
-  border-left: 1px solid $primary;
+  border-left: 1px solid $grey1;
   padding-left: $xsmall;
   margin-bottom: $xsmall;
   display: block;

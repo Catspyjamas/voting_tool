@@ -1,7 +1,11 @@
 <template>
   <button
     class="button"
-    :style="{ color: iconColor, backgroundColor }"
+    :style="{
+      color: iconColor,
+      height: iconSize,
+      width: iconSize
+    }"
     :disabled="disabled"
     @click="$emit('click')"
   >
@@ -27,20 +31,27 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: "#00cfbb"
+      default: "#00bca9"
+    },
+    iconSize: {
+      type: String,
+      default: "4em"
     }
   }
 };
 </script>
 
-<style scoped>
+<style lang="scss">
 .button {
+  transition: background-color 0.5s ease;
   border: none;
   border-radius: 50%;
-  height: 5em;
-  width: 5em;
   cursor: pointer;
   flex-shrink: 0;
+  background-color: $mint;
+  &:hover {
+    background-color: $mint-lighter;
+  }
 }
 </style>
 

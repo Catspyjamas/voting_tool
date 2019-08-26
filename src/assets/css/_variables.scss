@@ -2,17 +2,17 @@
 
 
 @font-face {
-  font-family: 'speziabook';
-  src: url('~@/assets/fonts/SpeziaWebTrial-Book.woff2') format('woff2');
-  font-weight: normal;
+  font-family: 'plex-light';
+  src: url('~@/assets/fonts/IBMPlexSans-Light.woff') format('woff');
+  font-weight: 300;
   font-style: normal;
 }
 
 
 @font-face {
-  font-family: 'speziabold';
-  src: url('~@/assets/fonts/SpeziaWebTrial-Bold.woff2') format('woff2');
-  font-weight: normal;
+  font-family: 'plex-medium';
+  src: url('~@/assets/fonts/IBMPlexSans-Medium.woff') format('woff');
+  font-weight: 500;
   font-style: normal;
 }
 
@@ -31,11 +31,15 @@
   font-style: normal;
 }
 
-$primary: rgba(243, 243, 243, 0.7);
+$grey1: rgba(243, 243, 243, 0.7);
+$grey2: #787878;
+$grey2-lighter: #919191;
+$grey3: #4a4a4a;
 $light: white;
 $dark: #212121;
 $dark-gradient: linear-gradient(180deg, #18181a 0%, #242425 100%);
-$mint: #00cfbb;
+$mint: #0bb3a2;
+$mint-lighter: #00cfba;
 
 $small: 1.25em;
 $standard: 1.0em;

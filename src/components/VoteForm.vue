@@ -5,7 +5,8 @@
         <span>Vote</span>
       </div>
       <h1>{{ poll.title }}</h1>
-      <p class="subhead">{{ poll.description }}</p>
+      <p class="intro">{{ poll.description }}</p>
+      <p>Drag and drop the order of options until you're happy.</p>
       <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
@@ -95,16 +96,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.intro {
+  font-family: "plex-medium";
+}
+
 .subhead {
-  color: $primary;
-  font-size: $medium;
+  color: $grey1;
   line-height: 1.1em;
 }
 
 .option {
-  color: $primary;
+  color: $grey1;
   display: flex;
-  border-top: 1px solid $primary;
+  border-top: 1px solid $grey1;
   padding-top: 1em;
   position: relative;
   cursor: move;

@@ -1,7 +1,7 @@
 <template>
   <button
     :class="['button', direction]"
-    :style="{ color: textColor, backgroundColor }"
+    :style="{ color: textColor }"
     :disabled="disabled"
     @click="$emit('click')"
   >
@@ -57,18 +57,24 @@ export default {
 }
 
 .button {
-  font-family: "speziabold";
-  letter-spacing: 0.1em;
+  transition: background-color 0.5 ease;
+  font-family: "nexablack";
+  border-radius: 39px;
+  letter-spacing: 0.18em;
   display: flex;
   align-items: center;
   border: none;
   text-transform: uppercase;
   color: white;
-  font-size: $standard;
-  padding: $xsmall;
+  font-size: 0.8em;
+  padding: $xsmall 0.8em $xsmall 0.8em;
   bottom: 0;
   cursor: pointer;
   white-space: nowrap;
+  background-color: $grey2;
+  &:hover {
+    background-color: $grey2-lighter;
+  }
 }
 </style>
 
