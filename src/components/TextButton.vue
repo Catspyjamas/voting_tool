@@ -3,6 +3,7 @@
     :class="['button', direction]"
     :style="{ color: textColor }"
     :disabled="disabled"
+    :title="text"
     @click="$emit('click')"
   >
     <feather v-if="icon" :type="icon" />
@@ -62,6 +63,7 @@ export default {
   border-radius: 39px;
   letter-spacing: 0.18em;
   display: flex;
+  position: relative;
   align-items: center;
   border: none;
   text-transform: uppercase;

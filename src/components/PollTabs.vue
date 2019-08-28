@@ -74,6 +74,14 @@ export default {
     z-index: 1;
     border: 1px solid white;
     border-bottom: 1px solid $dark;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    &:active {
+      outline: none;
+      box-shadow: none;
+    }
   }
 }
 </style>

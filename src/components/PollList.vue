@@ -11,7 +11,7 @@
             <IconButton icon="package" direction="right" />
           </router-link>
           <router-link
-            v-if="isClosed(poll)"
+            v-if="isClosed(poll) && enoughVotes(poll)"
             :to="{ name: 'Results', params: { pollId: poll._id } }"
           >
             <Text-Button
@@ -48,7 +48,7 @@
                     class="dropdown-li"
                     @click="$emit('status-change', poll._id, 'OPEN')"
                   >
-                    Open Vote
+                    Open for Voting
                   </li>
                   <li
                     v-if="isOpen(poll)"
@@ -101,7 +101,16 @@
             </tr>
             <tr>
               <td class="table-em">Votes:</td>
-              <td>{{ poll.votes.length }}</td>
+              <td v-if="poll.status !== 'CLOSED'">
+                You need to close the poll in order to see the number of voters.
+              </td>
+              <td v-if="poll.status === 'CLOSED' && !enoughVotes(poll)">
+                You need to collect more than one vote if you would like to
+                diplay the results.
+              </td>
+              <td v-if="poll.status === 'CLOSED' && enoughVotes(poll)">
+                {{ poll.votes.length }}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -120,8 +129,17 @@
 import TextButton from "./TextButton";
 import IconButton from "./IconButton";
 import { isClosed, isOpen, isDraft } from "../lib/poll.js";
+const dateFormat = new Intl.DateTimeFormat(undefined, {
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit"
+});
 
 export default {
+  name: "PollList",
   components: {
     TextButton,
     IconButton
@@ -137,19 +155,16 @@ export default {
       showMenu: null,
       isClosed,
       isOpen,
-      isDraft,
-      dateOptions: {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      }
+      isDraft
     };
   },
   methods: {
     dateString(date) {
       //Doesn't work properly... Use moment instead?
-      return date.toLocaleString("en-US", this.dateOptions);
+      return dateFormat.format(new Date(date));
+    },
+    enoughVotes(poll) {
+      return poll.votes.length > 0;
     }
   }
 };
@@ -176,18 +191,19 @@ ul {
 }
 
 .poll-head {
-  align-items: center;
+  align-content: center;
   justify-content: space-between;
   padding: 10px 0 10px 0;
   display: flex;
   width: 100%;
-  flex-wrap: nowrap;
   border-bottom: 1px solid #4b4b4b;
   margin-bottom: $standard;
   h2 {
     display: block;
     min-width: 30%;
     margin-top: 0;
+    display: flex;
+    align-items: center;
   }
   a {
     border: 0;
@@ -219,14 +235,16 @@ ul {
 
 .table-em {
   font-family: "plex-medium";
-  margin-right: $small;
-  padding-right: 2em;
+  padding-right: 0.5rem;
   color: $grey1;
+  display: flex;
 }
 .poll-links {
   margin-left: auto;
   display: flex;
-  flex-wrap: nowrap;
+  justify-content: right;
+  flex-wrap: wrap;
+  min-width: 30%;
   a {
     padding: 0;
   }
@@ -235,12 +253,11 @@ ul {
 .dropdown-menu {
   position: relative;
   height: 3em;
-  width: 4em;
+  margin: 0 0 0 5px;
 }
 
 .dropdown-button {
-  position: absolute;
-  right: 0;
+  position: relative;
 }
 
 .dropdown-ul {
@@ -271,7 +288,7 @@ ul {
     color: inherit;
   }
   &:hover {
-    background-color: white;
+    background-color: white !important;
     cursor: pointer;
   }
 }

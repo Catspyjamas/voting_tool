@@ -45,19 +45,24 @@ export default {
     try {
       const poll = await fetchPollResults(this.pollId);
       this.poll = poll;
-      const pollData = findWinner(poll);
-      const pollResults = prepareRoundInfo(poll, pollData.roundHistory);
+      const roundHistory = findWinner(poll);
+      console.log("ROUNDHISTORY:", roundHistory);
+      const pollResults = prepareRoundInfo(poll, roundHistory);
       this.pollResults = pollResults;
       const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
-      const winnerOptions = [];
-      winnerIdsAndVotes.forEach(winnerIdAndVote => {
-        poll.options.forEach(option => {
-          if (winnerIdAndVote.winnerId === option._id) {
-            winnerOptions.push(option);
-          }
+      // const winnerOptions = [];
+      // winnerIdsAndVotes.forEach(winnerIdAndVote => {
+      //   poll.options.forEach(option => {
+      //     if (winnerIdAndVote.winnerId === option._id) {
+      //       winnerOptions.push(option);
+      //     }
+      //   });
+      // });
+      this.winnerOptions = poll.options.filter(pollOption => {
+        return winnerIdsAndVotes.some(winnerIdAndVote => {
+          return pollOption._id === winnerIdAndVote.winnerId;
         });
       });
-      this.winnerOptions = winnerOptions;
       this.loaded = true;
     } catch (e) {
       console.log(e);
