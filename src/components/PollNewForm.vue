@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <header>
-      <div class="breadcrumb">
-        <span>Create new poll ></span>
-      </div>
-    </header>
+    <h1>New Poll</h1>
     <form id="vote">
       <legend>Vote Title</legend>
       <FormFieldset
@@ -42,7 +38,7 @@
       </p>
       <PollOptionsForm @submit="addOption" />
     </form>
-    <ul>
+    <ul id="options">
       <transition-group
         name="list"
         class="list"
@@ -187,5 +183,9 @@ legend {
   margin: -1px;
   padding: 0;
   border: 0;
+}
+
+#options {
+  margin-bottom: 2rem;
 }
 </style>

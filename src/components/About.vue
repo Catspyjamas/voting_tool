@@ -2,12 +2,14 @@
   <div class="about-container">
     <div id="intro" class="about-content-section">
       <div class="quote">
-        <em class="quote-intro">
-          There is a celebrated theorem which has been proven by Kenneth Arrow:
-        </em>
-        <cite>
-          "No fair voting system exists if there are three or more parties..."
-        </cite>
+        <em class="quote-intro"
+          >There is a celebrated theorem which has been proven by Kenneth
+          Arrow:</em
+        >
+        <cite
+          >"No fair voting system exists if there are three or more
+          parties..."</cite
+        >
         <feather
           id="bouncing-arrow"
           type="chevron-down"
@@ -192,7 +194,7 @@ export default {
   flex-wrap: wrap;
   height: 100vh;
   align-items: center;
-  background-color: #28299d;
+  background-color: #202181;
 }
 .about-container {
   margin: auto;
@@ -243,6 +245,7 @@ section {
     font-size: 4rem;
     font-family: "plex-mono-italic";
     line-height: 105%;
+    color: #84e6dc;
     @media (max-width: 750px) {
       font-size: 2.5rem;
     }

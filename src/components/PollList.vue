@@ -242,7 +242,7 @@ ul {
 .poll-links {
   margin-left: auto;
   display: flex;
-  justify-content: right;
+  justify-content: flex-end;
   flex-wrap: wrap;
   min-width: 30%;
   a {
@@ -263,7 +263,7 @@ ul {
 .dropdown-ul {
   position: absolute;
   top: 2.5em;
-  right: -4em;
+  right: 0;
   z-index: 2;
   display: flex;
   flex-direction: column;
@@ -275,7 +275,7 @@ ul {
   transition: background-color 0.5s ease, color 0.5s ease;
   font-family: "nexablack";
   text-decoration: none;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: $xsmall $xsmall;
   display: flex;
@@ -319,6 +319,5 @@ ul {
 .move-enter,
 .move-leave-to {
   opacity: 0;
-  transform: translateY(2em);
 }
 </style>

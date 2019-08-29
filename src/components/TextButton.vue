@@ -69,7 +69,7 @@ export default {
   text-transform: uppercase;
   color: white;
   font-size: 0.8em;
-  padding: $xsmall 0.8em $xsmall 0.8em;
+  padding: 0.6rem 0.8rem 0.6rem 0.8em;
   bottom: 0;
   cursor: pointer;
   white-space: nowrap;

@@ -1,9 +1,12 @@
 <template>
-  <PollTabs
-    :filtered-polls="filteredPolls"
-    @status-change="onStatusChange"
-    @delete-poll="deletePoll"
-  />
+  <div class="container">
+    <h1>All Peerigon Polls</h1>
+    <PollTabs
+      :filtered-polls="filteredPolls"
+      @status-change="onStatusChange"
+      @delete-poll="deletePoll"
+    />
+  </div>
 </template>
 
 <script>

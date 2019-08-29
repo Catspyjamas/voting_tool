@@ -1,10 +1,6 @@
 <template>
   <div class="container">
-    <header>
-      <div class="breadcrumb">
-        <span>Edit {{ title }} ></span>
-      </div>
-    </header>
+    <h1>Edit Poll</h1>
     <form id="Poll">
       <legend>Vote Title</legend>
       <FormFieldset

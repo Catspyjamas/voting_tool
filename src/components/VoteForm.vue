@@ -1,25 +1,36 @@
 <template>
   <div class="container">
     <header>
-      <div class="breadcrumb">
-        <span>Vote</span>
-      </div>
       <h1>{{ poll.title }}</h1>
-      <p class="intro">{{ poll.description }}</p>
+      <p>{{ poll.description }}</p>
       <p>Drag and drop the order of options until you're happy.</p>
-      <p class="subhead">{{ statusText }}</p>
     </header>
     <main>
-      <draggable v-model="rankedOptions">
-        <PollOption
-          v-for="(option, index) in rankedOptions"
-          :id="option._id"
-          :key="option._id"
-          :index="index"
-          :title="option.title"
-          :description="option.description"
-          class="option"
-        />
+      <div class="status-message">
+        <p class="subhead">{{ statusText }}</p>
+      </div>
+      <draggable
+        id="vote-ranking-form"
+        v-model="rankedOptions"
+        v-bind="dragOptions"
+        @start="drag = true"
+        @end="drag = false"
+      >
+        <transition-group
+          type="transition"
+          :name="!drag ? 'flip-ranked-options' : null"
+        >
+          <PollOption
+            v-for="(option, index) in rankedOptions"
+            :id="option._id"
+            :key="option._id"
+            :index="index"
+            :title="option.title"
+            :description="option.description"
+            class="option"
+            @click="element.fixed = !element.fixed"
+          />
+        </transition-group>
       </draggable>
       <router-link
         :to="{ name: 'Submitted', params: { userId: userId } }"
@@ -73,14 +84,26 @@ export default {
       required: true
     },
     userId: {
-      type: String
+      type: String,
+      required: true
     }
   },
   data() {
     return {
       voted: false,
-      rankedOptions: [...this.initialRankedOptions]
+      rankedOptions: [...this.initialRankedOptions],
+      drag: false
     };
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    }
   },
   methods: {
     submitVote() {
@@ -96,8 +119,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.intro {
-  font-family: "plex-medium";
+header {
+  max-width: 60vw;
+  @media (max-width: 750px) {
+    max-width: 100%;
+  }
+  p {
+    margin-bottom: 0;
+  }
+}
+#vote-ranking-form {
+  margin: 2rem 0;
+}
+
+flip-ranked-options-move {
+  transition: transform 0s;
 }
 
 .subhead {
@@ -105,12 +141,27 @@ export default {
   line-height: 1.1em;
 }
 
-.option {
-  color: $grey1;
+.no-move {
+  transition: transform 0s;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #0bb3a280;
+}
+
+.status-message {
+  background-color: rgba(222, 251, 227, 0.8);
   display: flex;
-  border-top: 1px solid $grey1;
-  padding-top: 1em;
-  position: relative;
-  cursor: move;
+  padding: 15px;
+  margin: 2rem 0;
+  border-left: 3px solid $mint;
+  p {
+    font-family: "plex-mono-italic";
+    color: black;
+    font-size: 1.1rem;
+    line-height: 1.4rem;
+    text-align: left;
+  }
 }
 </style>
