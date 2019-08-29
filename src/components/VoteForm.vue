@@ -84,8 +84,7 @@ export default {
       required: true
     },
     userId: {
-      type: String,
-      required: true
+      type: String
     }
   },
   data() {
@@ -136,11 +135,6 @@ flip-ranked-options-move {
   transition: transform 0s;
 }
 
-.subhead {
-  color: $grey1;
-  line-height: 1.1em;
-}
-
 .no-move {
   transition: transform 0s;
 }
@@ -148,20 +142,5 @@ flip-ranked-options-move {
 .ghost {
   opacity: 0.5;
   background: #0bb3a280;
-}
-
-.status-message {
-  background-color: rgba(222, 251, 227, 0.8);
-  display: flex;
-  padding: 15px;
-  margin: 2rem 0;
-  border-left: 3px solid $mint;
-  p {
-    font-family: "plex-mono-italic";
-    color: black;
-    font-size: 1.1rem;
-    line-height: 1.4rem;
-    text-align: left;
-  }
 }
 </style>

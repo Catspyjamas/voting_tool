@@ -1,9 +1,19 @@
 <template>
   <div class="polltabs-container">
     <ul class="tabs">
-      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'open' } }">Open</router-link>
-      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'drafts' } }">Drafts</router-link>
-      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'closed' } }">Closed</router-link>
+      <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'open' } }"
+        >Open</router-link
+      >
+      <router-link
+        class="tab"
+        :to="{ name: 'Polls', params: { tab: 'drafts' } }"
+        >Drafts</router-link
+      >
+      <router-link
+        class="tab"
+        :to="{ name: 'Polls', params: { tab: 'closed' } }"
+        >Closed</router-link
+      >
     </ul>
     <PollList
       v-if="filteredPolls"

@@ -7,6 +7,7 @@
       :type="type"
       :placeholder="placeholder"
       :value="value"
+      :required="required"
       rows="5"
       @input="$emit('input', $event.target.value)"
     />
@@ -16,6 +17,7 @@
       :type="type"
       :placeholder="placeholder"
       :value="value"
+      :required="required"
       @input="$emit('input', $event.target.value)"
     />
   </fieldset>
@@ -46,6 +48,10 @@ export default {
       default: "text"
     },
     textarea: {
+      type: Boolean,
+      default: false
+    },
+    required: {
       type: Boolean,
       default: false
     }

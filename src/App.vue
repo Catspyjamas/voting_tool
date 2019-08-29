@@ -223,7 +223,7 @@ footer {
 #peerigon-logo {
   transition: 0.8s ease-in-out;
   height: 60px;
-  width: 180px;
+  width: 205px;
   fill: white;
   margin: auto;
   &:hover,
@@ -254,5 +254,31 @@ footer {
   letter-spacing: 0;
   text-transform: none;
   color: white;
+}
+
+.status-message {
+  background-color: rgba(222, 251, 227, 0.8);
+  border-left: 3px solid $mint;
+  display: flex;
+  padding: 15px;
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  p {
+    font-family: "plex-mono-italic";
+    color: black;
+    font-size: 1.1rem;
+    line-height: 1.4rem;
+    text-align: left;
+  }
+  ul {
+    font-family: "plex-mono-italic";
+    color: black;
+    flex-direction: column;
+  }
+}
+.status-message-warning {
+  background-color: rgba(255, 241, 237, 0.8);
+  border-left: 3px solid rgb(199, 118, 98);
 }
 </style>
