@@ -54,6 +54,8 @@ export default {
 .tabs {
   display: flex;
   justify-content: space-between;
+  margin-bottom: 0px;
+  padding: 0;
   .tab {
     font-family: "nexathin";
     border-top: 1px solid #4b4b4b;

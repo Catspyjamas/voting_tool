@@ -1,15 +1,17 @@
 <template>
   <form id="Poll">
-    <div
-      v-if="errors.length"
-      id="status-message-polls"
-      class="status-message status-message-warning"
-    >
-      <p>Please correct the following error(s):</p>
-      <ul>
-        <li v-for="error in errors" :key="error">{{ error }}</li>
-      </ul>
-    </div>
+    <transition name="status-message">
+      <div
+        v-if="errors.length"
+        id="status-message-polls"
+        class="status-message status-message-warning"
+      >
+        <p>Please correct the following error(s):</p>
+        <ul>
+          <li v-for="error in errors" :key="error">{{ error }}</li>
+        </ul>
+      </div>
+    </transition>
     <legend>Vote Title</legend>
     <FormFieldset
       v-model="title"
@@ -41,9 +43,7 @@
       :textarea="true"
       name="vote-question"
     />
-    <p class="instructions">
-      Add several options that you would like to vote on.
-    </p>
+    <p class="instructions">Add several options that you would like to vote on.</p>
     <PollOptionsForm @submit="addOption" />
 
     <ul>
@@ -59,11 +59,7 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.description }}</p>
             </div>
-            <IconButton
-              class="icon_option"
-              icon="x"
-              @click="removeOption(index)"
-            />
+            <IconButton class="icon_option" icon="x" @click="removeOption(index)" />
           </div>
         </div>
       </transition-group>
@@ -79,6 +75,7 @@
   </form>
 </template>
 <script>
+import Datepicker from "vuejs-datepicker";
 import PollOptionsForm from "./PollOptionsForm.vue";
 import FormFieldset from "./FormFieldset.vue";
 import TextButton from "./TextButton.vue";
@@ -90,7 +87,8 @@ export default {
     PollOptionsForm,
     FormFieldset,
     TextButton,
-    IconButton
+    IconButton,
+    Datepicker
   },
   props: {
     poll: {
@@ -102,7 +100,7 @@ export default {
     return {
       title: "",
       description: "",
-      options: "",
+      options: [],
       start: "",
       end: "",
       errors: []
@@ -129,6 +127,8 @@ export default {
       if (!this.checkForm()) {
         return;
       }
+      this.errors = [];
+
       const { title, description, options, start, end } = this;
       const pollObject = {
         title,
@@ -138,6 +138,7 @@ export default {
         end,
         status: "DRAFT"
       };
+
       this.$emit("pollSubmit", pollObject);
     },
 
@@ -167,9 +168,7 @@ export default {
   }
 };
 
-//! Fix Animations
-//! Make messages go away after a while
-//! Refactor NewPollForm too, put them into Containers
+//! Add date picker
 </script>
 <style lang="scss" scoped>
 ul {

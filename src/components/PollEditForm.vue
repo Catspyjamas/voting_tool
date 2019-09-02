@@ -1,17 +1,19 @@
 <template>
   <div class="container">
     <h1>Edit Poll</h1>
-    <div
-      v-if="statusMessages.length"
-      id="status-message-polls"
-      class="status-message"
-    >
-      <ul>
-        <li v-for="statusMessage in statusMessages" :key="statusMessage">
-          {{ statusMessage }}
-        </li>
-      </ul>
-    </div>
+    <transition name="status-message">
+      <div
+        v-if="statusMessages.length"
+        id="status-message-polls"
+        class="status-message"
+      >
+        <ul>
+          <li v-for="statusMessage in statusMessages" :key="statusMessage">
+            {{ statusMessage }}
+          </li>
+        </ul>
+      </div>
+    </transition>
     <PollForm v-if="loaded" :poll="poll" @pollSubmit="savePollObject" />
   </div>
 </template>
@@ -44,13 +46,14 @@ export default {
     this.loaded = true;
   },
   methods: {
-    savePollObject(pollObject) {
-      savePoll(pollObject, this.pollId);
-      this.statusMessages.push("Poll saved.");
+    async savePollObject(pollObject) {
+      await savePoll(pollObject, this.pollId);
+      this.statusMessages.length = 0;
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+
+      this.statusMessages.push("Poll saved.");
+      setTimeout(() => (this.statusMessages = []), 7000);
     }
   }
 };
 </script>
-
-<style lang="scss" scoped></style>

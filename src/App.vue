@@ -125,6 +125,13 @@ button {
 router-view {
   min-height: 100vh;
 }
+
+footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 20px;
+}
 .navlinks {
   margin: 0 auto 0 auto;
   display: flex;
@@ -175,13 +182,6 @@ router-view {
   color: white;
 }
 
-.message {
-  display: block;
-  color: $mint;
-  margin: $large auto $large auto;
-  text-align: center;
-}
-
 .instructions {
   padding: 0 0 0 $xsmall;
   margin-bottom: 1em;
@@ -214,12 +214,6 @@ router-view {
   width: 100%;
 }
 
-footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 20px;
-}
 #peerigon-logo {
   transition: 0.8s ease-in-out;
   height: 60px;
@@ -260,10 +254,13 @@ footer {
   background-color: rgba(222, 251, 227, 0.8);
   border-left: 3px solid $mint;
   display: flex;
-  padding: 15px;
+  max-height: 1000px;
   margin: 2rem 0;
-  display: flex;
+  padding: 15px 0;
+  opacity: 1;
   flex-direction: column;
+  padding-left: 15px;
+  overflow: hidden;
   p {
     font-family: "plex-mono-italic";
     color: black;
@@ -275,10 +272,31 @@ footer {
     font-family: "plex-mono-italic";
     color: black;
     flex-direction: column;
+    padding: 0 0;
+    margin: 0 0;
+    list-style-type: none;
   }
 }
+
 .status-message-warning {
   background-color: rgba(255, 241, 237, 0.8);
   border-left: 3px solid rgb(199, 118, 98);
+}
+
+.status-message-enter-active,
+.status-message-leave-active {
+  max-height: 800px;
+  margin: 2rem 0;
+  padding: 15px 15px;
+  opacity: 1;
+  transition: all 1s ease-in;
+}
+
+.status-message-enter,
+.status-message-leave-to {
+  max-height: 0px;
+  margin: 0 0;
+  padding: 0 15px;
+  opacity: 0;
 }
 </style>

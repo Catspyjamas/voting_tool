@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import PollForm from "./PollForm.vue";
+import PollForm from "../components/PollForm.vue";
 
 import { savePoll } from "../lib/api.js";
 export default {
