@@ -4,7 +4,7 @@
     <Datetime
       v-model="dateString"
       placeholder="Click to add a date"
-      minute-step="30"
+      :minute-step="30"
       type="datetime"
       :min-datetime="minDatetime"
       @input="$emit('input', dateString)"
