@@ -11,6 +11,7 @@ export async function fetchPolls() {
 }
 
 export async function fetchPoll(pollId) {
+
   const response = await axios.get(`${url}/polls/${pollId}`);
   return response.data;
 }
@@ -27,6 +28,7 @@ export async function savePoll(newPollObject, pollId) {
       responseType: "json"
     });
     return response.data;
+
   }
   // if there is a pollId, it's a patch request
   const response = await axios.patch(`${url}/polls/${pollId}`, newPollObject, {
@@ -51,9 +53,6 @@ export async function deletePoll(pollId) {
   return response.data;
 }
 
-// export async function saveVote(pollId, newVoteObject) {
-
-// }
 
 export async function fetchVote(pollId, userId) {
   //! Authentication: Here we get the UserId by token
@@ -68,6 +67,7 @@ export async function fetchVote(pollId, userId) {
     });
     userId = userByToken.data._id;
   }
+
   //then GET request with userId
   const responseVote = await axios.get(
     `${url}/polls/${pollId}/votes/${userId}`,
@@ -78,6 +78,7 @@ export async function fetchVote(pollId, userId) {
       },
       responseType: "json"
     }
+
   );
   const vote = responseVote.data;
   return vote;
@@ -113,6 +114,7 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
     );
     return responseVote.data;
   }
+
   const responseVote = await axios.patch(
     `${url}/polls/${pollId}/votes/${userId}`,
     { ranking: rankedOptions },
@@ -125,9 +127,11 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
     }
   );
   return responseVote.data;
+
 }
 
 /// OPEN/CLOSE POLLS
+
 
 export async function changePollStatus(pollId, status) {
   if (!possiblePollStates[status]) {
@@ -148,7 +152,3 @@ export async function changePollStatus(pollId, status) {
     }
   );
   return response.data;
-}
-
-//////////////////////
-// Helper Functions for getting vote Results

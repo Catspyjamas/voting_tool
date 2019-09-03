@@ -2,18 +2,21 @@
   <div v-if="loaded" class="container">
     <result
       :poll-title="poll.title"
-      :poll-results="pollResults"
+      :poll-results-info="pollResultsInfo"
       :chart-data="chartData"
+
       :winner-options="winnerOptions"
-      :chart-options="chartOptions"
+
     />
   </div>
 </template>
 <script>
 import Result from "../components/Result";
+
 import { fetchPollResults } from "../lib/api.js";
 import { findWinner } from "../lib/poll.js";
 import { prepareRoundInfo } from "../lib/poll.js";
+
 export default {
   components: {
     Result
@@ -27,9 +30,11 @@ export default {
   data() {
     return {
       poll: null,
+
       winnerOptions: null,
+
       loaded: false,
-      pollResults: null,
+      pollResultsInfo: null,
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false
@@ -38,7 +43,7 @@ export default {
   },
   computed: {
     chartData: function() {
-      return this.pollResults.chartData;
+      return this.pollResultsInfo.chartData;
     }
   },
   async mounted() {
@@ -58,6 +63,7 @@ export default {
         });
       });
       this.winnerOptions = winnerOptions;
+
       this.loaded = true;
     } catch (e) {
       console.log(e);

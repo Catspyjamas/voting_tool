@@ -1,6 +1,7 @@
 <template>
   <div>
     <div id="winner">
+
       <h2 v-if="winnerOptions.length === 1">
         The winner of the poll "{{ pollTitle }}" is...
       </h2>
@@ -20,9 +21,10 @@
           and
         </h2>
       </div>
+
     </div>
 
-    <div v-for="(pollResult, index) in pollResults" :key="index">
+    <div v-for="(pollResult, index) in pollResultsInfo" :key="index">
       <div class="headline">
         <h2 v-if="pollResult.roundCount === 0">
           This is what we started out with:
@@ -31,8 +33,8 @@
       </div>
       <div v-if="pollResult.minKeys" class="additional-info">
         <span>
-          As we didn't have a majority, the one(s) with the least votes got
-          eliminated:
+          As we didn't have a majority, the option(s) with the least votes are
+          eliminated. But the opinions of the people who voted for
         </span>
         <span
           v-for="(minKey, index3) in pollResult.minKeys"
@@ -46,7 +48,7 @@
             "
             >and</span
           >
-          {{ minKey }}
+          <span>{{ minKey }}</span>
           <span
             v-if="
               pollResult.minKeys.length > 1 &&
@@ -54,21 +56,25 @@
             "
             >,&nbsp;</span
           >
-          <span v-if="index3 === pollResult.minKeys.length - 1">.</span>
         </span>
         <span>
-          But people's votes aren't lost. Let's take into account their next
-          favourite options and update the charts:
+          still count. Let's take into account their next favourite options and
+          update the charts:
         </span>
       </div>
       <div class="info">
         <li
-          v-for="(summedUpResult, index2) in pollResult.summedUpResults"
+          v-for="(summedUpResult,
+          index2) in pollResult.summedUpResultsPerOption"
           :key="index2"
         >
-          <span>{{ summedUpResult[1] }} voted for</span>
-          <span>{{ summedUpResult[0] }}</span>
-          <span>{{ summedUpResult[2] }}%</span>
+          <span>{{ summedUpResult.optionTitle }}</span>
+
+          <span v-if="summedUpResult.numberOfVoters === 1"
+            >{{ summedUpResult.numberOfVoters }} vote</span
+          >
+          <span v-else>{{ summedUpResult.numberOfVoters }} votes</span>
+          <span>{{ summedUpResult.percentageofVoters }}%</span>
         </li>
       </div>
       <doughnut-chart
@@ -91,7 +97,7 @@ export default {
       type: String,
       default: ""
     },
-    pollResults: {
+    pollResultsInfo: {
       type: Array,
       default: () => []
     },
@@ -99,9 +105,11 @@ export default {
       type: Array,
       default: () => []
     },
+
     winnerOptions: {
       type: Array,
       required: true
+
     },
     chartOptions: {
       type: Object,
@@ -114,6 +122,7 @@ export default {
 h2 {
   margin-top: $standard;
 }
+
 .chart {
   margin: $small 0 $medium 0;
   padding: $medium 0 $medium 0;
@@ -122,7 +131,7 @@ h2 {
 .info {
   li {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: 60% repeat(2, 1fr);
     line-height: $medium;
   }
 }
