@@ -13,6 +13,10 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
+      path: "/",
+      redirect: "/polls/open"
+    },
+    {
       path: "/polls/:pollId/results",
       name: "Results",
       component: Results,
