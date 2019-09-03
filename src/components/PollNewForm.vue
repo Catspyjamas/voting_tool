@@ -30,7 +30,7 @@
       />
       <legend>Vote Question</legend>
       <FormFieldset
-        v-model="info"
+        v-model="description"
         field-id="poll_info"
         label-text="Add all the information and questions that voters might need to make their decision"
         placeholder="Poll information"
@@ -53,7 +53,7 @@
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
-              <p>{{ option.addInfo }}</p>
+              <p>{{ option.description }}</p>
             </div>
             <IconButton
               class="icon_option"
@@ -81,7 +81,6 @@ import TextButton from "./TextButton.vue";
 import PollOptionsForm from "./PollOptionsForm.vue";
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
-import uniqid from "uniqid";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPoll",
@@ -94,11 +93,10 @@ export default {
   data() {
     return {
       title: "",
-      info: "",
+      description: "",
       options: [],
       start: "",
       end: "",
-      votes: [],
       message: ""
     };
   },
@@ -112,31 +110,22 @@ export default {
       }
     },
     savePollObject() {
-      const { title, info, options, start, end } = this;
+      const { title, description, options, start, end } = this;
       savePoll({
         title,
-        info,
+        description,
         options,
         start,
         end,
-        id: this.createId(title),
         votes: [],
         status: "DRAFT"
       });
       this.title = "";
-      this.info = "";
-      this.options = "";
+      this.description = "";
+      this.options = [];
       this.start = "";
       this.end = "";
       this.message = "Poll saved.";
-    },
-    createId(string) {
-      return uniqid(
-        string
-          .replace(/[^a-zA-Zs]/g, "")
-          .toLowerCase()
-          .slice(0, 3) + "-"
-      );
     }
   }
 };

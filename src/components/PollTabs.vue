@@ -15,7 +15,12 @@
         >Closed</router-link
       >
     </ul>
-    <PollList v-if="filteredPolls" :polls="filteredPolls" />
+    <PollList
+      v-if="filteredPolls"
+      :polls="filteredPolls"
+      @status-change="onStatusChange"
+      @delete-poll="onDelete"
+    />
     <router-link :to="{ name: 'NewPoll' }" class="button-link">
       <IconButton icon="plus" />
     </router-link>
@@ -38,6 +43,14 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    onStatusChange(pollId, status) {
+      this.$emit("status-change", pollId, status);
+    },
+    onDelete(pollId) {
+      this.$emit("delete-poll", pollId);
+    }
   }
 };
 </script>

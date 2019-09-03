@@ -3,7 +3,7 @@
     <div class="number">#{{ index + 1 }}</div>
     <div class="main">
       <h2>{{ title }}</h2>
-      <p>{{ addInfo }}</p>
+      <p>{{ description }}</p>
     </div>
     <IconButton icon="move" />
   </li>
@@ -26,7 +26,7 @@ export default {
       type: String,
       required: true
     },
-    addInfo: {
+    description: {
       type: String,
       default: ""
     }
@@ -71,6 +71,6 @@ export default {
 <docs>
 This is how the poll's options look like.
 ```jsx
-<PollOption key="thisandthat" index="2" title="Option title" addInfo="Blablablabla" />
+<PollOption key="thisandthat" index="2" title="Option title" description="Blablablabla" />
 ```
 </docs>

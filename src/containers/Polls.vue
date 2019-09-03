@@ -1,11 +1,15 @@
 <template>
-  <PollTabs :filtered-polls="filteredPolls" />
+  <PollTabs
+    :filtered-polls="filteredPolls"
+    @status-change="onStatusChange"
+    @delete-poll="deletePoll"
+  />
 </template>
 
 <script>
-import { fetchPolls } from "../lib/api.js";
+import { fetchPolls, changePollStatus, deletePoll } from "../lib/api.js";
 import PollTabs from "../components/PollTabs";
-import { isOpen, isDraft, isClosed } from "../lib/api.js";
+import { isOpen, isDraft, isClosed } from "../lib/poll.js";
 
 const mapTabToFilterFunction = {
   open: isOpen,
@@ -38,6 +42,19 @@ export default {
   },
   async mounted() {
     this.polls = await fetchPolls();
+  },
+  methods: {
+    async onStatusChange(pollId, status) {
+      console.log("STATUS CHANGE REQUESTED", pollId, status);
+      await changePollStatus(pollId, status);
+      this.polls = await fetchPolls();
+    },
+    async deletePoll(pollId) {
+      if (confirm("Are you sure you want to delete this poll?")) {
+        await deletePoll(pollId);
+        this.polls = await fetchPolls();
+      }
+    }
   }
 };
 </script>

@@ -30,7 +30,7 @@
       />
       <legend>Vote Question</legend>
       <FormFieldset
-        v-model="info"
+        v-model="description"
         field-id="poll_info"
         label-text="Add all the information and questions that voters might need to make their decision"
         placeholder="Poll information"
@@ -53,7 +53,7 @@
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
-              <p>{{ option.addInfo }}</p>
+              <p>{{ option.description }}</p>
             </div>
             <IconButton
               class="icon_option"
@@ -99,21 +99,20 @@ export default {
   data() {
     return {
       title: "",
-      info: "",
+      description: "",
       options: "",
       start: "",
       end: "",
-      id: "",
       message: ""
     };
   },
   created() {
     this.title = this.poll.title;
-    this.info = this.poll.info;
+    this.description = this.poll.description;
     this.options = this.poll.options;
     this.start = this.poll.start;
     this.end = this.poll.end;
-    this.id = this.poll.id;
+    this.pollId = this.poll._id;
   },
   methods: {
     addOption(option) {
@@ -125,16 +124,18 @@ export default {
       }
     },
     savePollObject() {
-      const { id, title, info, options, start, end } = this;
-      savePoll({
-        id,
-        title,
-        info,
-        options,
-        start,
-        end,
-        status: "DRAFT"
-      });
+      const { title, description, options, start, end } = this;
+      savePoll(
+        {
+          title,
+          description,
+          options,
+          start,
+          end,
+          status: "DRAFT"
+        },
+        this.pollId
+      );
       this.message = "Poll saved.";
     }
   }

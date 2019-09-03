@@ -1,12 +1,12 @@
 <template>
   <ul class="poll-list">
-    <li v-for="poll of polls" :key="poll.id" class="polls">
+    <li v-for="poll of polls" :key="poll._id" class="polls">
       <div class="poll-head">
         <h2>{{ poll.title }}</h2>
         <div class="poll-links">
           <router-link
             v-if="isDraft(poll)"
-            :to="{ name: 'EditPoll', params: { poll: poll, pollId: poll.id } }"
+            :to="{ name: 'EditPoll', params: { pollId: poll._id } }"
           >
             <TextButton text="Edit" direction="right" />
           </router-link>
@@ -15,11 +15,11 @@
             text="Open Vote"
             direction="right"
             background-color="#646464"
-            @click="openPoll(poll.id)"
+            @click="$emit('status-change', poll._id, 'OPEN')"
           />
           <router-link
             v-if="isOpen(poll)"
-            :to="{ name: 'Vote', params: { pollId: poll.id } }"
+            :to="{ name: 'Vote', params: { pollId: poll._id } }"
           >
             <Text-Button text="Vote" direction="right" />
           </router-link>
@@ -28,11 +28,11 @@
             text="Close Poll"
             direction="right"
             background-color="#646464"
-            @click="closePoll(poll.id)"
+            @click="$emit('status-change', poll._id, 'CLOSED')"
           />
           <router-link
             v-if="isClosed(poll)"
-            :to="{ name: 'Results', params: { pollId: poll.id } }"
+            :to="{ name: 'Results', params: { pollId: poll._id } }"
           >
             <Text-Button
               text="Results"
@@ -45,13 +45,14 @@
             text="Move in Drafts"
             direction="right"
             background-color="#505050"
-            @click="draftPoll(poll.id)"
+            @click="$emit('status-change', poll._id, 'DRAFT')"
           />
           <TextButton
+            v-if="isDraft(poll)"
             text="Delete"
             direction="right"
             background-color="#ff7a7a"
-            @click="deletePoll(poll.id)"
+            @click="$emit('delete-poll', poll._id)"
           />
         </div>
       </div>
@@ -69,16 +70,7 @@
 
 <script>
 import TextButton from "./TextButton";
-
-import {
-  isClosed,
-  isOpen,
-  isDraft,
-  closePoll,
-  openPoll,
-  draftPoll,
-  deletePoll
-} from "../lib/api.js";
+import { isClosed, isOpen, isDraft } from "../lib/poll.js";
 
 export default {
   components: {
@@ -96,21 +88,24 @@ export default {
       isOpen,
       isDraft
     };
-  },
-  methods: {
-    openPoll(id) {
-      openPoll(id);
-    },
-    closePoll(id) {
-      closePoll(id);
-    },
-    draftPoll(id) {
-      draftPoll(id);
-    },
-    deletePoll(id) {
-      deletePoll(id);
-      this.$forceUpdate();
-    }
+    // },
+    // methods: {
+    //   openPoll(id) {
+    //     openPoll(id);
+    //   },
+    //   closePoll(id) {
+    //     closePoll(id);
+    //   },
+    //   draftPoll(id) {
+    //     draftPoll(id);
+    //   },
+    //   deletePoll(id) {
+    //     deletePoll(id);
+    //     //TODO: Doesn't work without reload yet. Also emit event to grandparent in order to remove poll from polls props
+    //     //! PRO TIP: Use Scoped Slots
+    //     // const pollIndex = this.polls.findIndex(poll => poll._id === id);
+    //     // this.polls.splice(pollIndex, 1);
+    //   }
   }
 };
 </script>

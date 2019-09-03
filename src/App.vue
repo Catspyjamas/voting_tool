@@ -73,7 +73,7 @@ h2 {
 }
 
 body {
-  background: $dark-gradient;
+  background: $dark;
   display: grid;
   grid-template-rows: auto;
   justify-items: center;

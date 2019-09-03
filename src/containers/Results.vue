@@ -4,16 +4,19 @@
       :poll-title="poll.title"
       :poll-results-info="pollResultsInfo"
       :chart-data="chartData"
-      :winner-option="winnerOption"
-      :chart-options="chartOptions"
+
+      :winner-options="winnerOptions"
+
     />
   </div>
 </template>
 <script>
 import Result from "../components/Result";
-import { fetchPoll } from "../lib/api.js";
-import { findWinner } from "../lib/api.js";
-import { prepareRoundInfo } from "../lib/api.js";
+
+import { fetchPollResults } from "../lib/api.js";
+import { findWinner } from "../lib/poll.js";
+import { prepareRoundInfo } from "../lib/poll.js";
+
 export default {
   components: {
     Result
@@ -21,13 +24,15 @@ export default {
   props: {
     pollId: {
       type: String,
-      default: ""
+      required: true
     }
   },
   data() {
     return {
       poll: null,
-      winnerOption: null,
+
+      winnerOptions: null,
+
       loaded: false,
       pollResultsInfo: null,
       chartOptions: {
@@ -42,18 +47,26 @@ export default {
     }
   },
   async mounted() {
-    this.loaded = false;
-
     try {
-      //get id from URL
-      const poll = await fetchPoll(this.pollId);
+      const poll = await fetchPollResults(this.pollId);
       this.poll = poll;
-      const pollResults = await findWinner(poll);
-      this.pollResultsInfo = prepareRoundInfo(poll, pollResults.roundHistory);
-      this.winnerOption = pollResults.winnerOption;
+      const pollData = findWinner(poll);
+      const pollResults = prepareRoundInfo(poll, pollData.roundHistory);
+      this.pollResults = pollResults;
+      const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
+      const winnerOptions = [];
+      winnerIdsAndVotes.forEach(winnerIdAndVote => {
+        poll.options.forEach(option => {
+          if (winnerIdAndVote.winnerId === option._id) {
+            winnerOptions.push(option);
+          }
+        });
+      });
+      this.winnerOptions = winnerOptions;
+
       this.loaded = true;
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 };

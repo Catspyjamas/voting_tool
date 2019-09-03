@@ -8,11 +8,11 @@
       name="title"
     />
     <FormFieldset
-      v-model="addInfo"
+      v-model="description"
       field-id="vote__option__info"
       label-text="Additional Info about the option"
       placeholder="Option title"
-      name="addInfo"
+      name="description"
       :textarea="true"
     />
     <IconButton icon="plus" type="submit" />
@@ -31,19 +31,19 @@ export default {
   data() {
     return {
       title: "",
-      addInfo: ""
+      description: ""
     };
   },
   methods: {
     onSubmit() {
-      const { title, addInfo } = this;
+      const { title, description } = this;
       this.$emit("submit", {
         title,
-        addInfo,
+        description,
         id: this.createId(title)
       });
       this.title = "";
-      this.addInfo = "";
+      this.description = "";
     },
     createId(string) {
       return uniqid(

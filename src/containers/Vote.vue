@@ -1,19 +1,18 @@
 <template>
   <VoteForm
-    v-if="!isLoading"
+    v-if="votesArrived"
     :poll="poll"
-    :vote="vote"
+    :initial-ranked-options="rankedOptions"
     :status-text="statusText"
-    @submit="saveVote"
+    :user-id="userId"
+    @submitVote="submitVote"
   />
 </template>
 
 <script>
-import { fetchPoll, fetchVote, saveVote } from "../lib/api.js";
+import { fetchVote, saveVote, fetchPoll } from "../lib/api.js";
 import VoteForm from "../components/VoteForm.vue";
 
-//TO DO: Ranking-Ids übersetzen in Props, die das Component braucht
-// bei submit nur ranking als array aus option-ids filtern und speichern
 export default {
   components: {
     VoteForm
@@ -21,56 +20,73 @@ export default {
   props: {
     pollId: {
       type: String,
-      default: ""
+      required: true
+    },
+    userIdByParams: {
+      type: String
     }
   },
   data() {
     return {
-      poll: null,
-      vote: [],
+      rankedOptions: [],
+      usersFirstVote: false,
       voted: false,
-      statusText: ""
+      statusText: "",
+      poll: null,
+      userId: this.userIdByParams
     };
   },
   computed: {
-    isLoading() {
-      return this.poll === null;
+    votesArrived() {
+      return this.rankedOptions.length !== 0;
     }
   },
   async created() {
-    this.poll = await fetchPoll(this.pollId);
-    try {
-      const result = await fetchVote(this.pollId, "xxx");
-      if (result.ranking.length === 0) {
-        this.statusText = `You're currently abstaining. If you'd like to vote for ${
-          this.poll.title
-        } after all, please resubmit.`;
-        this.vote = this.shuffleArray(this.poll.options);
-      } else {
-        this.statusText = `This is what you voted for ${
-          this.poll.title
-        }. Change the order and resubmit if you would like to change your ranking.`;
-        this.vote = result.ranking.map(choice => {
-          return this.poll.options.find(option => {
-            return option.id === choice;
-          });
-        });
-      }
-    } catch (error) {
+    const [vote, poll] = await Promise.all([
+      fetchVote(this.pollId, this.userId),
+      fetchPoll(this.pollId)
+    ]);
+    console.log("VOTE", vote, "POLL", poll);
+    this.poll = poll;
+    this.userId = vote.userId;
+    if (vote.usersFirstVote) {
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
-      this.vote = this.shuffleArray(this.poll.options);
+      this.usersFirstVote = true;
+      this.rankedOptions = this.shuffleArray(poll.options);
+    }
+    if (vote.ranking.length === 0) {
+      this.statusText = `You're currently abstaining. If you'd like to vote for ${
+        this.poll.title
+      } after all, please resubmit.`;
+      this.rankedOptions = this.shuffleArray(this.poll.options);
+    } else {
+      this.statusText = `This is what you voted for ${
+        this.poll.title
+      }. Change the order and resubmit if you would like to change your ranking.`;
+      this.rankedOptions = vote.ranking.map(optionId => {
+        return this.poll.options.find(option => {
+          return option._id === optionId;
+        });
+      });
     }
   },
   methods: {
-    saveVote(ranking) {
-      saveVote(this.poll.id, {
-        userId: "xxx",
-        ranking
-      });
-      this.voted = true;
+    async submitVote(rankedOptions) {
+      try {
+        await saveVote(
+          this.poll._id,
+          rankedOptions,
+          this.userId,
+          this.usersFirstVote
+        );
+        this.voted = true;
+      } catch (error) {
+        console.log(error);
+      }
     },
+
     shuffleArray(arr) {
       return arr
         .map(a => [Math.random(), a])

@@ -13,37 +13,37 @@ const poll1 = {
   title: "Birthday Event",
   start: "2019-07-28 09:30",
   end: "2019-07-31 09:30",
-  info:
+  description:
     "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
   options: [
     {
       title: "Radlfahren",
       id: "rad-1jvf53jcx",
-      addInfo:
+      description:
         "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
     },
     {
       title: "Canyoning",
       id: "can-1jvf53urh",
-      addInfo:
+      description:
         "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
     },
     {
       title: "Europapark",
       id: "eur-1jvf542o5",
-      addInfo:
+      description:
         "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
     },
     {
       title: "Go cart Driving",
       id: "goc-1jvf54cj2",
-      addInfo:
+      description:
         "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
     },
     {
       title: "Hatedbyall",
       id: "hat-1jvf542o8",
-      addInfo:
+      description:
         "Dies ist ein Typoblindtext. An ihm kann man sehen, ob alle Buchstaben da sind und wie sie aussehen. Manchmal benutzt man Worte wie Hamburgefonts, Rafgenduks oder Handgloves, um Schriften zu testen."
     }
   ],

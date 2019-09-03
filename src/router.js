@@ -41,6 +41,12 @@ export default new Router({
       props: true
     },
     {
+      path: "/polls/:pollId/vote/:userIdByParams",
+      name: "EditVote",
+      component: Vote,
+      props: true
+    },
+    {
       path: "/about",
       name: "About",
       component: About
@@ -51,7 +57,7 @@ export default new Router({
       component: NewPoll
     },
     {
-      path: "/polls/:pollId/submitted",
+      path: "/polls/:pollId/submitted/:userId",
       name: "Submitted",
       component: Submitted,
       props: true

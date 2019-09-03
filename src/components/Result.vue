@@ -1,8 +1,27 @@
 <template>
   <div>
     <div id="winner">
-      <h2>The winner of the poll "{{ pollTitle }}" is...</h2>
-      <h1>{{ winnerOption.title }}</h1>
+
+      <h2 v-if="winnerOptions.length === 1">
+        The winner of the poll "{{ pollTitle }}" is...
+      </h2>
+      <h2 v-else>
+        Oh, it's a tie! The winners of the poll "{{ pollTitle }}" are...
+      </h2>
+      <div
+        v-for="(winnerOption, index) in winnerOptions"
+        :key="winnerOption._id"
+      >
+        <h1>{{ winnerOption.title }}</h1>
+        <h2
+          v-if="
+            winnerOptions.length !== 1 && index === winnerOptions.length - 2
+          "
+        >
+          and
+        </h2>
+      </div>
+
     </div>
 
     <div v-for="(pollResult, index) in pollResultsInfo" :key="index">
@@ -86,9 +105,11 @@ export default {
       type: Array,
       default: () => []
     },
-    winnerOption: {
-      type: Object,
-      default: () => {}
+
+    winnerOptions: {
+      type: Array,
+      required: true
+
     },
     chartOptions: {
       type: Object,
