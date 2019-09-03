@@ -10,6 +10,9 @@ exports.getVote = async (req, res) => {
   if (!poll.votes || poll.votes.length === 0) {
     //! Is it ok to render a response and throw an Error afterwards?
     res.json({ usersFirstVote: true });
+    throw new Error(
+      `Update not possible: There aren't any votes for this poll yet.`
+    );
   }
   //Check if user is authorized to get this vote (token matches param)
   if (req.params.userId && user.id !== req.params.userId) {
@@ -81,6 +84,14 @@ exports.updateVote = async (req, res) => {
   //Find oldVote in polls
   const oldVote = poll.votes.find(vote => vote.userId.toJSON() === user.id);
 
+  //Manipulate oldVote with new ranking (Don't need this probably)
+  //  const oldVoteIndex = poll.votes.findIndex(
+  //  vote => vote.userId.toJSON() === user.id
+  //);
+  // let newVote = { ...oldVote };
+  // newVote.ranking = ranking;
+  // poll.votes.splice(oldVoteIndex, 1, newVote);
+  // await poll.save();
   const updatedVote = await Vote.findOneAndUpdate(
     { _id: oldVote._id },
     { ranking: ranking },

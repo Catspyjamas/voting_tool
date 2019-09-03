@@ -28,7 +28,7 @@
       <div v-if="pollResult.minKeys" class="additional-info">
         <span>
           As we didn't have a majority, the one(s) with the least votes got
-          eliminated (in this case:
+          eliminated (in this case: 
         </span>
         <span v-for="(minKey, index3) in pollResult.minKeys" :key="index3" class="option">
           <span
@@ -46,7 +46,9 @@
           >,&nbsp;</span>
           <span v-if="index3 === pollResult.minKeys.length - 1">).</span>
         </span>
-        <span>But people's votes aren't lost. Here's the chart if we take into account their next favourite options:</span>
+        <span>
+          But people's votes aren't lost. Here's the chart if we take into account their next favourite options:
+        </span>
       </div>
       <div class="info">
         <table>
@@ -82,7 +84,7 @@ export default {
       type: String,
       default: ""
     },
-    pollResultsInfo: {
+    pollResults: {
       type: Array,
       default: () => []
     },
@@ -90,7 +92,6 @@ export default {
       type: Array,
       default: () => []
     },
-
     winnerOptions: {
       type: Array,
       required: true
@@ -119,7 +120,6 @@ export default {
 h2 {
   margin: 1rem 0;
 }
-
 .chart {
   margin: $small 0 $medium 0;
   padding: $medium 0 $medium 0;
@@ -128,7 +128,7 @@ h2 {
 .info {
   li {
     display: grid;
-    grid-template-columns: 60% repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     line-height: $medium;
   }
 }
