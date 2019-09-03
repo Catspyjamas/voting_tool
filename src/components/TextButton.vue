@@ -60,7 +60,7 @@ export default {
 .button {
   transition: background-color 0.5 ease;
   font-family: "nexablack";
-  border-radius: 39px;
+  border-radius: 35px;
   letter-spacing: 0.18em;
   display: flex;
   position: relative;
@@ -68,7 +68,7 @@ export default {
   border: none;
   text-transform: uppercase;
   color: white;
-  font-size: 0.8em;
+  font-size: 0.9rem;
   padding: 0.6rem 0.8rem 0.6rem 0.8em;
   bottom: 0;
   cursor: pointer;

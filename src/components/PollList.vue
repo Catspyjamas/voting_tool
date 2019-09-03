@@ -4,10 +4,7 @@
       <div class="poll-head">
         <h2>{{ poll.title }}</h2>
         <div class="poll-links">
-          <router-link
-            v-if="isOpen(poll)"
-            :to="{ name: 'Vote', params: { pollId: poll._id } }"
-          >
+          <router-link v-if="isOpen(poll)" :to="{ name: 'Vote', params: { pollId: poll._id } }">
             <IconButton icon="package" direction="right" />
           </router-link>
           <router-link
@@ -15,6 +12,7 @@
             :to="{ name: 'Results', params: { pollId: poll._id } }"
           >
             <Text-Button
+              id="results-button"
               text="Results"
               direction="right"
               background-color="#2B239E"
@@ -38,44 +36,30 @@
               />
             </transition>
             <transition name="move">
-              <div
-                v-if="showMenu === poll._id"
-                :class="{ active: showMenu === poll._id }"
-              >
+              <div v-if="showMenu === poll._id" :class="{ active: showMenu === poll._id }">
                 <ul class="dropdown-ul">
                   <li
                     v-if="isDraft(poll)"
                     class="dropdown-li"
                     @click="$emit('status-change', poll._id, 'OPEN')"
-                  >
-                    Open for Voting
-                  </li>
+                  >Open for Voting</li>
                   <li
                     v-if="isOpen(poll)"
                     class="dropdown-li"
                     @click="$emit('status-change', poll._id, 'CLOSED')"
-                  >
-                    Close Poll
-                  </li>
+                  >Close Poll</li>
                   <li
                     v-if="isClosed(poll) || isOpen(poll)"
                     class="dropdown-li"
                     @click="$emit('status-change', poll._id, 'DRAFT')"
-                  >
-                    Move in Drafts
-                  </li>
+                  >Move in Drafts</li>
                   <li
                     v-if="isDraft(poll)"
                     class="dropdown-li"
                     @click="$emit('delete-poll', poll._id)"
-                  >
-                    Delete Poll
-                  </li>
+                  >Delete Poll</li>
                   <li v-if="isDraft(poll)" class="dropdown-li">
-                    <router-link
-                      :to="{ name: 'EditPoll', params: { pollId: poll._id } }"
-                      >Edit Poll</router-link
-                    >
+                    <router-link :to="{ name: 'EditPoll', params: { pollId: poll._id } }">Edit Poll</router-link>
                   </li>
                 </ul>
               </div>
@@ -101,24 +85,20 @@
             </tr>
             <tr>
               <td class="table-em">Votes:</td>
-              <td v-if="poll.status !== 'CLOSED'">
-                You need to close the poll in order to see the number of voters.
-              </td>
+              <td
+                v-if="poll.status !== 'CLOSED'"
+              >You need to close the poll in order to see the number of voters.</td>
               <td v-if="poll.status === 'CLOSED' && !enoughVotes(poll)">
                 You need to collect more than one vote if you would like to
                 diplay the results.
               </td>
-              <td v-if="poll.status === 'CLOSED' && enoughVotes(poll)">
-                {{ poll.votes.length }}
-              </td>
+              <td v-if="poll.status === 'CLOSED' && enoughVotes(poll)">{{ poll.votes.length }}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-    <p v-if="polls.length === 0" class="no-polls">
-      There aren't any polls in here.
-    </p>
+    <p v-if="polls.length === 0" class="no-polls">There aren't any polls in here.</p>
     <router-link :to="{ name: 'NewPoll' }" class="button-link">
       <IconButton icon="plus" />
     </router-link>
@@ -160,7 +140,6 @@ export default {
   },
   methods: {
     dateString(date) {
-      //Doesn't work properly... Use moment instead?
       return dateFormat.format(new Date(date));
     },
     enoughVotes(poll) {
@@ -319,5 +298,9 @@ ul {
 .move-enter,
 .move-leave-to {
   opacity: 0;
+}
+
+#results-button {
+  margin: 2px 10px 10px 10px;
 }
 </style>

@@ -2,15 +2,9 @@
   <div class="container">
     <h1>Edit Poll</h1>
     <transition name="status-message">
-      <div
-        v-if="statusMessages.length"
-        id="status-message-polls"
-        class="status-message"
-      >
+      <div v-if="statusMessages.length" id="status-message-polls" class="status-message">
         <ul>
-          <li v-for="statusMessage in statusMessages" :key="statusMessage">
-            {{ statusMessage }}
-          </li>
+          <li v-for="statusMessage in statusMessages" :key="statusMessage">{{ statusMessage }}</li>
         </ul>
       </div>
     </transition>
@@ -52,7 +46,7 @@ export default {
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
 
       this.statusMessages.push("Poll saved.");
-      setTimeout(() => (this.statusMessages = []), 30000);
+      setTimeout(() => (this.statusMessages = []), 7000);
     }
   }
 };

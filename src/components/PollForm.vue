@@ -14,29 +14,33 @@
     </transition>
     <legend>Vote Title</legend>
     <FormFieldset
-      v-model="title"
+      v-model="pollModel.title"
       field-id="poll_title"
       label-text="Add a title for your vote"
       placeholder="Title"
       name="poll-title"
     />
     <legend>Start Time</legend>
-    <form-fieldset
-      v-model="start"
+
+    <FormFieldsetDate
+      v-model="pollModel.start"
       field-id="poll_start"
       label-text="When should your poll start?"
-      placeholder="e.g. '2019-07-28 09:30'"
+      :date-string-initial="pollModel.start"
     />
+
     <legend>End Time</legend>
-    <form-fieldset
-      v-model="end"
+    <FormFieldsetDate
+      v-model="pollModel.end"
       field-id="poll_end"
       label-text="When should your poll end?"
-      placeholder="e.g. '2019-07-31 18:30'"
+      :date-string-initial="pollModel.end"
+      :min-datetime="pollModel.start"
     />
+
     <legend>Vote Question</legend>
     <FormFieldset
-      v-model="description"
+      v-model="pollModel.description"
       field-id="poll_info"
       label-text="Add all the information and questions that voters might need to make their decision"
       placeholder="Poll information"
@@ -53,7 +57,7 @@
         enter-active-class="animated zoomIn"
         leave-active-class="animated zoomOut"
       >
-        <div v-for="(option, index) in options" :key="option.title">
+        <div v-for="(option, index) in pollModel.options" :key="option.title">
           <div class="list__options">
             <div class="list__options__info">
               <li class="list__options__title">{{ option.title }}</li>
@@ -75,9 +79,9 @@
   </form>
 </template>
 <script>
-import Datepicker from "vuejs-datepicker";
 import PollOptionsForm from "./PollOptionsForm.vue";
 import FormFieldset from "./FormFieldset.vue";
+import FormFieldsetDate from "./FormFieldsetDate.vue";
 import TextButton from "./TextButton.vue";
 import IconButton from "./IconButton.vue";
 
@@ -86,9 +90,9 @@ export default {
   components: {
     PollOptionsForm,
     FormFieldset,
+    FormFieldsetDate,
     TextButton,
-    IconButton,
-    Datepicker
+    IconButton
   },
   props: {
     poll: {
@@ -98,29 +102,34 @@ export default {
   },
   data() {
     return {
-      title: "",
-      description: "",
-      options: [],
-      start: "",
-      end: "",
       errors: []
     };
   },
-  created() {
-    this.title = this.poll.title;
-    this.description = this.poll.description;
-    this.options = this.poll.options;
-    this.start = this.poll.start;
-    this.end = this.poll.end;
-    this.pollId = this.poll._id;
+  computed: {
+    pollModel() {
+      const pollModel = {
+        title: "",
+        description: "",
+        options: [],
+        start: "",
+        end: "",
+        status: "DRAFT"
+      };
+
+      if (this.poll !== null) {
+        Object.assign(pollModel, this.poll);
+      }
+
+      return pollModel;
+    }
   },
   methods: {
     addOption(option) {
-      this.options.push(option);
+      this.pollModel.options.push(option);
     },
     removeOption(index) {
       if (index !== -1) {
-        this.options.splice(index, 1);
+        this.pollModel.ootions.splice(index, 1);
       }
     },
     pollSubmit() {
@@ -129,36 +138,28 @@ export default {
       }
       this.errors = [];
 
-      const { title, description, options, start, end } = this;
-      const pollObject = {
-        title,
-        description,
-        options,
-        start,
-        end,
-        status: "DRAFT"
-      };
-
-      this.$emit("pollSubmit", pollObject);
+      this.$emit("pollSubmit", this.pollModel);
     },
 
     checkForm: function() {
-      if (this.title && this.start && this.end && this.options.length > 1) {
+      const { title, start, end, options } = this.pollModel;
+
+      if (title && start && end && options.length > 1) {
         return true;
       }
 
       this.errors = [];
 
-      if (!this.title) {
+      if (!title) {
         this.errors.push("Title required.");
       }
-      if (!this.start) {
+      if (!start) {
         this.errors.push("Start date required.");
       }
-      if (!this.end) {
+      if (!end) {
         this.errors.push("End date required.");
       }
-      if (this.options.length <= 1) {
+      if (options.length <= 1) {
         this.errors.push("At least two options required.");
       }
       // e.preventDefault();
@@ -167,8 +168,6 @@ export default {
     }
   }
 };
-
-//! Add date picker
 </script>
 <style lang="scss" scoped>
 ul {
