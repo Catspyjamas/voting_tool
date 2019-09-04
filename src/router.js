@@ -7,6 +7,7 @@ import About from "./components/About.vue";
 import NewPoll from "./containers/PollNewForm.vue";
 import Submitted from "./components/Submitted.vue";
 import Results from "./containers/Results.vue";
+import Login from "./containers/Login.vue";
 
 Vue.use(Router);
 
@@ -65,6 +66,11 @@ export default new Router({
       name: "Submitted",
       component: Submitted,
       props: true
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login
     }
   ]
 });

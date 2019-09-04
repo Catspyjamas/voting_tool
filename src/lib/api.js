@@ -150,5 +150,14 @@ export async function changePollStatus(pollId, status) {
   return response.data;
 }
 
-//////////////////////
-// Helper Functions for getting vote Results
+/// USER AUTHENTICATION
+
+export async function login(credentials) {
+  const response = await axios.post(`${url}/users/`, credentials, {
+    headers: {
+      ContentType: "application/json"
+    },
+    responseType: "json"
+  });
+  return response.data;
+}
