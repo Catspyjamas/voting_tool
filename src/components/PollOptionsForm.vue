@@ -60,14 +60,6 @@ export default {
       this.title = "";
       this.description = "";
     },
-    createId(string) {
-      return uniqid(
-        string
-          .replace(/[^a-zA-Zs]/g, "")
-          .toLowerCase()
-          .slice(0, 3) + "-"
-      );
-    },
     checkForm: function() {
       if (this.title) {
         return true;

@@ -1,5 +1,5 @@
 <template>
-  <form id="login">
+  <form id="login" @submit.prevent="onSubmit">
     <FormFieldset
       v-model="email"
       field-id="email"

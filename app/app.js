@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { catchErrors } = require("./handlers/errorHandlers");
-const authHandler = require("./handlers/authHandler");
+const authHandlers = require("./handlers/authHandlers");
 const pollHandler = require("./handlers/pollHandler");
 const bodyParser = require("body-parser");
 
@@ -18,12 +18,6 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.get(
-  "/user",
-  catchErrors(authHandler.findUser),
-  catchErrors(userController.getUser)
-);
-
 app.get("/polls", catchErrors(pollController.getPolls));
 
 // GET /polls - holt alle Polls
@@ -36,7 +30,7 @@ app.get("/polls", catchErrors(pollController.getPolls));
 
 app.post(
   "/polls",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.createPoll)
 );
 
@@ -48,13 +42,13 @@ app.get(
 
 app.patch(
   "/polls/:pollId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.updatePoll)
 );
 
 app.delete(
   "/polls/:pollId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.deletePoll)
 );
 
@@ -66,33 +60,51 @@ app.delete(
 
 app.get(
   "/polls/:pollId/votes",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.getVotes)
 );
 
 app.get(
   "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(votesController.getVote)
 );
 
 app.post(
   "/polls/:pollId/votes",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.createVote)
 );
 app.patch(
   "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(votesController.updateVote)
 );
 app.delete(
   "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.deleteVote)
+);
+
+// GET /user: Finds a user and returns it
+//!TODO: Refactor with /users/user
+// POST /users/ Create a new user
+// PUT /users/:userId Update user
+// PUT /users/:userId Delete user
+
+app.get(
+  "/user",
+  catchErrors(authHandlers.findUser),
+  catchErrors(userController.getUser)
+);
+
+app.post(
+  "/users",
+  authHandlers.validateSignup,
+  catchErrors(authHandlers.createUser)
 );
 
 module.exports = app;

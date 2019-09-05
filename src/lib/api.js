@@ -161,3 +161,15 @@ export async function login(credentials) {
   });
   return response.data;
 }
+
+export async function signup(credentials) {
+  console.log("SIGNING UP");
+  const response = await axios.post(`${url}/users/`, credentials, {
+    headers: {
+      ContentType: "application/json"
+    },
+    responseType: "json"
+  });
+  console.log(response);
+  return response.data;
+}

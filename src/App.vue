@@ -5,6 +5,7 @@
         <router-link class="navlink" to="/polls">Polls</router-link>
         <router-link class="navlink" to="/about">About</router-link>
         <router-link class="navlink" to="/login">Login</router-link>
+        <router-link class="navlink" to="/signup">Sign Up</router-link>
       </div>
     </nav>
     <router-view />
