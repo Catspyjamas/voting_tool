@@ -1,13 +1,8 @@
 <template>
   <div class="container">
     <h1>Edit Poll</h1>
-    <transition name="status-message">
-      <div v-if="statusMessages.length" id="status-message-polls" class="status-message">
-        <ul>
-          <li v-for="statusMessage in statusMessages" :key="statusMessage">{{ statusMessage }}</li>
-        </ul>
-      </div>
-    </transition>
+    <Messages :status-messages="statusMessages" />
+
     <PollForm v-if="loaded" :poll="poll" @pollSubmit="savePollObject" />
   </div>
 </template>
@@ -15,12 +10,14 @@
 <script>
 import { fetchPoll } from "../lib/api.js";
 import { savePoll } from "../lib/api.js";
+import Messages from "../components/Messages.vue";
 
 import PollForm from "../components/PollForm.vue";
 export default {
   name: "EditPoll",
   components: {
-    PollForm
+    PollForm,
+    Messages
   },
   props: {
     pollId: {

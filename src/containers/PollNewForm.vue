@@ -1,47 +1,29 @@
 <template>
   <div class="container">
     <h1>New Poll</h1>
-    <transition name="status-message">
-      <div
-        v-if="statusMessages.length"
-        id="status-message-polls"
-        class="status-message"
-      >
-        <ul>
-          <li v-for="statusMessage in statusMessages" :key="statusMessage">
-            {{ statusMessage }}
-          </li>
-        </ul>
-      </div>
-    </transition>
-    <PollForm :poll="emptyPoll" @pollSubmit="savePollObject" />
+    <Messages :status-messages="statusMessages" />
+    <PollForm @pollSubmit="savePollObject" />
   </div>
 </template>
 
 <script>
 import PollForm from "../components/PollForm.vue";
-
+import Messages from "../components/Messages.vue";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPoll",
   components: {
-    PollForm
+    PollForm,
+    Messages
   },
   data() {
     return {
-      statusMessages: [],
-      emptyPoll: {
-        title: "",
-        description: "",
-        options: [],
-        start: "",
-        end: "",
-        pollId: ""
-      }
+      statusMessages: []
     };
   },
   methods: {
     async savePollObject(pollObject) {
+      console.log(pollObject);
       const { title, description, options, start, end } = pollObject;
       await savePoll({
         title,

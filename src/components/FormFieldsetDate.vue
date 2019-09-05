@@ -40,8 +40,10 @@ export default {
       dateString: null
     };
   },
-  mounted() {
-    this.dateString = this.dateStringInitial;
+  watch: {
+    dateStringInitial(newDateString) {
+      this.dateString = newDateString;
+    }
   }
 };
 </script>

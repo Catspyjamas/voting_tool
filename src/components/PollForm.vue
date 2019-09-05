@@ -1,17 +1,6 @@
 <template>
   <form id="Poll">
-    <transition name="status-message">
-      <div
-        v-if="errors.length"
-        id="status-message-polls"
-        class="status-message status-message-warning"
-      >
-        <p>Please correct the following error(s):</p>
-        <ul>
-          <li v-for="error in errors" :key="error">{{ error }}</li>
-        </ul>
-      </div>
-    </transition>
+    <Messages :error-messages="errors" />
     <legend>Vote Title</legend>
     <FormFieldset
       v-model="pollModel.title"
@@ -47,8 +36,10 @@
       :textarea="true"
       name="vote-question"
     />
-    <p class="instructions">Add several options that you would like to vote on.</p>
-    <PollOptionsForm @submit="addOption" />
+    <p class="instructions">
+      Add several options that you would like to vote on.
+    </p>
+    <PollOptionsForm @poll-option-submit="addOption" />
 
     <ul>
       <transition-group
@@ -63,7 +54,11 @@
               <li class="list__options__title">{{ option.title }}</li>
               <p>{{ option.description }}</p>
             </div>
-            <IconButton class="icon_option" icon="x" @click="removeOption(index)" />
+            <IconButton
+              class="icon_option"
+              icon="x"
+              @click="removeOption(index)"
+            />
           </div>
         </div>
       </transition-group>
@@ -84,6 +79,7 @@ import FormFieldset from "./FormFieldset.vue";
 import FormFieldsetDate from "./FormFieldsetDate.vue";
 import TextButton from "./TextButton.vue";
 import IconButton from "./IconButton.vue";
+import Messages from "./Messages.vue";
 
 export default {
   name: "PollForm",
@@ -92,7 +88,8 @@ export default {
     FormFieldset,
     FormFieldsetDate,
     TextButton,
-    IconButton
+    IconButton,
+    Messages
   },
   props: {
     poll: {
@@ -102,34 +99,32 @@ export default {
   },
   data() {
     return {
-      errors: []
-    };
-  },
-  computed: {
-    pollModel() {
-      const pollModel = {
+      errors: [],
+      pollModel: {
         title: "",
         description: "",
         options: [],
         start: "",
         end: "",
         status: "DRAFT"
-      };
-
-      if (this.poll !== null) {
-        Object.assign(pollModel, this.poll);
       }
-
-      return pollModel;
+    };
+  },
+  watch: {
+    poll(updatedPoll) {
+      if (this.poll !== null) {
+        Object.assign(this.pollModel, updatedPoll);
+      }
     }
   },
   methods: {
     addOption(option) {
+      console.log(option);
       this.pollModel.options.push(option);
     },
     removeOption(index) {
       if (index !== -1) {
-        this.pollModel.ootions.splice(index, 1);
+        this.pollModel.options.splice(index, 1);
       }
     },
     pollSubmit() {
@@ -137,8 +132,15 @@ export default {
         return;
       }
       this.errors = [];
-
       this.$emit("pollSubmit", this.pollModel);
+      this.pollModel = {
+        title: "",
+        description: "",
+        options: [],
+        start: "",
+        end: "",
+        status: "DRAFT"
+      };
     },
 
     checkForm: function() {
@@ -162,7 +164,6 @@ export default {
       if (options.length <= 1) {
         this.errors.push("At least two options required.");
       }
-      // e.preventDefault();
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
       return false;
     }

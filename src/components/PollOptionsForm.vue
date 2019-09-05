@@ -1,15 +1,6 @@
 <template>
   <form class="form__innerbox" @submit.prevent="onSubmit">
-    <div
-      v-if="optionErrors.length > 0"
-      id="status-message-options"
-      class="status-message status-message-warning"
-    >
-      <p>Please correct the following error(s):</p>
-      <ul>
-        <li v-for="error in optionErrors" :key="error">{{ error }}</li>
-      </ul>
-    </div>
+    <Messages :error-messages="optionErrors" />
     <FormFieldset
       v-model="title"
       field-id="vote__option__title"
@@ -32,12 +23,13 @@
 <script>
 import IconButton from "./IconButton.vue";
 import FormFieldset from "./FormFieldset.vue";
-import uniqid from "uniqid";
+import Messages from "./Messages.vue";
 export default {
   name: "PollOptionsForm",
   components: {
     IconButton,
-    FormFieldset
+    FormFieldset,
+    Messages
   },
   data() {
     return {
@@ -52,10 +44,9 @@ export default {
         return;
       }
       const { title, description } = this;
-      this.$emit("submit", {
+      this.$emit("poll-option-submit", {
         title,
-        description,
-        id: this.createId(title)
+        description
       });
       this.title = "";
       this.description = "";
