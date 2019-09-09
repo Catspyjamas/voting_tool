@@ -4,7 +4,7 @@
       :status-messages="statusMessages"
       :error-messages="errorMessages"
     />
-    <SignUpForm @submit-signup="submitSignUp" />
+    <SignUpForm v-if="!signedUp" @submit-signup="submitSignUp" />
   </div>
 </template>
 <script>
@@ -19,7 +19,8 @@ export default {
     return {
       statusMessages: [],
       errorMessages: [],
-      response: null
+      response: null,
+      signedUp: false
     };
   },
   methods: {
@@ -41,6 +42,7 @@ export default {
         this.statusMessages.push(
           `Created a new user for ${response.data.email}`
         );
+        this.signedUp = true;
       }
     }
   }

@@ -113,6 +113,7 @@ export default {
   watch: {
     poll(updatedPoll) {
       if (this.poll !== null) {
+        //!TODO: Look over this
         Object.assign(this.pollModel, updatedPoll);
       }
     }
