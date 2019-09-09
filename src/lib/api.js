@@ -164,7 +164,6 @@ export async function login(credentials) {
 
 export async function signup(credentials) {
   try {
-    console.log("SIGNING UP");
     const response = await axios.post(`${url}/users/`, credentials, {
       headers: {
         ContentType: "application/json"
@@ -176,19 +175,3 @@ export async function signup(credentials) {
     return error.response.data;
   }
 }
-
-//export async function signup(credentials) {
-//   console.log("SIGNING UP", credentials);
-//   const rawResponse = await fetch(`${url}/users/`, {
-//     method: "POST",
-//     headers: {
-//       ContentType: "application/json"
-//     },
-//     body: JSON.stringify(credentials)
-//   });
-//   console.log("RAWRESPONSE:", rawResponse);
-//   const content = await rawResponse.json();
-//   console.log("RESPONSE:", content);
-
-//   return content;
-// }

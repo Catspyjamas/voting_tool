@@ -30,19 +30,19 @@ export default {
   },
   computed: {
     messages() {
-      const messages = [];
+      let messages = [];
 
       if (this.statusMessages !== null) {
-        Object.assign(messages, this.statusMessages);
+        messages = this.statusMessages;
       }
 
       return messages;
     },
     errors() {
-      const errors = [];
+      let errors = [];
 
       if (this.errorMessages !== null) {
-        Object.assign(errors, this.errorMessages);
+        errors = this.errorMessages;
       }
 
       return errors;
