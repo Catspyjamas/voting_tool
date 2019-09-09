@@ -104,7 +104,7 @@ app.get(
 app.post(
   "/users",
   authHandlers.validateSignup,
-  catchErrors(authHandlers.createUser)
+  catchErrors(userController.createUser)
 );
 
 module.exports = app;

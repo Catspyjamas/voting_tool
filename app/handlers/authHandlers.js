@@ -1,7 +1,6 @@
 const User = require("../models/User");
 const { body } = require("express-validator");
 const { sanitizeBody } = require("express-validator");
-const { validationResult } = require("express-validator");
 
 exports.findUser = async (req, res, next) => {
   //was authorization token sent with headers?
@@ -42,17 +41,3 @@ exports.validateSignup = [
   //   req.body.password
   // ),
 ];
-
-exports.createUser = async (req, res) => {
-  // Finds the validation errors in this request and wraps them in an object with handy functions
-  const errors = validationResult(req);
-
-  console.log(errors);
-
-  if (!errors.isEmpty()) {
-    // https://github.com/omniti-labs/jsend
-    console.log({ errors: errors.array() });
-    return res.status(422).json({ status: "fail", errors: errors.array() });
-  }
-  res.json(req.body);
-};
