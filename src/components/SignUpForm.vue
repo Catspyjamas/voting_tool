@@ -7,6 +7,7 @@
       placeholder="Mail Address"
       name="email"
       :required="true"
+      type="email"
     />
     <FormFieldset
       v-model="firstName"
@@ -39,7 +40,7 @@
       label-text="Confirm Password *"
       placeholder="Confirm Password"
       name="password-confirm"
-      required="true"
+      :required="true"
     />
     <TextButton type="submit" text="Sign Up ->" @click="onSubmit" />
   </form>
