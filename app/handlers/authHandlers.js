@@ -34,10 +34,12 @@ exports.validateSignup = [
   body("password", "Password cannot be blank!")
     .not()
     .isEmpty(),
-  body("passwordConfirm", "Confirmed Password cannot be blank!")
-    .not()
-    .isEmpty()
-  // body("passwordConfirm", "Oops! Your passwords do not match").equals(
-  //   req.body.password
-  // ),
+  body("passwordConfirm").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Password confirmation does not match password");
+    }
+
+    // Indicates the success of this synchronous custom validator
+    return true;
+  })
 ];

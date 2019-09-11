@@ -43,7 +43,9 @@ export default {
           `Created a new user for ${response.data.email}`
         );
         this.signedUp = true;
-      } else {
+      }
+      if (response.status === 500) {
+        console.log("HERE'S WHAT CAME BACK:", response);
         this.errorMessages.length = 0;
         this.errorMessages.push(
           "Sorry, that didn't go through. Please try again later."

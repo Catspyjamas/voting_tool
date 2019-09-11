@@ -1,15 +1,22 @@
+//Load env variables
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const { catchErrors } = require("./handlers/errorHandlers");
 const authHandlers = require("./handlers/authHandlers");
 const pollHandler = require("./handlers/pollHandler");
 const bodyParser = require("body-parser");
-
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
 require("./db");
+require("./handlers/passport");
 
 const pollController = require("./controllers/pollController");
 const votesController = require("./controllers/votesController");
 const userController = require("./controllers/userController");
+const authController = require("./controllers/authController");
 
 // create our Express app
 const app = express();
@@ -17,6 +24,19 @@ const app = express();
 app.use(cors());
 
 app.use(bodyParser.json());
+
+app.use(
+  session({
+    secret: process.env.SECRET,
+    key: process.env.KEY,
+    resave: false,
+    saveUninitialized: false
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
 app.get("/polls", catchErrors(pollController.getPolls));
 
@@ -90,8 +110,7 @@ app.delete(
 );
 
 // GET /user: Finds a user and returns it
-//!TODO: Refactor with /users/user
-// POST /users/ Create a new user
+// POST /signup/ Create a new user
 // PUT /users/:userId Update user
 // PUT /users/:userId Delete user
 
@@ -102,9 +121,10 @@ app.get(
 );
 
 app.post(
-  "/users",
+  "/signup",
   authHandlers.validateSignup,
-  catchErrors(userController.createUser)
+  catchErrors(userController.createUser),
+  catchErrors(authController.login)
 );
 
 module.exports = app;

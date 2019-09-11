@@ -164,7 +164,7 @@ export async function login(credentials) {
 
 export async function signup(credentials) {
   try {
-    const response = await axios.post(`${url}/users/`, credentials, {
+    const response = await axios.post(`${url}/signup/`, credentials, {
       headers: {
         ContentType: "application/json"
       },
@@ -172,6 +172,11 @@ export async function signup(credentials) {
     });
     return response.data;
   } catch (error) {
-    return error.response.data;
+    if (error.response.data) {
+      return error.response.data;
+    }
+    if (error.response) {
+      return error.response;
+    } else return error;
   }
 }
