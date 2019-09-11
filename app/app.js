@@ -8,7 +8,6 @@ const authHandlers = require("./handlers/authHandlers");
 const pollHandler = require("./handlers/pollHandler");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-const flash = require("connect-flash");
 const passport = require("passport");
 require("./db");
 require("./handlers/passport");
@@ -36,7 +35,6 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(flash());
 
 app.get("/polls", catchErrors(pollController.getPolls));
 
@@ -126,5 +124,17 @@ app.post(
   catchErrors(userController.createUser),
   catchErrors(authController.login)
 );
+
+app.use((err, req, res, next) => {
+  console.error("SOMETHING WENT WRONG", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  if (err.name === "UserExistsError") {
+    err.statusCode = 422;
+  }
+  res.status(err.statusCode || 500);
+  res.json({ status: "error", data: err });
+});
 
 module.exports = app;

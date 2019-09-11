@@ -175,8 +175,9 @@ export async function signup(credentials) {
     if (error.response.data) {
       return error.response.data;
     }
-    if (error.response) {
-      return error.response;
-    } else return error;
+    // if (error.response) {
+    //   return error.response;
+    // }
+    else return error;
   }
 }

@@ -44,6 +44,10 @@ export default {
         );
         this.signedUp = true;
       }
+      if (response.status === "error") {
+        this.errorMessages.length = 0;
+        this.errorMessages.push(response.data.message);
+      }
       if (response.status === 500) {
         console.log("HERE'S WHAT CAME BACK:", response);
         this.errorMessages.length = 0;
