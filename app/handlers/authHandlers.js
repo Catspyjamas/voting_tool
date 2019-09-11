@@ -4,6 +4,8 @@ const { sanitizeBody } = require("express-validator");
 
 exports.findUser = async (req, res, next) => {
   //was authorization token sent with headers?
+  // console.log("REQUEST", req.user);
+  // console.log("RESPONSE", res.body);
   const userToken = req.headers["authorization"];
   //check if it matches /w user from database
   const user = await User.findOne({ token: userToken });

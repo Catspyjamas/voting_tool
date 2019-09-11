@@ -1,22 +1,22 @@
-const User = require("../models/User");
+// const User = require("../models/User");
 const passport = require("passport");
 
-exports.login = (req, res, next) => {
-  passport.authenticate("local", function(err) {
-    if (err) {
-      console.log("THERE WAS AN ERROR", err);
-      return next(err);
-    }
-    // if (!user) {
-    //   return res.redirect("/login");
-    // }
-    // req.logIn(user, function(err) {
-    //   if (err) {
-    //     return next(err);
-    //   }
-    //   return res.redirect("/users/" + user.username);
-    // });
-  });
+exports.login = passport.authenticate("local");
+
+exports.handleSuccess = (req, res) => {
+  console.log("USER outside callback ", req.user);
+
+  // if err, res.status(bad code)
   res.status(201);
-  res.send({ status: "success", data: req.user });
+  res.json({ status: "success", data: req.user });
+};
+
+exports.handleError = (err, req, res, next) => {
+  console.log("ERROR ", err);
+  if (err.name === "UserExistsError") {
+    res.status(422);
+    res.json({ status: "fail", errors: [{ msg: err.message }] });
+    return;
+  }
+  next(err);
 };

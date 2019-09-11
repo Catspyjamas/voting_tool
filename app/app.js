@@ -36,6 +36,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// TODO: Set user to res.locals
+
 app.get("/polls", catchErrors(pollController.getPolls));
 
 // GET /polls - holt alle Polls
@@ -122,17 +124,19 @@ app.post(
   "/signup",
   authHandlers.validateSignup,
   catchErrors(userController.createUser),
-  catchErrors(authController.login)
+  catchErrors(authController.login),
+  authController.handleSuccess,
+  authController.handleError
 );
+// works
+// passport.authenticate("local"),
+// function(req) {
+//   console.log("BE HERE DAMMIT ", req.user);
+// }
 
 app.use((err, req, res, next) => {
   console.error("SOMETHING WENT WRONG", err);
-  if (res.headersSent) {
-    return next(err);
-  }
-  if (err.name === "UserExistsError") {
-    err.statusCode = 422;
-  }
+
   res.status(err.statusCode || 500);
   res.json({ status: "error", data: err });
 });
