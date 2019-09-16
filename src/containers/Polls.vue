@@ -49,6 +49,17 @@ export default {
   methods: {
     async onStatusChange(pollId, status) {
       console.log("STATUS CHANGE REQUESTED", pollId, status);
+      if (status === "DRAFT") {
+        if (
+          confirm(
+            "Are you sure you want to move this poll in drafts? All votes will be deleted."
+          )
+        ) {
+          await changePollStatus(pollId, status);
+          this.polls = await fetchPolls();
+        }
+        return;
+      }
       await changePollStatus(pollId, status);
       this.polls = await fetchPolls();
     },
