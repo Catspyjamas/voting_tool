@@ -47,9 +47,9 @@ exports.updatePoll = async (req, res) => {
     throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
   }
   //Check if user is the one who created the poll (.toString because mongoose only gives us back object ids)
-  if (oldPoll.creator.toString() !== user._id.toString()) {
-    throw new Error("You can only update your own polls");
-  }
+  // if (oldPoll.creator.toString() !== user._id.toString()) {
+  //   throw new Error("You can only update your own polls");
+  // }
   //Don't allow changing the options if the votes are already running
   if (oldPoll.status !== "DRAFT" && req.body.options !== undefined) {
     throw new Error("Cannot set options when status is not 'DRAFT'");
@@ -76,9 +76,9 @@ exports.deletePoll = async (req, res) => {
     throw new Error(`Couldn't find a poll with id ${req.params.pollId}`);
   }
   //Check if user is the one who created the poll (.toString because mongoose only gives us back object ids)
-  if (oldPoll.creator.toString() !== user._id.toString()) {
-    throw new Error("You can only delete your own polls");
-  }
+  // if (oldPoll.creator.toString() !== user._id.toString()) {
+  //   throw new Error("You can only delete your own polls");
+  // }
   //Don't allow changing the options if the votes are already running
   if (oldPoll.status !== "DRAFT") {
     throw new Error("Cannot delete when status is not 'DRAFT'");

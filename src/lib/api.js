@@ -17,11 +17,10 @@ export async function fetchPoll(pollId) {
 
 export async function savePoll(newPollObject, pollId) {
   // if there's no pollId, it's a post request
-  //! Authentication check: Is authToken enough for ID check? Do we always have to pass in pollId?
   if (!pollId) {
     const response = await axios.post(`${url}/polls`, newPollObject, {
       headers: {
-        Authorization: authToken,
+        Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
@@ -31,7 +30,7 @@ export async function savePoll(newPollObject, pollId) {
   // if there is a pollId, it's a patch request
   const response = await axios.patch(`${url}/polls/${pollId}`, newPollObject, {
     headers: {
-      Authorization: authToken,
+      Authentication: authToken,
       ContentType: "application/json"
     },
     responseType: "json"
@@ -42,7 +41,7 @@ export async function savePoll(newPollObject, pollId) {
 export async function deletePoll(pollId) {
   const response = await axios.delete(`${url}/polls/${pollId}`, {
     headers: {
-      Authorization: authToken,
+      Authentication: authToken,
       ContentType: "application/json"
     },
     responseType: "json"
@@ -61,7 +60,7 @@ export async function fetchVote(pollId, userId) {
   if (!userId) {
     const userByToken = await axios.get(`${url}/user`, {
       headers: {
-        Authorization: authToken,
+        Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
@@ -73,7 +72,7 @@ export async function fetchVote(pollId, userId) {
     `${url}/polls/${pollId}/votes/${userId}`,
     {
       headers: {
-        Authorization: authToken,
+        Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
@@ -87,7 +86,7 @@ export async function fetchPollResults(pollId) {
   //! Authentication: Here we get the UserId by token
   const responseVote = await axios.get(`${url}/polls/${pollId}/votes`, {
     headers: {
-      Authorization: authToken,
+      Authentication: authToken,
       ContentType: "application/json"
     },
     responseType: "json"
@@ -105,7 +104,7 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
       rankedOptions,
       {
         headers: {
-          Authorization: authToken,
+          Authentication: authToken,
           ContentType: "application/json"
         },
         responseType: "json"
@@ -118,7 +117,7 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
     { ranking: rankedOptions },
     {
       headers: {
-        Authorization: authToken,
+        Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
@@ -141,7 +140,7 @@ export async function changePollStatus(pollId, status) {
     { status: status },
     {
       headers: {
-        Authorization: authToken,
+        Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
@@ -170,25 +169,6 @@ export async function login(credentials) {
 }
 
 export async function signup(credentials) {
-  try {
-    const response = await axios.post(`${url}/signup`, credentials, {
-      headers: {
-        ContentType: "application/json"
-      },
-      responseType: "json"
-    });
-    return response.data;
-  } catch (error) {
-    if (error.response.data) {
-      return error.response.data;
-    }
-    // if (error.response) {
-    //   return error.response;
-    // }
-    else return error;
-  }
-}
-export async function logout() {
   try {
     const response = await axios.post(`${url}/signup`, credentials, {
       headers: {

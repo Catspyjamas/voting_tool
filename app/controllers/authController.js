@@ -1,6 +1,5 @@
 const passport = require("passport");
 const passportJwt = require("passport-jwt");
-const LocalStrategy = require("passport-local");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
@@ -12,7 +11,6 @@ const jwtOptions = {
 passport.use(
   new passportJwt.Strategy(jwtOptions, (jwtPayload, done) => {
     const { token } = jwtPayload;
-
     User.findOne({ token }).then(
       user => {
         done(null, user === undefined ? false : user);
