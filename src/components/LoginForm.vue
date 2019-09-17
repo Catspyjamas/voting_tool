@@ -1,5 +1,5 @@
 <template>
-  <form id="login" @submit.prevent="onSubmit">
+  <form id="login" @submit.prevent="onLogin">
     <FormFieldset
       v-model="email"
       field-id="email"
@@ -13,6 +13,7 @@
       label-text="Password"
       placeholder="Password"
       name="password"
+      type="password"
     />
     <TextButton type="submit" text="Log In ->" />
   </form>
@@ -32,6 +33,14 @@ export default {
       email: "",
       password: ""
     };
+  },
+  methods: {
+    onLogin() {
+      this.$emit("submit-login", {
+        email: this.email,
+        password: this.password
+      });
+    }
   }
 };
 </script>
