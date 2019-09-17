@@ -11,43 +11,61 @@ function toPojo(object) {
 }
 
 async function createDummyData() {
-  const asterix = await new User({ firstName: "Asterix", token: "a" }).save();
-  const obelix = await new User({ firstName: "Obelix", token: "b" }).save();
+  const asterix = await new User({
+    firstName: "Asterix",
+    email: "asterix@mail.com",
+    password: "123",
+    token: "a"
+  }).save();
+  const obelix = await new User({
+    firstName: "Obelix",
+    email: "obelix@mail.com",
+    password: "123"
+  }).save();
   const miraculix = await new User({
     firstName: "Miraculix",
-    token: "c"
+    email: "miraculix@mail.com",
+    password: "123"
   }).save();
   const verleihnix = await new User({
     firstName: "Verleihnix",
-    token: "d"
+    email: "verleihnix@mail.com",
+    password: "123"
   }).save();
   const gutemine = await new User({
     firstName: "Gutemine",
-    token: "e"
+    email: "gutemine@mail.com",
+    password: "123"
   }).save();
   const automatix = await new User({
     firstName: "Automatix",
-    token: "f"
+    email: "automatix@mail.com",
+    password: "123"
   }).save();
   const troubadix = await new User({
     firstName: "Troubardix",
-    token: "g"
+    email: "troubardix@mail.com",
+    password: "123"
   }).save();
   const idefix = await new User({
-    firstName: "Troubardix",
-    token: "h"
+    firstName: "Idefix",
+    email: "idefix@mail.com",
+    password: "123"
   }).save();
   const majestix = await new User({
-    firstName: "Troubardix",
-    token: "i"
+    firstName: "Majestix",
+    email: "majestix@mail.com",
+    password: "123"
   }).save();
   const falbala = await new User({
     firstName: "Falbala",
-    token: "j"
+    email: "falbala@mail.com",
+    password: "123"
   }).save();
   const methusalix = await new User({
     firstName: "Methusalix",
-    token: "k"
+    email: "methusalix@mail.com",
+    password: "123"
   }).save();
   const draftPoll = await new Poll({
     title: "Birthday Event Draft",
