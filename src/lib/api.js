@@ -1,9 +1,9 @@
 import axios from "axios";
 import { possiblePollStates } from "./poll";
 
-const authToken = "a";
-
 const url = "http://127.0.0.1:7999";
+
+export let authToken = localStorage.getItem("authToken");
 
 export async function fetchPolls() {
   const response = await axios.get(`${url}/polls`);
@@ -153,13 +153,20 @@ export async function changePollStatus(pollId, status) {
 /// USER AUTHENTICATION
 
 export async function login(credentials) {
-  const response = await axios.post(`${url}/login`, credentials, {
-    headers: {
-      ContentType: "application/json"
-    },
-    responseType: "json"
-  });
-  return response.data;
+  try {
+    const response = await axios.post(`${url}/login`, credentials, {
+      headers: {
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    localStorage.setItem("authToken", response.data.data);
+    return response.data;
+  } catch (error) {
+    if (error.response.data) {
+      return error.response.data;
+    }
+  }
 }
 
 export async function signup(credentials) {
@@ -170,6 +177,27 @@ export async function signup(credentials) {
       },
       responseType: "json"
     });
+    return response.data;
+  } catch (error) {
+    if (error.response.data) {
+      return error.response.data;
+    }
+    // if (error.response) {
+    //   return error.response;
+    // }
+    else return error;
+  }
+}
+export async function logout() {
+  try {
+    const response = await axios.post(`${url}/signup`, credentials, {
+      headers: {
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    localStorage.setItem("authToken", response.data.data);
+
     return response.data;
   } catch (error) {
     if (error.response.data) {

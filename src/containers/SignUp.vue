@@ -24,7 +24,6 @@ export default {
     };
   },
   methods: {
-    //Axios throws an error if status messages aren't 200-300. With fetch we needn't use try/catch
     async submitSignUp(credentials) {
       if (credentials.passwordConfirm !== credentials.password) {
         this.errorMessages.push(
@@ -40,9 +39,7 @@ export default {
       }
       if (response.status === "success") {
         this.errorMessages.length = 0;
-        this.statusMessages.push(
-          `Created a new user for ${response.data.email}`
-        );
+        this.statusMessages.push(`Created a new user.`);
         this.signedUp = true;
       } else {
         this.errorMessages.length = 0;
