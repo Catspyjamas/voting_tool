@@ -13,7 +13,8 @@ const userSchema = new Schema({
     required: "Please Supply an email address"
   },
   token: {
-    type: String
+    type: String,
+    unique: true
   },
   firstName: {
     type: String,

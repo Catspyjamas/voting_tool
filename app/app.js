@@ -127,6 +127,7 @@ app.post(
   "/signup",
   authHandlers.validateSignup,
   catchErrors(userController.createUser),
+  catchErrors(authController.login),
   authController.handleSuccess,
   authController.handleError
 );

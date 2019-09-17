@@ -41,9 +41,9 @@ export default {
         this.errorMessages.length = 0;
         this.statusMessages.push(`Created a new user.`);
         this.signedUp = true;
+        this.$loggedIn = true;
       } else {
         this.errorMessages.length = 0;
-        console.log("HERE'S WHAT CAME BACK:", response);
         this.errorMessages.length = 0;
         this.errorMessages.push(
           "Sorry, that didn't go through. Please try again later."
