@@ -153,7 +153,7 @@ export async function changePollStatus(pollId, status) {
 /// USER AUTHENTICATION
 
 export async function login(credentials) {
-  const response = await axios.post(`${url}/users/`, credentials, {
+  const response = await axios.post(`${url}/login`, credentials, {
     headers: {
       ContentType: "application/json"
     },
@@ -164,7 +164,7 @@ export async function login(credentials) {
 
 export async function signup(credentials) {
   try {
-    const response = await axios.post(`${url}/signup/`, credentials, {
+    const response = await axios.post(`${url}/signup`, credentials, {
       headers: {
         ContentType: "application/json"
       },

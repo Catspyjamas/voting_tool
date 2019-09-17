@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const md5 = require("md5");
 const validator = require("validator");
-const mongodbErrorHandler = require("mongoose-mongodb-errors");
-const passportLocalMongoose = require("passport-local-mongoose");
+// const mongodbErrorHandler = require("mongoose-mongodb-errors");
 
 const userSchema = new Schema({
   email: {
@@ -14,6 +12,9 @@ const userSchema = new Schema({
     validate: [validator.isEmail, "Invalid Email Address"],
     required: "Please Supply an email address"
   },
+  token: {
+    type: String
+  },
   firstName: {
     type: String,
     required: "Please supply a name",
@@ -21,7 +22,7 @@ const userSchema = new Schema({
   }
 });
 
-userSchema.plugin(passportLocalMongoose, { usernameField: "email" });
-userSchema.plugin(mongodbErrorHandler);
+userSchema.plugin(require("mongoose-bcrypt"));
+// userSchema.plugin(mongodbErrorHandler);
 
 module.exports = mongoose.model("User", userSchema);

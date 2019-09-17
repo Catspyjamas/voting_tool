@@ -1,22 +1,8 @@
-const User = require("../models/User");
+const passport = require("passport");
 const { body } = require("express-validator");
 const { sanitizeBody } = require("express-validator");
 
-exports.findUser = async (req, res, next) => {
-  //was authorization token sent with headers?
-  // console.log("REQUEST", req.user);
-  // console.log("RESPONSE", res.body);
-  const userToken = req.headers["authorization"];
-  //check if it matches /w user from database
-  const user = await User.findOne({ token: userToken });
-
-  if (!user) {
-    throw new Error(`Unknown authorization token: ${userToken}`);
-  }
-  //save userObject in locals for middleware to use
-  res.locals.user = user;
-  next();
-};
+exports.findUser = passport.authenticate("jwt", { session: false });
 
 exports.validateSignup = [
   sanitizeBody("firstName"),
@@ -35,13 +21,5 @@ exports.validateSignup = [
   }),
   body("password", "Password cannot be blank!")
     .not()
-    .isEmpty(),
-  body("passwordConfirm").custom((value, { req }) => {
-    if (value !== req.body.password) {
-      throw new Error("Password confirmation does not match password");
-    }
-
-    // Indicates the success of this synchronous custom validator
-    return true;
-  })
+    .isEmpty()
 ];

@@ -3,14 +3,17 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
+// const session = require("express-session");
+const passport = require("passport");
+
+require("./db");
+
 const { catchErrors } = require("./handlers/errorHandlers");
 const authHandlers = require("./handlers/authHandlers");
 const pollHandler = require("./handlers/pollHandler");
-const bodyParser = require("body-parser");
-const session = require("express-session");
-const passport = require("passport");
-require("./db");
-require("./handlers/passport");
+
+// require("./handlers/passport");
 
 const pollController = require("./controllers/pollController");
 const votesController = require("./controllers/votesController");
@@ -24,17 +27,17 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.use(
-  session({
-    secret: process.env.SECRET,
-    key: process.env.KEY,
-    resave: false,
-    saveUninitialized: false
-  })
-);
+// app.use(
+//   session({
+//     secret: process.env.SECRET,
+//     key: process.env.KEY,
+//     resave: false,
+//     saveUninitialized: false
+//   })
+// );
 
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 // TODO: Set user to res.locals
 
@@ -124,6 +127,12 @@ app.post(
   "/signup",
   authHandlers.validateSignup,
   catchErrors(userController.createUser),
+  authController.handleSuccess,
+  authController.handleError
+);
+
+app.post(
+  "/login",
   catchErrors(authController.login),
   authController.handleSuccess,
   authController.handleError
@@ -134,11 +143,11 @@ app.post(
 //   console.log("BE HERE DAMMIT ", req.user);
 // }
 
-app.use((err, req, res, next) => {
-  console.error("SOMETHING WENT WRONG", err);
+// app.use((err, req, res, next) => {
+//   console.error("SOMETHING WENT WRONG", err);
 
-  res.status(err.statusCode || 500);
-  res.json({ status: "error", data: err });
-});
+//   res.status(err.statusCode || 500);
+//   res.json({ status: "error", data: err });
+// });
 
 module.exports = app;

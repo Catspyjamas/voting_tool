@@ -32,7 +32,8 @@ export default {
         );
         return;
       }
-      const response = await signup(credentials);
+      const { passwordConfirm, ...userObject } = credentials;
+      const response = await signup(userObject);
       if (response.status === "fail") {
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
