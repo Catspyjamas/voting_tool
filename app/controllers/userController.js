@@ -1,9 +1,9 @@
-const { promisify } = require("util");
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
 
 exports.getUser = async (req, res) => {
-  res.json(req.user);
+  const { password, ...user } = req.user;
+  res.json({ status: "success", user: user });
 };
 
 exports.createUser = async (req, res, next) => {
@@ -24,6 +24,5 @@ exports.createUser = async (req, res, next) => {
   await user.save();
 
   res.locals.user = user;
-  console.log(res.locals.user);
   next();
 };

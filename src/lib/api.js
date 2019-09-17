@@ -159,7 +159,9 @@ export async function login(credentials) {
       },
       responseType: "json"
     });
-    localStorage.setItem("authToken", response.data.data);
+    authToken = response.data.user.token;
+    localStorage.setItem("authToken", response.data.user.token);
+    localStorage.setItem("userId", response.data.user._id);
     return response.data;
   } catch (error) {
     if (error.response.data) {
@@ -176,7 +178,9 @@ export async function signup(credentials) {
       },
       responseType: "json"
     });
-    localStorage.setItem("authToken", response.data.data);
+    authToken = response.data.user.token;
+    localStorage.setItem("authToken", response.data.user.token);
+    localStorage.setItem("userId", response.data.user._id);
 
     return response.data;
   } catch (error) {

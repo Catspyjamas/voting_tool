@@ -11,11 +11,16 @@ const jwtOptions = {
 passport.use(
   new passportJwt.Strategy(jwtOptions, (jwtPayload, done) => {
     const { token } = jwtPayload;
+    console.log("TOKEN:", token);
     User.findOne({ token }).then(
       user => {
+        console.log("USER:", user);
+
         done(null, user === undefined ? false : user);
       },
       error => {
+        console.log("COULDN't FIND A USER", error);
+
         done(error);
       }
     );
@@ -42,6 +47,7 @@ exports.login = async (req, res, next) => {
     if (valid === true) {
       user.token = jwt.sign({ date: Date.now() }, user.password);
       await user.save();
+      res.locals.user = user.toJSON();
       res.locals.token = jwt.sign(
         { token: user.token },
         jwtOptions.secretOrKey
@@ -56,7 +62,9 @@ exports.login = async (req, res, next) => {
 exports.handleSuccess = (req, res) => {
   // if err, res.status(bad code)
   res.status(201);
-  res.json({ status: "success", data: res.locals.token });
+  const { password, ...user } = res.locals.user;
+  user.token = res.locals.token;
+  res.json({ status: "success", user });
 };
 
 exports.handleError = (err, req, res, next) => {
