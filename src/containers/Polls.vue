@@ -60,7 +60,6 @@ export default {
   },
   methods: {
     async onStatusChange(pollId, status) {
-      console.log("STATUS CHANGE REQUESTED", pollId, status);
       if (status === "DRAFT") {
         if (
           confirm(
