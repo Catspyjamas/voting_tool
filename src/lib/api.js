@@ -163,18 +163,19 @@ export async function signup(credentials) {
       },
       responseType: "json"
     });
-    authToken = response.data.user.token;
-    localStorage.setItem("authToken", response.data.user.token);
-    localStorage.setItem("userId", response.data.user._id);
+    authToken = response.data.token;
+    localStorage.setItem("authToken", response.data.token);
+    localStorage.setItem("userId", response.data._id);
 
     return response.data;
   } catch (error) {
-    if (error.response.data) {
-      return error.response.data;
+    console.log(error.response);
+    if (error.response.data.errors[0].err.errmsg.includes("E11000")) {
+      console.log("hit");
+      return {
+        status: "fail",
+        errors: [{ msg: "There's another user with this email address." }]
+      };
     }
-    // if (error.response) {
-    //   return error.response;
-    // }
-    else return error;
   }
 }
