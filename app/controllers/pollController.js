@@ -1,17 +1,21 @@
 const Poll = require("../models/Poll");
 
 exports.createPoll = async (req, res) => {
-  //check if user is authorized
-  const user = res.locals.user;
+  //check if user is logged in
+  const user = req.user;
   if (Array.isArray(req.body.votes) === true && req.body.votes.length > 0) {
-    throw new Error("You cannot create a poll with votes.");
+    res.status(403);
+    res.json({
+      status: "fail",
+      errors: [{ msg: "You cannot create a poll with votes." }]
+    });
   }
   //delete _id from request so mongoose lets us save more instances of the same object
   delete req.body._id;
   const poll = await new Poll({ ...req.body, creator: user._id }).save();
   res.status(201);
   //201: for created
-  res.json(poll);
+  res.json({ status: "success", data: poll });
 };
 
 exports.getPolls = async (req, res) => {
@@ -21,25 +25,30 @@ exports.getPolls = async (req, res) => {
     if (poll.status !== "CLOSED") {
       poll.votes = [];
     }
-    return poll;
+    const { creator, date, __v, __proto__, ...cleanPoll } = poll;
+    return cleanPoll;
   });
-  res.json(polls);
+  res.json({ status: "success", data: polls });
 };
 
 exports.getPoll = async (req, res) => {
-  const poll = res.locals.poll;
+  const poll = res.locals.poll.toJSON();
   if (poll.status !== "CLOSED") {
     poll.votes = [];
   }
-  res.json(poll);
+  const { creator, date, __v, __proto__, ...cleanPoll } = poll;
+  res.json({ status: "success", data: cleanPoll });
 };
 
 exports.updatePoll = async (req, res) => {
   //get current user from locals
-  const user = res.locals.user;
+  const user = req.user;
   //Don't allow sending along prefilled votes
   if (req.body.votes !== undefined) {
-    throw new Error("Votes must be undefined on patch requests");
+    res.json({
+      status: "fail",
+      errors: [{ msg: "You cannot add votes. Please vote instead." }]
+    });
   }
   const oldPoll = await Poll.findOne({ _id: req.params.pollId });
   //check if poll exists
@@ -65,11 +74,12 @@ exports.updatePoll = async (req, res) => {
       runValidators: true
     }
   );
-  res.json(updatedPoll);
+  res.status(204);
+  res.json({ status: "success", data: updatedPoll });
 };
 
 exports.deletePoll = async (req, res) => {
-  const user = res.locals.user;
+  const user = req.user;
   const oldPoll = await Poll.findOne({ _id: req.params.pollId });
   //check if poll exists
   if (!oldPoll) {
@@ -84,5 +94,6 @@ exports.deletePoll = async (req, res) => {
     throw new Error("Cannot delete when status is not 'DRAFT'");
   }
   const deletedPoll = await Poll.findOneAndDelete({ _id: req.params.pollId });
-  res.json(deletedPoll);
+  res.status(204);
+  res.json({ status: "success", data: deletedPoll });
 };

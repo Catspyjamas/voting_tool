@@ -104,19 +104,20 @@ export default {
         title: "",
         description: "",
         options: [],
-        start: "",
-        end: "",
         status: "DRAFT"
       }
     };
   },
   watch: {
-    poll(updatedPoll) {
-      if (this.poll !== null) {
-        //!TODO: Look over this
-        Object.assign(this.pollModel, updatedPoll);
-      }
+    poll: function(updatedPoll) {
+      Object.assign(this.pollModel, updatedPoll);
+      // this.pollModel.start = new Date(updatedPoll.start.getTime());
+      // this.pollModel.end = new Date(updatedPoll.end.getTime());
     }
+  },
+  created() {
+    Object.assign(this.pollModel, this.poll);
+    // this.pollModel.end = new Date(this.poll.end.toString());
   },
   methods: {
     addOption(option) {

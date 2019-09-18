@@ -52,7 +52,11 @@ export default {
     }
   },
   async mounted() {
-    this.polls = await fetchPolls();
+    const fetchedPollObject = await fetchPolls();
+    if (fetchedPollObject.status !== "success") {
+      this.errorMessages.push(...fetchedPollObject.errors);
+    }
+    this.polls = fetchedPollObject.data;
   },
   methods: {
     async onStatusChange(pollId, status) {
@@ -64,7 +68,8 @@ export default {
           )
         ) {
           await changePollStatus(pollId, status);
-          this.polls = await fetchPolls();
+          const fetchedPollObject = await fetchPolls();
+          this.polls = fetchedPollObject.data;
           this.statusMessages = [];
           this.statusMessages.push("Poll has been set to draft.");
           setTimeout(() => (this.statusMessages = []), 7000);
@@ -72,7 +77,8 @@ export default {
         return;
       }
       await changePollStatus(pollId, status);
-      this.polls = await fetchPolls();
+      const fetchedPollObject = await fetchPolls();
+      this.polls = fetchedPollObject.data;
       this.statusMessages = [];
       this.statusMessages.push("Poll has been moved to another tab.");
       setTimeout(() => (this.statusMessages = []), 7000);
@@ -80,7 +86,8 @@ export default {
     async deletePoll(pollId) {
       if (confirm("Are you sure you want to delete this poll?")) {
         await deletePoll(pollId);
-        this.polls = await fetchPolls();
+        const fetchedPollObject = await fetchPolls();
+        this.polls = fetchedPollObject.data;
         this.statusMessages = [];
         this.statusMessages.push("Poll deleted.");
         setTimeout(() => (this.statusMessages = []), 7000);

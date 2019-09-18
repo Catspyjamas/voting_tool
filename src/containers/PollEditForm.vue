@@ -1,7 +1,10 @@
 <template>
   <div class="container">
     <h1>Edit Poll</h1>
-    <Messages :status-messages="statusMessages" />
+    <Messages
+      :status-messages="statusMessages"
+      :error-messages="errorMessages"
+    />
 
     <PollForm v-if="loaded" :poll="poll" @pollSubmit="savePollObject" />
   </div>
@@ -28,12 +31,17 @@ export default {
   data() {
     return {
       statusMessages: [],
+      errorMessages: [],
       poll: null,
       loaded: false
     };
   },
   async created() {
-    this.poll = await fetchPoll(this.pollId);
+    const fetchedPollObject = await fetchPoll(this.pollId);
+    if (fetchedPollObject.status !== "success") {
+      this.errorMessages.push(...fetchedPollObject.errors);
+    }
+    this.poll = fetchedPollObject.data;
     this.loaded = true;
   },
   methods: {
@@ -43,6 +51,11 @@ export default {
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
 
       this.statusMessages.push("Poll saved.");
+      const fetchedPollObject = await fetchPoll(this.pollId);
+      if (fetchedPollObject.status !== "success") {
+        this.errorMessages.push(...fetchedPollObject.errors);
+      }
+      this.poll = fetchedPollObject.data;
       setTimeout(() => (this.statusMessages = []), 7000);
     }
   }
