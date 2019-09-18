@@ -144,9 +144,11 @@ export async function login(credentials) {
       },
       responseType: "json"
     });
-    authToken = response.data.user.token;
-    localStorage.setItem("authToken", response.data.user.token);
-    localStorage.setItem("userId", response.data.user._id);
+    console.log(response);
+    authToken = response.data.data.token;
+    console.log("NEW AUTH TOKEN:", authToken);
+    localStorage.setItem("authToken", response.data.data.token);
+    localStorage.setItem("userId", response.data.data._id);
     return response.data;
   } catch (error) {
     if (error.response.data) {
@@ -163,13 +165,14 @@ export async function signup(credentials) {
       },
       responseType: "json"
     });
-    authToken = response.data.token;
-    localStorage.setItem("authToken", response.data.token);
-    localStorage.setItem("userId", response.data._id);
+    authToken = response.data.data.token;
+    console.log("NEW AUTH TOKEN:", authToken);
+
+    localStorage.setItem("authToken", response.data.data.token);
+    localStorage.setItem("userId", response.data.data._id);
 
     return response.data;
   } catch (error) {
-    console.log(error.response);
     if (error.response.data.errors[0].err.errmsg.includes("E11000")) {
       console.log("hit");
       return {
