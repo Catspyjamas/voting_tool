@@ -64,7 +64,7 @@ exports.handleSuccess = (req, res) => {
   res.status(201);
   const { password, ...user } = res.locals.user;
   user.token = res.locals.token;
-  res.json({ status: "success", user });
+  res.json({ status: "success", data: user });
 };
 
 exports.handleError = (err, req, res, next) => {

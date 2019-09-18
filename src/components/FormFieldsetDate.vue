@@ -44,6 +44,9 @@ export default {
     dateStringInitial(newDateString) {
       this.dateString = newDateString;
     }
+  },
+  created() {
+    this.dateString = this.dateStringInitial;
   }
 };
 </script>

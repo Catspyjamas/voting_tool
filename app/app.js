@@ -108,12 +108,14 @@ app.patch(
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.updateVote)
 );
-app.delete(
-  "/polls/:pollId/vote",
-  catchErrors(authHandlers.findUser),
-  catchErrors(pollHandler.findPoll),
-  catchErrors(votesController.deleteVote)
-);
+
+//!Currently not implemented
+// app.delete(
+//   "/polls/:pollId/vote",
+//   catchErrors(authHandlers.findUser),
+//   catchErrors(pollHandler.findPoll),
+//   catchErrors(votesController.deleteVote)
+// );
 
 // GET /user: Finds a user and returns it
 // POST /signup/ Create a new user

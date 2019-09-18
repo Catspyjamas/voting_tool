@@ -38,6 +38,27 @@ export async function savePoll(newPollObject, pollId) {
   return response.data;
 }
 
+export async function changePollStatus(pollId, status) {
+  if (!possiblePollStates[status]) {
+    throw new Error(
+      "The status can only be one of these:",
+      ...possiblePollStates.values()
+    );
+  }
+  const response = await axios.patch(
+    `${url}/polls/${pollId}`,
+    { status: status },
+    {
+      headers: {
+        Authentication: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    }
+  );
+  return response.data;
+}
+
 export async function deletePoll(pollId) {
   const response = await axios.delete(`${url}/polls/${pollId}`, {
     headers: {
@@ -112,27 +133,6 @@ export async function saveVote(pollId, rankedOptions, authToken) {
 }
 
 /// OPEN/CLOSE POLLS
-
-export async function changePollStatus(pollId, status) {
-  if (!possiblePollStates[status]) {
-    throw new Error(
-      "The status can only be one of these:",
-      ...possiblePollStates.values()
-    );
-  }
-  const response = await axios.patch(
-    `${url}/polls/${pollId}`,
-    { status: status },
-    {
-      headers: {
-        Authentication: authToken,
-        ContentType: "application/json"
-      },
-      responseType: "json"
-    }
-  );
-  return response.data;
-}
 
 /// USER AUTHENTICATION
 

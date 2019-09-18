@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 exports.getUser = async (req, res) => {
   const { password, ...user } = req.user;
-  res.json({ status: "success", user: user });
+  res.json({ status: "success", data: user });
 };
 
 exports.createUser = async (req, res, next) => {
