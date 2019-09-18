@@ -54,16 +54,27 @@ exports.login = async (req, res, next) => {
   next(new Error("Wrong"));
 };
 
+exports.logout = async (req, res, next) => {
+  const userWithoutToken = await User.findOneAndUpdate(
+    { token: req.user.token },
+    { $unset: { token: 1 } },
+    {
+      new: true
+    }
+  ).exec();
+  res.locals.user = userWithoutToken.toJSON();
+  next();
+};
+
 exports.handleSuccess = (req, res) => {
   // if err, res.status(bad code)
   res.status(201);
-  const { password, token, __v, ...user } = res.locals.user;
+  const { password, __v, ...user } = res.locals.user;
   user.token = res.locals.token;
   res.json({ status: "success", data: user });
 };
 
 exports.handleError = (err, req, res, next) => {
-  console.log("ERROR ", err);
   if (err.name === "UserExistsError") {
     res.status(422);
     res.json({ status: "fail", errors: [{ msg: err.message }] });

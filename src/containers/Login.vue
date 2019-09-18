@@ -4,7 +4,7 @@
       :status-messages="statusMessages"
       :error-messages="errorMessages"
     />
-    <LoginForm v-if="!$loggedIn" @submit-login="submitLogIn" />
+    <LoginForm v-if="!$root.loggedIn" @submit-login="submitLogIn" />
   </div>
 </template>
 <script>
@@ -30,8 +30,9 @@ export default {
       } else if (response.status === "success") {
         this.errorMessages.length = 0;
         this.statusMessages.push(`You are now logged in.`);
-        this.$loggedIn = true;
-        console.log("LOGGED IN?", this.$loggedIn);
+        this.$root.loggedIn = true;
+        console.log("LOGGED IN?", this.$root.loggedIn);
+        setTimeout(() => (this.statusMessages = []), 2000);
       } else {
         this.errorMessages.length = 0;
         console.log("HERE'S WHAT CAME BACK:", response);

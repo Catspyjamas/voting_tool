@@ -144,6 +144,14 @@ app.post(
   authController.handleError
 );
 
+app.post(
+  "/logout",
+  catchErrors(authHandlers.findUser),
+  catchErrors(authController.logout),
+  authController.handleSuccess,
+  authController.handleError
+);
+
 app.use((err, req, res, next) => {
   console.error("SOMETHING WENT WRONG", err);
 

@@ -4,9 +4,10 @@
       <div class="navlinks">
         <router-link class="navlink" to="/polls">Polls</router-link>
         <router-link class="navlink" to="/about">About</router-link>
-        <router-link v-if="!$loggedIn" class="navlink" to="/login"
+        <router-link v-if="!$root.loggedIn" class="navlink" to="/login"
           >Login</router-link
         >
+        <a v-if="$root.loggedIn" class="navlink" @click="logout">Logout</a>
         <router-link class="navlink" to="/signup">Sign Up</router-link>
       </div>
     </nav>
@@ -40,9 +41,21 @@
 </template>
 
 <script>
+import { logout } from "./lib/api";
 export default {
   name: "App",
-  components: {}
+  components: {},
+  methods: {
+    async logout() {
+      const response = await logout();
+      console.log("RESPONSE:".response);
+
+      if (response.status === "success") {
+        console.log("HOI");
+        this.$root.loggedIn = false;
+      }
+    }
+  }
 };
 </script>
 

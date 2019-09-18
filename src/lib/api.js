@@ -233,3 +233,23 @@ export async function signup(credentials) {
     }
   }
 }
+
+export async function logout() {
+  try {
+    const response = await axios.post(`${url}/logout`, "", {
+      headers: {
+        Authentication: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    authToken = undefined;
+    console.log("NEW AUTH TOKEN:", authToken);
+    localStorage.clear();
+    return response.data;
+  } catch (error) {
+    if (error.response.data) {
+      return error.response.data;
+    }
+  }
+}

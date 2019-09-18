@@ -40,7 +40,7 @@ export default {
         this.errorMessages.length = 0;
         this.statusMessages.push(`Created a new user.`);
         this.signedUp = true;
-        this.$loggedIn = true;
+        this.$root.loggedIn = true;
       } else {
         this.errorMessages.length = 0;
         this.errorMessages.push(

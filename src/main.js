@@ -4,11 +4,14 @@ import router from "./router";
 import "./plugins";
 import "vue-datetime/dist/vue-datetime.css";
 
-Vue.prototype.$loggedIn = localStorage.getItem("authToken") ? true : false;
-console.log("LOGGED IN?", Vue.prototype.$loggedIn);
+// Vue.prototype.$loggedIn = localStorage.getItem("authToken") ? true : false;
+// console.log("LOGGED IN?", Vue.prototype.$loggedIn);
 Vue.config.productionTip = false;
 
 new Vue({
+  data: {
+    loggedIn: false
+  },
   router,
   render: h => h(App)
 }).$mount("#app");
