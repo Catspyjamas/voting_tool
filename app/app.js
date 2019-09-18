@@ -143,17 +143,12 @@ app.post(
   authController.handleSuccess,
   authController.handleError
 );
-// works
-// passport.authenticate("local"),
-// function(req) {
-//   console.log("BE HERE DAMMIT ", req.user);
-// }
 
-// app.use((err, req, res, next) => {
-//   console.error("SOMETHING WENT WRONG", err);
+app.use((err, req, res, next) => {
+  console.error("SOMETHING WENT WRONG", err);
 
-//   res.status(err.statusCode || 500);
-//   res.json({ status: "error", data: err });
-// });
+  res.status(err.statusCode || 500);
+  res.json({ status: "error", errors: [{ err }] });
+});
 
 module.exports = app;

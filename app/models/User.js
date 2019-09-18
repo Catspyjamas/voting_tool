@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const validator = require("validator");
-// const mongodbErrorHandler = require("mongoose-mongodb-errors");
 
 const userSchema = new Schema({
   email: {
@@ -23,6 +22,5 @@ const userSchema = new Schema({
 });
 
 userSchema.plugin(require("mongoose-bcrypt"));
-// userSchema.plugin(mongodbErrorHandler);
 
 module.exports = mongoose.model("User", userSchema);

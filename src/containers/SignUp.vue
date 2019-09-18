@@ -34,16 +34,15 @@ export default {
       const { passwordConfirm, ...userObject } = credentials;
       const response = await signup(userObject);
       if (response.status === "fail") {
+        console.log("HIT AGAIN", response.errors.map(error => error.msg));
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
-      }
-      if (response.status === "success") {
+      } else if (response.status === "success") {
         this.errorMessages.length = 0;
         this.statusMessages.push(`Created a new user.`);
         this.signedUp = true;
         this.$loggedIn = true;
       } else {
-        this.errorMessages.length = 0;
         this.errorMessages.length = 0;
         this.errorMessages.push(
           "Sorry, that didn't go through. Please try again later."

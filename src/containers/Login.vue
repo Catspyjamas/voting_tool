@@ -27,8 +27,7 @@ export default {
       if (response.status === "fail") {
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
-      }
-      if (response.status === "success") {
+      } else if (response.status === "success") {
         this.errorMessages.length = 0;
         this.statusMessages.push(`You are now logged in.`);
         this.$loggedIn = true;
