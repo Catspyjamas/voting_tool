@@ -89,24 +89,27 @@ app.get(
 );
 
 app.get(
-  "/polls/:pollId/votes/:userId",
+  "/polls/:pollId/vote",
   catchErrors(authHandlers.findUser),
+  catchErrors(pollHandler.findPoll),
+
   catchErrors(votesController.getVote)
 );
 
 app.post(
-  "/polls/:pollId/votes",
+  "/polls/:pollId/vote",
   catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.createVote)
 );
 app.patch(
-  "/polls/:pollId/votes/:userId",
+  "/polls/:pollId/vote",
   catchErrors(authHandlers.findUser),
+  catchErrors(pollHandler.findPoll),
   catchErrors(votesController.updateVote)
 );
 app.delete(
-  "/polls/:pollId/votes/:userId",
+  "/polls/:pollId/vote",
   catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.deleteVote)

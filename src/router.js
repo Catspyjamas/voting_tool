@@ -47,12 +47,6 @@ export default new Router({
       props: true
     },
     {
-      path: "/polls/:pollId/vote/:userIdByParams",
-      name: "EditVote",
-      component: Vote,
-      props: true
-    },
-    {
       path: "/about",
       name: "About",
       component: About

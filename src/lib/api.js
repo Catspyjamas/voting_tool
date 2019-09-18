@@ -54,36 +54,7 @@ export async function deletePoll(pollId) {
 
 // }
 
-export async function fetchVote(pollId, userId) {
-  //! Authentication: Here we get the UserId by token
-  //if there's no userId passed in, get it from the database with the token
-  if (!userId) {
-    const userByToken = await axios.get(`${url}/user`, {
-      headers: {
-        Authentication: authToken,
-        ContentType: "application/json"
-      },
-      responseType: "json"
-    });
-    userId = userByToken.data._id;
-  }
-  //then GET request with userId
-  const responseVote = await axios.get(
-    `${url}/polls/${pollId}/votes/${userId}`,
-    {
-      headers: {
-        Authentication: authToken,
-        ContentType: "application/json"
-      },
-      responseType: "json"
-    }
-  );
-  const vote = responseVote.data;
-  return vote;
-}
-
 export async function fetchPollResults(pollId) {
-  //! Authentication: Here we get the UserId by token
   const responseVote = await axios.get(`${url}/polls/${pollId}/votes`, {
     headers: {
       Authentication: authToken,
@@ -95,12 +66,25 @@ export async function fetchPollResults(pollId) {
   return vote;
 }
 
-export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
+export async function fetchVote(pollId, authToken) {
+  //then GET request with authToken
+  const responseVote = await axios.get(`${url}/polls/${pollId}/vote/`, {
+    headers: {
+      Authentication: authToken,
+      ContentType: "application/json"
+    },
+    responseType: "json"
+  });
+  const vote = responseVote.data;
+  return vote;
+}
+
+export async function saveVote(pollId, rankedOptions, authToken) {
   // If it's the user's first vote, it's a post
-  //! Authentication: usersFirstVote: enough for checking if post/patch?
-  if (usersFirstVote) {
+  const hasUserVoted = await fetchVote(pollId, authToken);
+  if (hasUserVoted.usersFirstVote) {
     const responseVote = await axios.post(
-      `${url}/polls/${pollId}/votes`,
+      `${url}/polls/${pollId}/vote`,
       rankedOptions,
       {
         headers: {
@@ -111,19 +95,20 @@ export async function saveVote(pollId, rankedOptions, userId, usersFirstVote) {
       }
     );
     return responseVote.data;
+  } else {
+    const responseVote = await axios.patch(
+      `${url}/polls/${pollId}/vote`,
+      { ranking: rankedOptions },
+      {
+        headers: {
+          Authentication: authToken,
+          ContentType: "application/json"
+        },
+        responseType: "json"
+      }
+    );
+    return responseVote.data;
   }
-  const responseVote = await axios.patch(
-    `${url}/polls/${pollId}/votes/${userId}`,
-    { ranking: rankedOptions },
-    {
-      headers: {
-        Authentication: authToken,
-        ContentType: "application/json"
-      },
-      responseType: "json"
-    }
-  );
-  return responseVote.data;
 }
 
 /// OPEN/CLOSE POLLS

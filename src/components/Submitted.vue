@@ -5,8 +5,8 @@
     <router-link
       v-if="!pollOver"
       :to="{
-        name: 'EditVote',
-        params: { pollId: pollId, userIdByParams: userId }
+        name: 'Vote',
+        params: { pollId: pollId }
       }"
       class="button-link"
     >

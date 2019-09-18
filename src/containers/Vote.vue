@@ -1,59 +1,70 @@
 <template>
-  <VoteForm
-    v-if="votesArrived"
-    :poll="poll"
-    :initial-ranked-options="rankedOptions"
-    :status-text="statusText"
-    :user-id="userId"
-    @submitVote="submitVote"
-  />
+  <div class="container">
+    <Messages
+      :status-messages="statusMessages"
+      :error-messages="errorMessages"
+    />
+    <VoteForm
+      v-if="votesArrived"
+      :poll="poll"
+      :initial-ranked-options="rankedOptions"
+      :status-text="statusText"
+      :user-id="userId"
+      @submitVote="submitVote"
+    />
+  </div>
 </template>
 
 <script>
 import { fetchVote, saveVote, fetchPoll } from "../lib/api.js";
 import VoteForm from "../components/VoteForm.vue";
+import Messages from "../components/Messages.vue";
 
 export default {
   components: {
-    VoteForm
+    VoteForm,
+    Messages
   },
   props: {
     pollId: {
       type: String,
       required: true
-    },
-    userIdByParams: {
-      type: String
     }
   },
   data() {
     return {
       rankedOptions: [],
-      usersFirstVote: false,
       voted: false,
-      statusText: "",
-      poll: null,
-      userId: this.userIdByParams
+      statusMessages: [],
+      errorMessages: [],
+      poll: null
     };
   },
   computed: {
     votesArrived() {
       return this.rankedOptions.length !== 0;
+    },
+    authToken() {
+      if (localStorage.getItem("authToken")) {
+        return localStorage.getItem("authToken");
+      } else return undefined;
     }
   },
   async created() {
+    if (!this.authToken) {
+      this.statusMessages.push(`You need to log in to vote.`);
+      return;
+    }
     const [vote, poll] = await Promise.all([
-      fetchVote(this.pollId, this.userId),
+      fetchVote(this.pollId, this.authToken),
       fetchPoll(this.pollId)
     ]);
-    console.log("VOTE", vote, "POLL", poll);
     this.poll = poll;
     this.userId = vote.userId;
     if (vote.usersFirstVote) {
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
-      this.usersFirstVote = true;
       this.rankedOptions = this.shuffleArray(poll.options);
     }
     if (vote.ranking.length === 0) {
@@ -75,12 +86,7 @@ export default {
   methods: {
     async submitVote(rankedOptions) {
       try {
-        await saveVote(
-          this.poll._id,
-          rankedOptions,
-          this.userId,
-          this.usersFirstVote
-        );
+        await saveVote(this.poll._id, rankedOptions, this.authToken);
         this.voted = true;
       } catch (error) {
         console.log(error);
