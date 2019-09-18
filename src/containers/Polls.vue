@@ -54,6 +54,7 @@ export default {
   async mounted() {
     const fetchedPollObject = await fetchPolls();
     if (fetchedPollObject.status !== "success") {
+      console.log(fetchedPollObject);
       this.errorMessages.push(...fetchedPollObject.errors);
     }
     this.polls = fetchedPollObject.data;
@@ -62,35 +63,40 @@ export default {
     async onStatusChange(pollId, status) {
       if (status === "DRAFT") {
         if (
-          confirm(
+          //if users don't confirm the question, abort
+          !confirm(
             "Are you sure you want to move this poll in drafts? All votes will be deleted."
           )
         ) {
-          await changePollStatus(pollId, status);
-          const fetchedPollObject = await fetchPolls();
-          this.polls = fetchedPollObject.data;
-          this.statusMessages = [];
-          this.statusMessages.push("Poll has been set to draft.");
-          setTimeout(() => (this.statusMessages = []), 7000);
+          return;
         }
-        return;
       }
-      await changePollStatus(pollId, status);
-      const fetchedPollObject = await fetchPolls();
-      this.polls = fetchedPollObject.data;
-      this.statusMessages = [];
-      this.statusMessages.push("Poll has been moved to another tab.");
-      setTimeout(() => (this.statusMessages = []), 7000);
+      console.log("NOW CHANGE STATUS");
+      const response = await changePollStatus(pollId, status);
+      this.handleResponse(response, "Poll has been moved to another tab.");
     },
     async deletePoll(pollId) {
       if (confirm("Are you sure you want to delete this poll?")) {
-        await deletePoll(pollId);
-        const fetchedPollObject = await fetchPolls();
-        this.polls = fetchedPollObject.data;
-        this.statusMessages = [];
-        this.statusMessages.push("Poll deleted.");
-        setTimeout(() => (this.statusMessages = []), 7000);
+        const response = await deletePoll(pollId);
+        this.handleResponse(response, "Poll deleted.");
       }
+    },
+    async handleResponse(response, successMessage) {
+      if (response.status === "success") {
+        this.polls = response.data;
+        this.statusMessages = [];
+        this.statusMessages.push(successMessage);
+        setTimeout(() => (this.statusMessages = []), 7000);
+      } else if (response.status === "error") {
+        this.errorMessages.length = 0;
+        this.errorMessages = response.errors.map(error => error.msg);
+        setTimeout(() => (this.errorMessages = []), 7000);
+      } else {
+        this.errorMessages = response.errors.map(error => error.msg);
+        setTimeout(() => (this.errorMessages = []), 7000);
+      }
+      const fetchedPollObject = await fetchPolls();
+      this.polls = fetchedPollObject.data;
     }
   }
 };

@@ -2,7 +2,7 @@ const { validationResult } = require("express-validator");
 const User = require("../models/User");
 
 exports.getUser = async (req, res) => {
-  const { password, ...user } = req.user;
+  const { password, token, __v, ...user } = req.user;
   res.json({ status: "success", data: user });
 };
 

@@ -34,7 +34,6 @@ export default {
       const { passwordConfirm, ...userObject } = credentials;
       const response = await signup(userObject);
       if (response.status === "fail") {
-        console.log("HIT AGAIN", response.errors.map(error => error.msg));
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
       } else if (response.status === "success") {
