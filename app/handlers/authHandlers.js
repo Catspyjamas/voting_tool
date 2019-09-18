@@ -2,7 +2,31 @@ const passport = require("passport");
 const { body } = require("express-validator");
 const { sanitizeBody } = require("express-validator");
 
-exports.findUser = passport.authenticate("jwt", { session: false });
+const authenticate = passport.authenticate("jwt", {
+  session: false,
+  failWithError: true
+});
+
+exports.findUser = (req, res, next) => {
+  authenticate(req, res, error => {
+    if (error.message === "Unauthorized") {
+      res.status(401);
+      res.json({
+        status: "error",
+        errors: [
+          {
+            msg:
+              "Unauthorized. Create an account or log in again (your session might have expired) ."
+          }
+        ]
+      });
+      return;
+    }
+    next(error);
+  });
+};
+
+//exports.findUser = passport.authenticate("jwt", { session: false });
 
 exports.validateSignup = [
   sanitizeBody("firstName"),
