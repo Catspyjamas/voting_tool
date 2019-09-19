@@ -9,7 +9,7 @@ exports.getVote = async (req, res) => {
   }
   if (!poll.votes || poll.votes.length === 0) {
     res.status(400);
-    res.json({ status: "fail", data: { usersFirstVote: true } });
+    res.json({ status: "success", data: { usersFirstVote: true } });
     return;
   }
   //Find out the voteId

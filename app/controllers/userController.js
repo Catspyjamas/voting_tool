@@ -1,7 +1,5 @@
 const { validationResult } = require("express-validator");
 const User = require("../models/User");
-const passportJwt = require("passport-jwt");
-const jwt = require("jsonwebtoken");
 
 exports.getUser = async (req, res) => {
   const user = req.user.toJSON();
@@ -35,10 +33,9 @@ exports.updateUser = async (req, res, next) => {
   const errors = validationResult(req);
   const { newFirstName, newLastName, newEmail } = req.body;
   const currentPassword = req.body.password;
-  //! Leave out password for now
-  // const newPassword = req.body.newPassword
-  //   ? req.body.newPassword
-  //   : currentPassword;
+  const newPassword = req.body.newPassword
+    ? req.body.newPassword
+    : currentPassword;
 
   if (!errors.isEmpty()) {
     res.status(422);
@@ -52,17 +49,12 @@ exports.updateUser = async (req, res, next) => {
       userModel.firstName = newFirstName;
       userModel.lastName = newLastName;
       userModel.email = newEmail;
+      userModel.password = newPassword;
       //      userModel.password = newPassword;
       const newUserModel = await userModel.save();
 
       res.locals.user = newUserModel.toJSON();
-      // res.locals.token = jwt.sign(
-      //   { token: user.token },
-      //   jwtOptions.secretOrKey,
-      //   {
-      //     expiresIn: "7d"
-      //   }
-      // );
+
       next();
       return;
     }
