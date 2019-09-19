@@ -27,25 +27,26 @@
     />
     <FormFieldset
       v-model="newPassword"
-      type="newPassword"
+      type="password"
       field-id="new-password"
-      label-text="New Password?"
+      label-text="New Password"
       placeholder="New Password"
       name="new-password"
     />
     <FormFieldset
       v-model="newPasswordConfirm"
-      type="new-password"
+      type="password"
       field-id="new-password-confirm"
       label-text="Confirm New Password"
       placeholder="Confirm New Password"
       name="new-password-confirm"
     />
     <FormFieldset
+      id="password-field"
       v-model="currentPassword"
-      type="current-password"
+      type="password"
       field-id="current-password"
-      label-text="Please submit your current passwort to save changes."
+      label-text="Please submit your current passwort to save changes.*"
       placeholder="Current password"
       name="current-password"
       :required="true"
@@ -94,3 +95,10 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+#password-field {
+  padding-top: 30px;
+  margin-top: 20px;
+  border-top: 1px solid $grey1;
+}
+</style>
