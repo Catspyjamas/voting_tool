@@ -10,7 +10,7 @@ Vue.config.productionTip = false;
 
 new Vue({
   data: {
-    loggedIn: false
+    loggedIn: localStorage.authToken
   },
   router,
   render: h => h(App)

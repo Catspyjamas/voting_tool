@@ -8,18 +8,18 @@ exports.getVote = async (req, res) => {
     throw new Error(`Unknown poll with id ${req.params.pollId}`);
   }
   if (!poll.votes || poll.votes.length === 0) {
-    res.json({ status: "fail", usersFirstVote: true });
+    res.status(400);
+    res.json({ status: "fail", data: { usersFirstVote: true } });
+    return;
   }
   //Find out the voteId
-  console.log("FIRST VOTE IN POLLS", poll.votes[0]);
-  console.log("USER ID OF VOTE", poll.votes[0].userId.toJSON());
   const vote = poll.votes.find(vote => vote.userId.toJSON() === user.id);
   // if so, get vote with userId
   if (!vote) {
     res.json({ status: "fail", usersFirstVote: true });
-  } else {
-    res.json(vote);
+    return;
   }
+  res.json(vote);
 };
 
 exports.getVotes = async (req, res) => {
@@ -27,11 +27,15 @@ exports.getVotes = async (req, res) => {
   //check if status is CLOSED at all
   if (poll.status !== "CLOSED") {
     res.status(403);
-    throw new Error(
-      "You can only look at the results when the poll is closed."
-    );
+    res.json({
+      status: "error",
+      errors: [
+        { msg: "You can only look at the results when the poll is closed." }
+      ]
+    });
+    return;
   }
-  res.json(poll.votes);
+  res.json({ status: "success", data: poll });
 };
 
 exports.createVote = async (req, res) => {

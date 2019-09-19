@@ -9,7 +9,7 @@ const authenticate = passport.authenticate("jwt", {
 
 exports.findUser = (req, res, next) => {
   authenticate(req, res, error => {
-    if (error && error.message && error.message === "Unauthorized") {
+    if (error && error.message === "Unauthorized") {
       res.status(401);
       res.json({
         status: "error",

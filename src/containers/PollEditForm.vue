@@ -37,6 +37,9 @@ export default {
     };
   },
   async created() {
+    if (!this.$root.loggedIn) {
+      this.errorMessages.push("You need to be logged in to edit polls.");
+    }
     const fetchedPollObject = await fetchPoll(this.pollId);
     if (fetchedPollObject.status !== "success") {
       this.errorMessages.push(...fetchedPollObject.errors);

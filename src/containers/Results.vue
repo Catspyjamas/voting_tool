@@ -43,11 +43,10 @@ export default {
   },
   async mounted() {
     try {
-      const poll = await fetchPollResults(this.pollId);
-      this.poll = poll;
-      const roundHistory = findWinner(poll);
-      console.log("ROUNDHISTORY:", roundHistory);
-      const pollResults = prepareRoundInfo(poll, roundHistory);
+      const response = await fetchPollResults(this.pollId);
+      this.poll = response.data;
+      const roundHistory = findWinner(response.data);
+      const pollResults = prepareRoundInfo(response.data, roundHistory);
       this.pollResults = pollResults;
       const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
       // const winnerOptions = [];
@@ -58,7 +57,7 @@ export default {
       //     }
       //   });
       // });
-      this.winnerOptions = poll.options.filter(pollOption => {
+      this.winnerOptions = response.data.options.filter(pollOption => {
         return winnerIdsAndVotes.some(winnerIdAndVote => {
           return pollOption._id === winnerIdAndVote.winnerId;
         });

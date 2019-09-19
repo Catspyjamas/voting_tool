@@ -23,7 +23,8 @@ export async function fetchPoll(pollId) {
   } catch (error) {
     if (error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -54,9 +55,10 @@ export async function savePoll(newPollObject, pollId) {
     );
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -83,7 +85,8 @@ export async function changePollStatus(pollId, status) {
   } catch (error) {
     if (error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -100,7 +103,8 @@ export async function deletePoll(pollId) {
   } catch (error) {
     if (error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -117,31 +121,31 @@ export async function fetchPollResults(pollId) {
       },
       responseType: "json"
     });
-    const vote = responseVote.data;
-    return vote;
+    return responseVote.data;
   } catch (error) {
     if (error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
 export async function fetchVote(pollId, authToken) {
   try {
     //then GET request with authToken
-    const responseVote = await axios.get(`${url}/polls/${pollId}/vote/`, {
+    const response = await axios.get(`${url}/polls/${pollId}/vote/`, {
       headers: {
         Authentication: authToken,
         ContentType: "application/json"
       },
       responseType: "json"
     });
-    const vote = responseVote.data;
-    return vote;
+    return response.data;
   } catch (error) {
     if (error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -149,7 +153,8 @@ export async function saveVote(pollId, rankedOptions, authToken) {
   try {
     // If it's the user's first vote, it's a post
     const hasUserVoted = await fetchVote(pollId, authToken);
-    if (hasUserVoted.usersFirstVote) {
+    console.log("HASUSERVOTED", hasUserVoted);
+    if (hasUserVoted.data && hasUserVoted.data.usersFirstVote) {
       const responseVote = await axios.post(
         `${url}/polls/${pollId}/vote`,
         rankedOptions,
@@ -177,9 +182,10 @@ export async function saveVote(pollId, rankedOptions, authToken) {
       return responseVote.data;
     }
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
-    } else return error;
+    }
+    throw error;
   }
 }
 
@@ -205,6 +211,7 @@ export async function login(credentials) {
     if (error.response.data) {
       return error.response.data;
     }
+    throw error;
   }
 }
 
@@ -251,5 +258,6 @@ export async function logout() {
     if (error.response.data) {
       return error.response.data;
     }
+    throw error;
   }
 }
