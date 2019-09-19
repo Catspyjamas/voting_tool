@@ -18,6 +18,11 @@ const userSchema = new Schema({
     type: String,
     required: "Please supply a name",
     trim: true
+  },
+  lastName: {
+    type: String,
+    required: "Please supply a last name",
+    trim: true
   }
 });
 
