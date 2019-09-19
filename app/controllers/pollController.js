@@ -9,6 +9,7 @@ exports.createPoll = async (req, res) => {
       status: "fail",
       errors: [{ msg: "You cannot create a poll with votes." }]
     });
+    return;
   }
   //delete _id from request so mongoose lets us save more instances of the same object
   delete req.body._id;
@@ -37,7 +38,7 @@ exports.getPoll = async (req, res) => {
     poll.votes = [];
   }
   const { creator, date, __v, __proto__, ...cleanPoll } = poll;
-  res.json({ status: "success", data: cleanPoll });
+  res.json({ status: "success", data: { poll: cleanPoll } });
 };
 
 exports.updatePoll = async (req, res) => {
@@ -49,6 +50,7 @@ exports.updatePoll = async (req, res) => {
       status: "fail",
       errors: [{ msg: "You cannot add votes. Please vote instead." }]
     });
+    return;
   }
   const oldPoll = await Poll.findOne({ _id: req.params.pollId });
   //check if poll exists
@@ -74,7 +76,7 @@ exports.updatePoll = async (req, res) => {
       runValidators: true
     }
   );
-  res.status(204);
+  res.status(200);
   res.json({ status: "success", data: updatedPoll });
 };
 

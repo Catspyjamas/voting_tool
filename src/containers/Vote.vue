@@ -59,6 +59,19 @@ export default {
       fetchVote(this.pollId, this.authToken),
       fetchPoll(this.pollId)
     ]);
+    if (pollResponse.status === "fail" || voteResponse.status === "error") {
+      this.errorMessages.length = 0;
+      this.errorMessages = pollResponse.errors.map(error => error.msg);
+      setTimeout(() => (this.errorMessages = []), 7000);
+      return;
+    }
+    if (voteResponse.status === "fail" || voteResponse.status === "error") {
+      this.errorMessages.length = 0;
+      this.errorMessages = voteResponse.errors.map(error => error.msg);
+      setTimeout(() => (this.errorMessages = []), 7000);
+      return;
+    }
+
     this.poll = pollResponse.data.poll;
     this.userId = voteResponse.data.userId;
     if (voteResponse.data.usersFirstVote) {

@@ -51,7 +51,6 @@ export default {
       console.log("RESPONSE:".response);
 
       if (response.status === "success") {
-        console.log("HOI");
         this.$root.loggedIn = false;
       }
     }

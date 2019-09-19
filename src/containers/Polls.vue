@@ -45,7 +45,9 @@ export default {
   },
   computed: {
     filteredPolls() {
-      return this.polls.filter(this.activeFilter);
+      if (this.polls.length > 0) {
+        return this.polls.filter(this.activeFilter);
+      } else return [];
     },
     activeFilter() {
       return mapTabToFilterFunction[this.tab];
@@ -74,11 +76,15 @@ export default {
       console.log("NOW CHANGE STATUS");
       const response = await changePollStatus(pollId, status);
       this.handleResponse(response, "Poll has been moved to another tab.");
+      const fetchedPollObject = await fetchPolls();
+      this.polls = fetchedPollObject.data;
     },
     async deletePoll(pollId) {
       if (confirm("Are you sure you want to delete this poll?")) {
         const response = await deletePoll(pollId);
         this.handleResponse(response, "Poll deleted.");
+        const fetchedPollObject = await fetchPolls();
+        this.polls = fetchedPollObject.data;
       }
     },
     async handleResponse(response, successMessage) {
@@ -95,8 +101,6 @@ export default {
         this.errorMessages = response.errors.map(error => error.msg);
         setTimeout(() => (this.errorMessages = []), 7000);
       }
-      const fetchedPollObject = await fetchPolls();
-      this.polls = fetchedPollObject.data;
     }
   }
 };

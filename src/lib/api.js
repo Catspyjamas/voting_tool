@@ -10,7 +10,7 @@ export async function fetchPolls() {
     const response = await axios.get(`${url}/polls`);
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     } else return error;
   }
@@ -21,7 +21,7 @@ export async function fetchPoll(pollId) {
     const response = await axios.get(`${url}/polls/${pollId}`);
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -55,7 +55,7 @@ export async function savePoll(newPollObject, pollId) {
     );
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data) {
+    if (error.response && error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -83,7 +83,7 @@ export async function changePollStatus(pollId, status) {
     );
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -101,7 +101,7 @@ export async function deletePoll(pollId) {
     });
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -123,7 +123,7 @@ export async function fetchPollResults(pollId) {
     });
     return responseVote.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -142,7 +142,7 @@ export async function fetchVote(pollId, authToken) {
     });
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -201,14 +201,13 @@ export async function login(credentials) {
       },
       responseType: "json"
     });
-    console.log(response);
     authToken = response.data.data.token;
     console.log("NEW AUTH TOKEN:", authToken);
     localStorage.setItem("authToken", response.data.data.token);
     localStorage.setItem("userId", response.data.data._id);
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
@@ -231,7 +230,10 @@ export async function signup(credentials) {
 
     return response.data;
   } catch (error) {
-    if (error.response.data.errors[0].err.errmsg.includes("E11000")) {
+    if (
+      error.response &&
+      error.response.data.errors[0].err.errmsg.includes("E11000")
+    ) {
       console.log("hit");
       return {
         status: "fail",
@@ -255,7 +257,7 @@ export async function logout() {
     localStorage.clear();
     return response.data;
   } catch (error) {
-    if (error.response.data) {
+    if (error.response && error.response.data) {
       return error.response.data;
     }
     throw error;
