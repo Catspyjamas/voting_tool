@@ -55,19 +55,21 @@ export default {
       this.statusMessages.push(`You need to log in to vote.`);
       return;
     }
-    const [vote, poll] = await Promise.all([
+    const [voteResponse, pollResponse] = await Promise.all([
       fetchVote(this.pollId, this.authToken),
       fetchPoll(this.pollId)
     ]);
-    this.poll = poll;
-    this.userId = vote.userId;
-    if (vote.usersFirstVote) {
+    this.poll = pollResponse.data.poll;
+    this.userId = voteResponse.data.userId;
+    if (voteResponse.data.usersFirstVote) {
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
-      this.rankedOptions = this.shuffleArray(poll.options);
-    }
-    if (vote.ranking.length === 0) {
+      this.rankedOptions = this.shuffleArray(pollResponse.data.poll.options);
+    } else if (
+      voteResponse.data.ranking &&
+      voteResponse.data.ranking.length === 0
+    ) {
       this.statusText = `You're currently abstaining. If you'd like to vote for ${
         this.poll.title
       } after all, please resubmit.`;
@@ -76,7 +78,7 @@ export default {
       this.statusText = `This is what you voted for ${
         this.poll.title
       }. Change the order and resubmit if you would like to change your ranking.`;
-      this.rankedOptions = vote.ranking.map(optionId => {
+      this.rankedOptions = voteResponse.data.ranking.map(optionId => {
         return this.poll.options.find(option => {
           return option._id === optionId;
         });

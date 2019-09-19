@@ -19,7 +19,7 @@ exports.getVote = async (req, res) => {
     res.json({ status: "fail", usersFirstVote: true });
     return;
   }
-  res.json(vote);
+  res.json({ status: "success", data: vote });
 };
 
 exports.getVotes = async (req, res) => {
