@@ -130,7 +130,7 @@ export async function fetchPollResults(pollId) {
   }
 }
 
-export async function fetchVote(pollId, authToken) {
+export async function fetchVote(pollId) {
   try {
     //then GET request with authToken
     const response = await axios.get(`${url}/polls/${pollId}/vote/`, {
@@ -189,10 +189,6 @@ export async function saveVote(pollId, rankedOptions, authToken) {
   }
 }
 
-/// OPEN/CLOSE POLLS
-
-/// USER AUTHENTICATION
-
 export async function login(credentials) {
   try {
     const response = await axios.post(`${url}/login`, credentials, {
@@ -239,7 +235,48 @@ export async function signup(credentials) {
         status: "fail",
         errors: [{ msg: "There's another user with this email address." }]
       };
+    } else if (error.response && error.response.data) {
+      return error.response.data;
     }
+    throw error;
+  }
+}
+
+export async function changeUser(changedUserObject) {
+  try {
+    const response = await axios.patch(`${url}/user`, changedUserObject, {
+      headers: {
+        Authentication: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    throw error;
+  }
+}
+
+export async function fetchUser() {
+  try {
+    //then GET request with authToken
+    const response = await axios.get(`${url}/user`, {
+      headers: {
+        Authentication: authToken,
+        ContentType: "application/json"
+      },
+      responseType: "json"
+    });
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.data) {
+      return error.response.data;
+    }
+    throw error;
   }
 }
 

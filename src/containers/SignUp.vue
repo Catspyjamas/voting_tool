@@ -4,17 +4,17 @@
       :status-messages="statusMessages"
       :error-messages="errorMessages"
     />
-    <SignUpForm v-if="!signedUp" @submit-signup="submitSignUp" />
+    <UserSignUpForm v-if="!signedUp" @submit-signup="submitSignUp" />
   </div>
 </template>
 <script>
-import SignUpForm from "../components/SignUpForm";
+import UserSignUpForm from "../components/UserSignUpForm";
 import Messages from "../components/Messages";
 import { signup } from "../lib/api.js";
 
 export default {
   name: "SignUp",
-  components: { SignUpForm, Messages },
+  components: { UserSignUpForm, Messages },
   data() {
     return {
       statusMessages: [],

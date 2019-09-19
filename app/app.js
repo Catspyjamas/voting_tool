@@ -136,6 +136,14 @@ app.post(
   authController.handleSuccess,
   authController.handleError
 );
+app.patch(
+  "/user",
+  authHandlers.validateChangeVote,
+  catchErrors(authHandlers.findUser),
+  catchErrors(userController.updateUser),
+  authController.handleSuccess,
+  authController.handleError
+);
 
 app.post(
   "/login",

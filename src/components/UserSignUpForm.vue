@@ -50,7 +50,7 @@
 import FormFieldset from "./FormFieldset.vue";
 import TextButton from "./TextButton.vue";
 export default {
-  name: "SignUpForm",
+  name: "UserSignUpForm",
   components: {
     FormFieldset,
     TextButton

@@ -9,6 +9,7 @@ import Submitted from "./components/Submitted.vue";
 import Results from "./containers/Results.vue";
 import Login from "./containers/Login.vue";
 import SignUp from "./containers/SignUp.vue";
+import UserEdit from "./containers/UserEdit.vue";
 
 Vue.use(Router);
 
@@ -71,6 +72,11 @@ export default new Router({
       path: "/signup",
       name: "SignUp",
       component: SignUp
+    },
+    {
+      path: "/editUser",
+      name: "editUser",
+      component: UserEdit
     }
   ]
 });

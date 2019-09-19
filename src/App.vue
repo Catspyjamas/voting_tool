@@ -8,7 +8,12 @@
           >Login</router-link
         >
         <a v-if="$root.loggedIn" class="navlink" @click="logout">Logout</a>
-        <router-link class="navlink" to="/signup">Sign Up</router-link>
+        <router-link v-if="!$root.loggedIn" class="navlink" to="/signup"
+          >Sign Up</router-link
+        >
+        <router-link v-if="$root.loggedIn" class="navlink" to="/editUser"
+          >Edit Profile</router-link
+        >
       </div>
     </nav>
     <router-view />

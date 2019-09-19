@@ -47,3 +47,14 @@ exports.validateSignup = [
     .not()
     .isEmpty()
 ];
+exports.validateChangeVote = [
+  body("newEmail", "That Email is not valid!").isEmail(),
+  sanitizeBody("newEmail").normalizeEmail({
+    remove_dots: false,
+    remove_extension: false,
+    gmail_remove_subaddress: false
+  }),
+  body("password", "Please supply your current password.")
+    .not()
+    .isEmpty()
+];
