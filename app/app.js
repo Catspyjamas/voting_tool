@@ -39,8 +39,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 // app.use(passport.session());
 
-// TODO: Set user to res.locals
-
 app.get("/polls", catchErrors(pollController.getPolls));
 
 // GET /polls - holt alle Polls
