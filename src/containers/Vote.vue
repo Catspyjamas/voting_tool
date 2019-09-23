@@ -68,15 +68,15 @@ export default {
       return;
     }
     if (voteResponse.data.usersFirstVote) {
-      this.poll = pollResponse.data.poll;
+      this.poll = pollResponse.data;
 
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
-      this.rankedOptions = this.shuffleArray(pollResponse.data.poll.options);
+      this.rankedOptions = this.shuffleArray(pollResponse.data.options);
       return;
     }
-    this.poll = pollResponse.data.poll;
+    this.poll = pollResponse.data;
 
     this.userId = voteResponse.data.userId;
     if (voteResponse.data.ranking && voteResponse.data.ranking.length === 0) {

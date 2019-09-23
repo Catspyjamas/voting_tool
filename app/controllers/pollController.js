@@ -41,7 +41,7 @@ exports.getPoll = async (req, res) => {
   }
   //Get rid of mongoose attributes so poll object can be sent back
   const { creator, date, __v, __proto__, ...cleanPoll } = poll;
-  return res.json({ status: "success", data: { poll: cleanPoll } });
+  return res.json({ status: "success", data: cleanPoll });
 };
 
 exports.updatePoll = async (req, res) => {

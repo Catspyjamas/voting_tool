@@ -40,13 +40,12 @@ test("GET /polls returns an array of all polls", async () => {
   expect(polls).toHaveLength(3);
 });
 
-//! Here we save poll as attribute, elsewhere it's the dataobject itself
 test("GET /polls/:pollId with status OPEN returns a single poll without votes", async () => {
   const response = await request(app)
     .get(`/polls/${dummyData.openPoll._id}`)
     .expect(200)
     .expect("Content-Type", /json/);
-  const poll = response.body.data.poll;
+  const poll = response.body.data;
   const { votes, ...expectedPoll } = dummyData.openPoll;
   expect(response.body.status).toEqual("success");
   expect(poll.votes).toHaveLength(0);
@@ -57,7 +56,7 @@ test("GET /polls/:pollId with status CLOSED returns an object with a single poll
     .get(`/polls/${dummyData.closedPoll._id}`)
     .expect(200)
     .expect("Content-Type", /json/);
-  const poll = response.body.data.poll;
+  const poll = response.body.data;
   expect(response.body.status).toEqual("success");
   expect(poll).toHaveProperty("title");
 });
