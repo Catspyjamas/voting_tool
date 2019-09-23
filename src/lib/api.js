@@ -133,7 +133,7 @@ export async function fetchPollResults(pollId) {
 export async function fetchVote(pollId) {
   try {
     //then GET request with authToken
-    const response = await axios.get(`${url}/polls/${pollId}/vote/`, {
+    const response = await axios.get(`${url}/polls/${pollId}/vote`, {
       headers: {
         Authentication: authToken,
         ContentType: "application/json"

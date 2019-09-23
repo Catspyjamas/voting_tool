@@ -38,7 +38,7 @@ exports.getPoll = async (req, res) => {
     poll.votes = [];
   }
   const { creator, date, __v, __proto__, ...cleanPoll } = poll;
-  res.json({ status: "success", data: { poll: cleanPoll } });
+  return res.json({ status: "success", data: { poll: cleanPoll } });
 };
 
 exports.updatePoll = async (req, res) => {

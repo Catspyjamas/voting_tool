@@ -16,7 +16,7 @@ exports.getVote = async (req, res) => {
   const vote = poll.votes.find(vote => vote.userId.toJSON() === user.id);
   // if so, get vote with userId
   if (!vote) {
-    res.json({ status: "fail", usersFirstVote: true });
+    res.json({ status: "success", data: { usersFirstVote: true } });
     return;
   }
   res.json({ status: "success", data: vote });

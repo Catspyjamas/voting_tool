@@ -67,7 +67,6 @@ exports.logout = async (req, res, next) => {
 };
 
 exports.handleSuccess = (req, res) => {
-  // if err, res.status(bad code)
   res.status(201);
   const { password, __v, ...user } = res.locals.user;
   user.token = res.locals.token;

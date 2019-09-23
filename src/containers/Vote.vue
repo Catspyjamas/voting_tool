@@ -50,16 +50,12 @@ export default {
       } else return undefined;
     }
   },
-  async created() {
-    if (!this.authToken) {
-      this.statusMessages.push(`You need to log in to vote.`);
-      return;
-    }
+  async mounted() {
     const [voteResponse, pollResponse] = await Promise.all([
       fetchVote(this.pollId, this.authToken),
       fetchPoll(this.pollId)
     ]);
-    if (pollResponse.status === "fail" || voteResponse.status === "error") {
+    if (pollResponse.status === "fail" || pollResponse.status === "error") {
       this.errorMessages.length = 0;
       this.errorMessages = pollResponse.errors.map(error => error.msg);
       setTimeout(() => (this.errorMessages = []), 7000);
@@ -71,32 +67,33 @@ export default {
       setTimeout(() => (this.errorMessages = []), 7000);
       return;
     }
-
-    this.poll = pollResponse.data.poll;
-    this.userId = voteResponse.data.userId;
     if (voteResponse.data.usersFirstVote) {
+      this.poll = pollResponse.data.poll;
+
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
       this.rankedOptions = this.shuffleArray(pollResponse.data.poll.options);
-    } else if (
-      voteResponse.data.ranking &&
-      voteResponse.data.ranking.length === 0
-    ) {
+      return;
+    }
+    this.poll = pollResponse.data.poll;
+
+    this.userId = voteResponse.data.userId;
+    if (voteResponse.data.ranking && voteResponse.data.ranking.length === 0) {
       this.statusText = `You're currently abstaining. If you'd like to vote for ${
         this.poll.title
       } after all, please resubmit.`;
       this.rankedOptions = this.shuffleArray(this.poll.options);
-    } else {
-      this.statusText = `This is what you voted for ${
-        this.poll.title
-      }. Change the order and resubmit if you would like to change your ranking.`;
-      this.rankedOptions = voteResponse.data.ranking.map(optionId => {
-        return this.poll.options.find(option => {
-          return option._id === optionId;
-        });
-      });
+      return;
     }
+    this.statusText = `This is what you voted for ${
+      this.poll.title
+    }. Change the order and resubmit if you would like to change your ranking.`;
+    this.rankedOptions = voteResponse.data.ranking.map(optionId => {
+      return this.poll.options.find(option => {
+        return option._id === optionId;
+      });
+    });
   },
   methods: {
     async submitVote(rankedOptions) {
