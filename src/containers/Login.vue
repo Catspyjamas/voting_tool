@@ -31,11 +31,9 @@ export default {
         this.errorMessages.length = 0;
         this.statusMessages.push(`You are now logged in.`);
         this.$root.loggedIn = true;
-        console.log("LOGGED IN?", this.$root.loggedIn);
         setTimeout(() => (this.statusMessages = []), 2000);
       } else {
         this.errorMessages.length = 0;
-        console.log("HERE'S WHAT CAME BACK:", response);
         this.errorMessages.length = 0;
         this.errorMessages.push(
           "Sorry, that didn't go through. Please try again later."

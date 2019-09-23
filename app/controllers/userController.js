@@ -8,7 +8,7 @@ exports.getUser = async (req, res) => {
 };
 
 exports.createUser = async (req, res, next) => {
-  // Finds the validation errors in this request and wraps them in an object with handy functions
+  // Esxpress validator finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -29,10 +29,10 @@ exports.createUser = async (req, res, next) => {
 };
 
 exports.updateUser = async (req, res, next) => {
-  // Finds the validation errors in this request and wraps them in an object with handy functions
   const errors = validationResult(req);
   const { newFirstName, newLastName, newEmail } = req.body;
   const currentPassword = req.body.password;
+  //The password hasn't necessarily been changed. if not, use the old one
   const newPassword = req.body.newPassword
     ? req.body.newPassword
     : currentPassword;
@@ -50,7 +50,6 @@ exports.updateUser = async (req, res, next) => {
       userModel.lastName = newLastName;
       userModel.email = newEmail;
       userModel.password = newPassword;
-      //      userModel.password = newPassword;
       const newUserModel = await userModel.save();
 
       res.locals.user = newUserModel.toJSON();

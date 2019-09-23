@@ -2,6 +2,8 @@ const passport = require("passport");
 const { body } = require("express-validator");
 const { sanitizeBody } = require("express-validator");
 
+//All we need for authenticating with the JWT token is this passport method.
+//It's wrapped in a variable so we have better control over the error messages in findUser
 const authenticate = passport.authenticate("jwt", {
   session: false,
   failWithError: true
@@ -16,7 +18,7 @@ exports.findUser = (req, res, next) => {
         errors: [
           {
             msg:
-              "Unauthorized. Create an account or log in again (your session might have expired) ."
+              "Unauthorized. Create an account or log in again (your session might have expired)."
           }
         ]
       });
@@ -26,8 +28,7 @@ exports.findUser = (req, res, next) => {
   });
 };
 
-//exports.findUser = passport.authenticate("jwt", { session: false });
-
+// Validation methods for Signup
 exports.validateSignup = [
   sanitizeBody("firstName"),
   body("firstName", "You must supply a first name!")
@@ -47,7 +48,9 @@ exports.validateSignup = [
     .not()
     .isEmpty()
 ];
-exports.validateChangeVote = [
+
+// Validation methods for udating user data
+exports.validateUpdateUser = [
   body("newEmail", "That Email is not valid!").isEmail(),
   sanitizeBody("newEmail").normalizeEmail({
     remove_dots: false,

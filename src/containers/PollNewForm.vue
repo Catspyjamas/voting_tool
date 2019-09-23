@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     async savePollObject(pollObject) {
-      console.log(pollObject);
       const { title, description, options, start, end } = pollObject;
       await savePoll({
         title,

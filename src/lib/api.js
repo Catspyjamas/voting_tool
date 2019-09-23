@@ -153,7 +153,6 @@ export async function saveVote(pollId, rankedOptions, authToken) {
   try {
     // If it's the user's first vote, it's a post
     const hasUserVoted = await fetchVote(pollId, authToken);
-    console.log("HASUSERVOTED", hasUserVoted);
     if (hasUserVoted.data && hasUserVoted.data.usersFirstVote) {
       const responseVote = await axios.post(
         `${url}/polls/${pollId}/vote`,
@@ -198,7 +197,6 @@ export async function login(credentials) {
       responseType: "json"
     });
     authToken = response.data.data.token;
-    console.log("NEW AUTH TOKEN:", authToken);
     localStorage.setItem("authToken", response.data.data.token);
     localStorage.setItem("userId", response.data.data._id);
     return response.data;
@@ -219,7 +217,6 @@ export async function signup(credentials) {
       responseType: "json"
     });
     authToken = response.data.data.token;
-    console.log("NEW AUTH TOKEN:", authToken);
 
     localStorage.setItem("authToken", response.data.data.token);
     localStorage.setItem("userId", response.data.data._id);
@@ -230,7 +227,6 @@ export async function signup(credentials) {
       error.response &&
       error.response.data.errors[0].err.errmsg.includes("E11000")
     ) {
-      console.log("hit");
       return {
         status: "fail",
         errors: [{ msg: "There's another user with this email address." }]
@@ -290,7 +286,6 @@ export async function logout() {
       responseType: "json"
     });
     authToken = undefined;
-    console.log("NEW AUTH TOKEN:", authToken);
     localStorage.clear();
     return response.data;
   } catch (error) {

@@ -121,7 +121,6 @@ export default {
   },
   methods: {
     addOption(option) {
-      console.log(option);
       this.pollModel.options.push(option);
     },
     removeOption(index) {

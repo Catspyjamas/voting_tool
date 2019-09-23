@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     async submitUserEdit(credentials) {
-      console.log("CREDENTIALS:", credentials);
       if (credentials.newPasswordConfirm !== credentials.newPassword) {
         this.errorMessages.push(
           "Please ensure that your password matches the password confirm."

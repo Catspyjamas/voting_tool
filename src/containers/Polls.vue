@@ -56,7 +56,6 @@ export default {
   async mounted() {
     const fetchedPollObject = await fetchPolls();
     if (fetchedPollObject.status !== "success") {
-      console.log(fetchedPollObject);
       this.errorMessages.push(...fetchedPollObject.errors);
     }
     this.polls = fetchedPollObject.data;
@@ -73,7 +72,6 @@ export default {
           return;
         }
       }
-      console.log("NOW CHANGE STATUS");
       const response = await changePollStatus(pollId, status);
       this.handleResponse(response, "Poll has been moved to another tab.");
       const fetchedPollObject = await fetchPolls();

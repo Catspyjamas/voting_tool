@@ -138,7 +138,7 @@ app.post(
 );
 app.patch(
   "/user",
-  authHandlers.validateChangeVote,
+  authHandlers.validateUpdateUser,
   catchErrors(authHandlers.findUser),
   catchErrors(userController.updateUser),
   authController.handleSuccess,

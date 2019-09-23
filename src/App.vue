@@ -53,7 +53,6 @@ export default {
   methods: {
     async logout() {
       const response = await logout();
-      console.log("RESPONSE:".response);
 
       if (response.status === "success") {
         this.$root.loggedIn = false;
