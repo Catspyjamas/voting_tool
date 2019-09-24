@@ -1,8 +1,9 @@
 <template>
   <button
     :class="['button', direction]"
-    :style="{ color: textColor, backgroundColor }"
+    :style="{ color: textColor }"
     :disabled="disabled"
+    :title="text"
     @click="$emit('click')"
   >
     <feather v-if="icon" :type="icon" />
@@ -57,18 +58,25 @@ export default {
 }
 
 .button {
-  font-family: "speziabold";
-  letter-spacing: 0.1em;
+  transition: background-color 0.5 ease;
+  font-family: "nexablack";
+  border-radius: 35px;
+  letter-spacing: 0.18em;
   display: flex;
+  position: relative;
   align-items: center;
   border: none;
   text-transform: uppercase;
   color: white;
-  font-size: $standard;
-  padding: $xsmall;
+  font-size: 0.9rem;
+  padding: 0.6rem 0.8rem 0.6rem 0.8em;
   bottom: 0;
   cursor: pointer;
   white-space: nowrap;
+  background-color: $grey2;
+  &:hover {
+    background-color: $grey2-lighter;
+  }
 }
 </style>
 

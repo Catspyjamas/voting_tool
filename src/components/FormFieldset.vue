@@ -7,6 +7,7 @@
       :type="type"
       :placeholder="placeholder"
       :value="value"
+      :required="required"
       rows="5"
       @input="$emit('input', $event.target.value)"
     />
@@ -16,6 +17,7 @@
       :type="type"
       :placeholder="placeholder"
       :value="value"
+      :required="required"
       @input="$emit('input', $event.target.value)"
     />
   </fieldset>
@@ -48,6 +50,10 @@ export default {
     textarea: {
       type: Boolean,
       default: false
+    },
+    required: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -61,7 +67,7 @@ legend {
 label,
 input,
 textarea {
-  font-family: "speziabook", sans-serif;
+  font-family: "plex-light", sans-serif;
   font-weight: 300;
   margin-top: unset;
   margin-bottom: 1em;
@@ -77,9 +83,9 @@ textarea {
 }
 
 label {
-  color: $primary;
+  color: $grey1;
   font-size: $small;
-  border-left: 1px solid $primary;
+  border-left: 1px solid $grey1;
   padding-left: $xsmall;
   margin-bottom: $xsmall;
   display: block;

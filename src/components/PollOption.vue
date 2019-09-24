@@ -35,19 +35,35 @@ export default {
 </script>
 <style lang="scss" scoped>
 .option {
-  color: $primary;
+  color: white;
+  background-color: $grey3;
   display: flex;
-  border-top: 1px solid $primary;
-  padding-top: 1em;
   position: relative;
   cursor: move;
+  padding: 15px;
+  margin-top: 2px;
+  &:hover,
+  &:focus {
+    transition: box-shadow 0.2s ease-in-out;
+    box-shadow: 0 0 20px black;
+    z-index: 2;
+  }
+  p {
+    color: $grey1;
+    font-size: 1.1rem;
+  }
+  h2 {
+    font-family: "plex-medium";
+    font-size: 1.6rem;
+    margin-bottom: 0.4rem;
+  }
 }
 
 .number {
-  font-family: "nexathin";
-  font-size: 4em;
-  margin-top: -0.2em;
+  font-family: "plex-mono-italic";
+  font-size: 5rem;
   width: 20%;
+  color: $mint;
 }
 .main {
   width: 80%;
@@ -59,7 +75,6 @@ export default {
   height: 4em;
   position: absolute;
   border-radius: 50%;
-  background-color: #2b239e;
   top: -$standard;
   right: -$standard;
   display: flex;

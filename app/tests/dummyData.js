@@ -51,11 +51,10 @@ async function createDummyData() {
   }).save();
   const draftPoll = await new Poll({
     title: "Birthday Event Draft",
-    start: "2019-06-18 09:30",
+    start: new Date(Date.UTC(2019, 11, 20, 3, 0, 0)),
     creator: asterix._id,
-    end: "2019-06-19 09:30",
-    description:
-      "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
+    end: new Date(Date.UTC(2020, 11, 20, 3, 0, 0)),
+    description: "What should we do for our birthdays this year?",
     options: [
       {
         title: "Radlfahren",
@@ -89,11 +88,10 @@ async function createDummyData() {
 
   const closedPoll = await new Poll({
     title: "Birthday Event Closed",
-    start: "2019-06-18 09:30",
+    start: new Date(Date.UTC(2019, 11, 20, 3, 0, 0)),
     creator: asterix._id,
-    end: "2019-06-19 09:30",
-    description:
-      "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
+    end: new Date(Date.UTC(2020, 11, 20, 3, 0, 0)),
+    description: "What should we do for our birthdays this year?",
     options: [
       {
         title: "Radlfahren",
@@ -127,11 +125,10 @@ async function createDummyData() {
 
   const openPoll = await new Poll({
     title: "Birthday Event Open",
-    start: "2019-06-18 09:30",
+    start: new Date(Date.UTC(2019, 11, 20, 3, 0, 0)),
     creator: asterix._id,
-    end: "2019-06-19 09:30",
-    description:
-      "What should we do for our birthdays this year? Drag and drop the options until the order of importance seems fine to you.",
+    end: new Date(Date.UTC(2020, 11, 20, 3, 0, 0)),
+    description: "What should we do for our birthdays this year?",
     options: [
       {
         title: "Radlfahren",

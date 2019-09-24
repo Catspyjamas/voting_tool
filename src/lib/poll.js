@@ -25,7 +25,7 @@ function getOption(poll, optionId) {
   return poll.options.find(option => option._id === optionId);
 }
 
-function getPoll(poll) {
+function getOptionIds(poll) {
   return poll.options.map(option => option._id);
 }
 
@@ -147,7 +147,7 @@ class PollException extends Error {
 //Helper Functions for findWinner
 
 function firstRound(poll) {
-  const remainingOptions = getPoll(poll);
+  const remainingOptions = getOptionIds(poll);
   const rankingPerUserId = collectRankingPerUserId(poll.votes);
   const summedUpResults = sumUpResults(remainingOptions, rankingPerUserId);
   const result = calculateWinner(summedUpResults);
@@ -187,7 +187,7 @@ function nextRound(
 ////////////////////////////////////
 export function findWinner(poll) {
   const roundHistory = [];
-  const maxRounds = getPoll(poll).length;
+  const maxRounds = getOptionIds(poll).length;
 
   const firstRoundResults = firstRound(poll);
   roundHistory.push(firstRoundResults);
@@ -210,14 +210,14 @@ export function findWinner(poll) {
   if (result === null) {
     throw new PollException("Couldn't find a winner", roundHistory);
   }
-
-  return { roundHistory, result };
+  return roundHistory;
 }
 
 export function prepareRoundInfo(poll, roundHistory) {
-  return roundHistory.map(round => {
+  return roundHistory.map((round, roundIndex) => {
     //Make array from counts per round
     const numbersPerRound = Array.from(round.summedUpResults.values());
+
     //Make array from optionIds
     const optionsPerRound = Array.from(round.summedUpResults.keys());
     const titleOfOptionsPerRound = optionsPerRound.map(optionId => {
@@ -260,7 +260,7 @@ export function prepareRoundInfo(poll, roundHistory) {
         labels: titleOfOptionsPerRound
       },
       summedUpResults: arraysFromSummedUpResults,
-      roundCount: round.roundCount,
+      roundIndex,
       minKeys: minKeyTitlesPerRound,
       result: round.result
     };

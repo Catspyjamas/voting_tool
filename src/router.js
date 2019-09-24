@@ -1,10 +1,10 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Polls from "./containers/Polls.vue";
-import EditPoll from "./components/PollEditForm.vue";
+import EditPoll from "./containers/PollEditForm.vue";
 import Vote from "./containers/Vote.vue";
 import About from "./components/About.vue";
-import NewPoll from "./components/PollNewForm.vue";
+import NewPoll from "./containers/PollNewForm.vue";
 import Submitted from "./components/Submitted.vue";
 import Results from "./containers/Results.vue";
 
@@ -12,6 +12,10 @@ Vue.use(Router);
 
 export default new Router({
   routes: [
+    {
+      path: "/",
+      redirect: "/polls/open"
+    },
     {
       path: "/polls/:pollId/results",
       name: "Results",

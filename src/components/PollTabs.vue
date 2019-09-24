@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="polltabs-container">
     <ul class="tabs">
       <router-link class="tab" :to="{ name: 'Polls', params: { tab: 'open' } }"
         >Open</router-link
@@ -21,19 +21,15 @@
       @status-change="onStatusChange"
       @delete-poll="onDelete"
     />
-    <router-link :to="{ name: 'NewPoll' }" class="button-link">
-      <IconButton icon="plus" />
-    </router-link>
   </div>
 </template>
 
 <script>
 import PollList from "./PollList";
-import IconButton from "./IconButton";
 export default {
+  name: "PollTabs",
   components: {
-    PollList,
-    IconButton
+    PollList
   },
   props: {
     filteredPolls: {
@@ -58,19 +54,36 @@ export default {
 .tabs {
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid $mint;
+  margin-bottom: 0px;
+  padding: 0;
   .tab {
+    font-family: "nexathin";
+    border-top: 1px solid #4b4b4b;
+    border-left: 1px solid #4b4b4b;
+    border-right: 1px solid #4b4b4b;
+    border-bottom: 1px solid white;
+    color: white;
+    flex-grow: 1;
+    display: block;
     list-style: none;
     cursor: pointer;
-    margin: 0;
-    padding: 0 $large $xsmall $large;
-    border-bottom: none;
+    margin: 0 0 0 -1px;
+    padding: $xsmall 0 $xsmall 0.8em;
     flex-wrap: wrap;
   }
   .router-link-exact-active {
-    color: $mint;
-    border-bottom: 2px solid $mint;
+    font-family: "nexablack";
     z-index: 1;
+    border: 1px solid white;
+    border-bottom: 1px solid $dark;
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    &:active {
+      outline: none;
+      box-shadow: none;
+    }
   }
 }
 </style>

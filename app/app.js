@@ -24,13 +24,15 @@ app.get(
   catchErrors(userController.getUser)
 );
 
+app.get("/polls", catchErrors(pollController.getPolls));
+
 // GET /polls - holt alle Polls
 // POST /polls - erstellt ein neues Poll
 // GET /polls/:pollId - holt ein Poll mit der ID
+// PUT /polls/:pollId - updated ein Poll mit der ID -- aber ersetzt immer das ganze Object in der Datenbank
 // PATCH /polls/:pollId - updated ein Attribut im Poll mit der ID. Values, die nicht geupdated werden sollen, werden bei der Request rausgelassen
-// DELETE /polls/:pollId - löscht ein Poll mit der ID
 
-app.get("/polls", catchErrors(pollController.getPolls));
+// DELETE /polls/:pollId - löscht ein Poll mit der ID
 
 app.post(
   "/polls",

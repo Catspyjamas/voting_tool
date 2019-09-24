@@ -1,24 +1,36 @@
 <template>
   <div class="container">
     <header>
-      <div class="breadcrumb">
-        <span>Vote</span>
-      </div>
       <h1>{{ poll.title }}</h1>
-      <p class="subhead">{{ poll.description }}</p>
-      <p class="subhead">{{ statusText }}</p>
+      <p>{{ poll.description }}</p>
+      <p>Drag and drop the order of options until you're happy.</p>
     </header>
     <main>
-      <draggable v-model="rankedOptions">
-        <PollOption
-          v-for="(option, index) in rankedOptions"
-          :id="option._id"
-          :key="option._id"
-          :index="index"
-          :title="option.title"
-          :description="option.description"
-          class="option"
-        />
+      <div class="status-message">
+        <p class="subhead">{{ statusText }}</p>
+      </div>
+      <draggable
+        id="vote-ranking-form"
+        v-model="rankedOptions"
+        v-bind="dragOptions"
+        @start="drag = true"
+        @end="drag = false"
+      >
+        <transition-group
+          type="transition"
+          :name="!drag ? 'flip-ranked-options' : null"
+        >
+          <PollOption
+            v-for="(option, index) in rankedOptions"
+            :id="option._id"
+            :key="option._id"
+            :index="index"
+            :title="option.title"
+            :description="option.description"
+            class="option"
+            @click="element.fixed = !element.fixed"
+          />
+        </transition-group>
       </draggable>
       <router-link
         :to="{ name: 'Submitted', params: { userId: userId } }"
@@ -78,8 +90,19 @@ export default {
   data() {
     return {
       voted: false,
-      rankedOptions: [...this.initialRankedOptions]
+      rankedOptions: [...this.initialRankedOptions],
+      drag: false
     };
+  },
+  computed: {
+    dragOptions() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    }
   },
   methods: {
     submitVote() {
@@ -95,18 +118,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.subhead {
-  color: $primary;
-  font-size: $medium;
-  line-height: 1.1em;
+header {
+  max-width: 60vw;
+  @media (max-width: 750px) {
+    max-width: 100%;
+  }
+  p {
+    margin-bottom: 0;
+  }
+}
+#vote-ranking-form {
+  margin: 2rem 0;
 }
 
-.option {
-  color: $primary;
-  display: flex;
-  border-top: 1px solid $primary;
-  padding-top: 1em;
-  position: relative;
-  cursor: move;
+flip-ranked-options-move {
+  transition: transform 0s;
+}
+
+.no-move {
+  transition: transform 0s;
+}
+
+.ghost {
+  opacity: 0.5;
+  background: #0bb3a280;
 }
 </style>
