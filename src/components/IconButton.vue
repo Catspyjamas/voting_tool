@@ -41,16 +41,16 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .button {
-  transition: background-color 0.5s ease;
+  transition: filter 0.5s ease;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
   background-color: $mint;
   &:hover {
-    background-color: $mint-lighter;
+    filter: brightness(120%);
   }
 }
 </style>

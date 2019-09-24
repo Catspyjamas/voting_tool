@@ -1,7 +1,7 @@
 <template>
   <button
     :class="['button', direction]"
-    :style="{ color: textColor }"
+    :style="style"
     :disabled="disabled"
     :title="text"
     @click="$emit('click')"
@@ -26,7 +26,7 @@ export default {
     },
     backgroundColor: {
       type: String,
-      default: "#00cfbb"
+      default: "#0bb3a2"
     },
     disabled: {
       type: Boolean,
@@ -39,6 +39,21 @@ export default {
     direction: {
       type: String,
       default: "left"
+    }
+  },
+  data() {
+    return {
+      hovering: false
+    };
+  },
+  computed: {
+    style() {
+      return { color: this.textColor, backgroundColor: this.backgroundColor };
+    }
+  },
+  methods: {
+    mouseOver() {
+      this.hovering !== this.hovering;
     }
   }
 };
@@ -58,7 +73,7 @@ export default {
 }
 
 .button {
-  transition: background-color 0.5 ease;
+  transition: filter 0.5s ease;
   font-family: "nexablack";
   border-radius: 35px;
   letter-spacing: 0.18em;
@@ -73,9 +88,8 @@ export default {
   bottom: 0;
   cursor: pointer;
   white-space: nowrap;
-  background-color: $grey2;
   &:hover {
-    background-color: $grey2-lighter;
+    filter: brightness(120%);
   }
 }
 </style>

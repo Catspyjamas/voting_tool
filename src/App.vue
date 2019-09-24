@@ -105,9 +105,9 @@ body {
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 3rem;
-  margin-top: 2rem;
-  line-height: 1.1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  line-height: 2.8rem;
   @media (max-width: 750px) {
     font-size: 2rem;
   }
@@ -268,5 +268,6 @@ footer {
   letter-spacing: 0;
   text-transform: none;
   color: white;
+  text-align: center;
 }
 </style>
