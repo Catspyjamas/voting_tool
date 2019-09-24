@@ -37,19 +37,7 @@ export default {
     };
   },
   async created() {
-    if (!this.$root.loggedIn) {
-      this.errorMessages.push("You need to be logged in to edit polls.");
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-    }
-    const fetchedPollObject = await fetchPoll(this.pollId);
-    if (fetchedPollObject.status !== "success") {
-      this.errorMessages.push(
-        ...fetchedPollObject.errors.map(error => error.msg)
-      );
-      return;
-    }
-    this.poll = fetchedPollObject.data;
-    this.loaded = true;
+    this.getPollData();
   },
   methods: {
     async savePollObject(pollObject) {
@@ -61,15 +49,36 @@ export default {
         fetchedPollObject.status === "fail" ||
         fetchedPollObject.status === "error"
       ) {
+        this.statusMessages.length = 0;
+        this.errorMessages.length = 0;
+        this.errorMessages.push(
+          ...fetchedPollObject.errors.map(error => error.msg)
+        );
+        window.scrollTo({ left: 0, top: 0 });
+        return;
+      }
+      this.statusMessages.length = 0;
+      this.errorMessages.length = 0;
+      this.statusMessages.push("Poll saved.");
+      window.scrollTo({ left: 0, top: 0 });
+
+      setTimeout(() => (this.statusMessages = []), 7000);
+      this.getPollData();
+    },
+    async getPollData() {
+      if (!this.$root.loggedIn) {
+        this.errorMessages.push("You need to be logged in to edit polls.");
+        window.scrollTo({ left: 0, top: 0 });
+      }
+      const fetchedPollObject = await fetchPoll(this.pollId);
+      if (fetchedPollObject.status !== "success") {
         this.errorMessages.push(
           ...fetchedPollObject.errors.map(error => error.msg)
         );
         return;
       }
-      this.statusMessages.push("Poll saved.");
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
       this.poll = fetchedPollObject.data;
-      setTimeout(() => (this.statusMessages = []), 7000);
+      this.loaded = true;
     }
   }
 };

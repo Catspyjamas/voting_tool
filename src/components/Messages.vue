@@ -90,7 +90,7 @@ export default {
   margin: 2rem 0;
   padding: 15px 15px;
   opacity: 1;
-  transition: all 1s ease-in;
+  transition: all 1s ease, opacity 0.8s ease;
 }
 
 .status-message-enter,

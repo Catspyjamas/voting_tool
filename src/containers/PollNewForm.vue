@@ -52,7 +52,7 @@ export default {
       this.statusMessages.push("Poll saved.");
       setTimeout(() => (this.statusMessages = []), 7000);
 
-      setTimeout(window.scrollTo({ left: 0, top: 0, behavior: "smooth" }), 2);
+      setTimeout(window.scrollTo({ left: 0, top: 0 }), 2);
     }
   }
 };

@@ -41,13 +41,8 @@
     </p>
     <PollOptionsForm @poll-option-submit="addOption" />
 
-    <ul>
-      <transition-group
-        name="list"
-        class="list"
-        enter-active-class="animated zoomIn"
-        leave-active-class="animated zoomOut"
-      >
+    <ul class="list">
+      <transition-group name="fade">
         <div v-for="(option, index) in pollModel.options" :key="option.title">
           <div class="list__options">
             <div class="list__options__info">
@@ -121,6 +116,9 @@ export default {
   },
   methods: {
     addOption(option) {
+      const optionList = document.querySelector(".list");
+      const top = optionList.offsetTop;
+      window.scrollTo({ left: 0, top: top, behavior: "smooth" });
       this.pollModel.options.push(option);
     },
     removeOption(index) {
@@ -150,6 +148,7 @@ export default {
       if (title && start && end && options.length > 1) {
         return true;
       }
+      window.scrollTo({ left: 0, top: -300 });
 
       this.errors = [];
 
@@ -165,7 +164,7 @@ export default {
       if (options.length <= 1) {
         this.errors.push("At least two options required.");
       }
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+
       return false;
     }
   }
@@ -176,6 +175,9 @@ ul {
   margin: 0;
   padding: 0;
   list-style-type: none;
+  > span {
+    width: 100%;
+  }
 }
 
 li {
@@ -192,6 +194,11 @@ li {
   min-height: 100vh;
 }
 
+.list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .list__options {
   color: white;
   display: flex;
@@ -199,24 +206,13 @@ li {
   position: relative;
   border-top: 1px solid $grey1;
   margin-top: 2em;
+  flex: 0 0 100%;
 }
 
 .list__options__title {
   font-family: nexablack;
   font-size: $small;
   padding: 1em 0 0.5em 0;
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.5);
-  }
-  100% {
-    transform: scale(1);
-  }
 }
 
 legend {
@@ -226,5 +222,16 @@ legend {
   margin: -1px;
   padding: 0;
   border: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  max-height: 800px;
+  transition: all 1s ease, opacity 0.8s;
+}
+.fade-enter,
+.fade-leave-to {
+  max-height: 0;
+  opacity: 0;
 }
 </style>

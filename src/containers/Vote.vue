@@ -124,13 +124,13 @@ export default {
         this.errorMessages.push(
           voteSubmitResponse.errors.map(error => error.msg)
         );
-        window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+        window.scrollTo({ left: 0, top: 0 });
       }
       if (voteSubmitResponse.status === "success") {
         this.statusMessages.push(
           "You successfully voted! If you would like to have another look at your vote or change it, here's a link:"
         );
-        window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+        window.scrollTo({ left: 0, top: 0 });
       }
     },
 
