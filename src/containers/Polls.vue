@@ -1,6 +1,10 @@
 <template>
   <div class="container">
     <h1>All Peerigon Polls</h1>
+    <Messages
+      :status-messages="statusMessages"
+      :error-messages="errorMessages"
+    />
     <PollTabs
       :filtered-polls="filteredPolls"
       @status-change="onStatusChange"
@@ -12,6 +16,7 @@
 <script>
 import { fetchPolls, changePollStatus, deletePoll } from "../lib/api.js";
 import PollTabs from "../components/PollTabs";
+import Messages from "../components/Messages";
 import { isOpen, isDraft, isClosed } from "../lib/poll.js";
 
 const mapTabToFilterFunction = {
@@ -22,7 +27,8 @@ const mapTabToFilterFunction = {
 
 export default {
   components: {
-    PollTabs
+    PollTabs,
+    Messages
   },
   props: {
     tab: {
@@ -32,30 +38,66 @@ export default {
   },
   data() {
     return {
-      polls: []
+      polls: [],
+      statusMessages: [],
+      errorMessages: []
     };
   },
   computed: {
     filteredPolls() {
-      return this.polls.filter(this.activeFilter);
+      if (this.polls.length > 0) {
+        return this.polls.filter(this.activeFilter);
+      } else return [];
     },
     activeFilter() {
       return mapTabToFilterFunction[this.tab];
     }
   },
   async mounted() {
-    this.polls = await fetchPolls();
+    const fetchedPollObject = await fetchPolls();
+    if (fetchedPollObject.status !== "success") {
+      this.errorMessages.push(...fetchedPollObject.errors);
+    }
+    this.polls = fetchedPollObject.data;
   },
   methods: {
     async onStatusChange(pollId, status) {
-      console.log("STATUS CHANGE REQUESTED", pollId, status);
-      await changePollStatus(pollId, status);
-      this.polls = await fetchPolls();
+      if (status === "DRAFT") {
+        if (
+          //if users don't confirm the question, abort
+          !confirm(
+            "Are you sure you want to move this poll in drafts? All votes will be deleted."
+          )
+        ) {
+          return;
+        }
+      }
+      const response = await changePollStatus(pollId, status);
+      this.handleResponse(response, "Poll has been moved to another tab.");
+      const fetchedPollObject = await fetchPolls();
+      this.polls = fetchedPollObject.data;
     },
     async deletePoll(pollId) {
       if (confirm("Are you sure you want to delete this poll?")) {
-        await deletePoll(pollId);
-        this.polls = await fetchPolls();
+        const response = await deletePoll(pollId);
+        this.handleResponse(response, "Poll deleted.");
+        const fetchedPollObject = await fetchPolls();
+        this.polls = fetchedPollObject.data;
+      }
+    },
+    async handleResponse(response, successMessage) {
+      if (response.status === "success") {
+        this.polls = response.data;
+        this.statusMessages = [];
+        this.statusMessages.push(successMessage);
+        setTimeout(() => (this.statusMessages = []), 7000);
+      } else if (response.status === "error") {
+        this.errorMessages.length = 0;
+        this.errorMessages = response.errors.map(error => error.msg);
+        setTimeout(() => (this.errorMessages = []), 7000);
+      } else {
+        this.errorMessages = response.errors.map(error => error.msg);
+        setTimeout(() => (this.errorMessages = []), 7000);
       }
     }
   }

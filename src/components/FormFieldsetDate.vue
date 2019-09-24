@@ -40,7 +40,12 @@ export default {
       dateString: null
     };
   },
-  mounted() {
+  watch: {
+    dateStringInitial(newDateString) {
+      this.dateString = newDateString;
+    }
+  },
+  created() {
     this.dateString = this.dateStringInitial;
   }
 };

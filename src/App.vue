@@ -4,6 +4,16 @@
       <div class="navlinks">
         <router-link class="navlink" to="/polls">Polls</router-link>
         <router-link class="navlink" to="/about">About</router-link>
+        <router-link v-if="!$root.loggedIn" class="navlink" to="/login"
+          >Login</router-link
+        >
+        <a v-if="$root.loggedIn" class="navlink" @click="logout">Logout</a>
+        <router-link v-if="!$root.loggedIn" class="navlink" to="/signup"
+          >Sign Up</router-link
+        >
+        <router-link v-if="$root.loggedIn" class="navlink" to="/editUser"
+          >Edit Profile</router-link
+        >
       </div>
     </nav>
     <router-view />
@@ -36,9 +46,19 @@
 </template>
 
 <script>
+import { logout } from "./lib/api";
 export default {
   name: "App",
-  components: {}
+  components: {},
+  methods: {
+    async logout() {
+      const response = await logout();
+
+      if (response.status === "success") {
+        this.$root.loggedIn = false;
+      }
+    }
+  }
 };
 </script>
 
@@ -248,55 +268,5 @@ footer {
   letter-spacing: 0;
   text-transform: none;
   color: white;
-}
-
-.status-message {
-  background-color: rgba(222, 251, 227, 0.8);
-  border-left: 3px solid $mint;
-  display: flex;
-  max-height: 1000px;
-  margin: 2rem 0;
-  padding: 15px 0;
-  opacity: 1;
-  flex-direction: column;
-  padding-left: 15px;
-  overflow: hidden;
-  p {
-    font-family: "plex-mono-italic";
-    color: black;
-    font-size: 1.1rem;
-    line-height: 1.4rem;
-    text-align: left;
-  }
-  ul {
-    font-family: "plex-mono-italic";
-    color: black;
-    flex-direction: column;
-    padding: 0 0;
-    margin: 0 0;
-    list-style-type: none;
-  }
-}
-
-.status-message-warning {
-  background-color: rgba(255, 241, 237, 0.8);
-  border-left: 3px solid rgb(199, 118, 98);
-}
-
-.status-message-enter-active,
-.status-message-leave-active {
-  max-height: 800px;
-  margin: 2rem 0;
-  padding: 15px 15px;
-  opacity: 1;
-  transition: all 1s ease-in;
-}
-
-.status-message-enter,
-.status-message-leave-to {
-  max-height: 0px;
-  margin: 0 0;
-  padding: 0 15px;
-  opacity: 0;
 }
 </style>

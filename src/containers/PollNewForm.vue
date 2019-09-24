@@ -1,44 +1,35 @@
 <template>
   <div class="container">
-    <h1>New Poll</h1>
-    <transition name="status-message">
-      <div
-        v-if="statusMessages.length"
-        id="status-message-polls"
-        class="status-message"
-      >
-        <ul>
-          <li v-for="statusMessage in statusMessages" :key="statusMessage">
-            {{ statusMessage }}
-          </li>
-        </ul>
-      </div>
-    </transition>
-    <PollForm :poll="emptyPoll" @pollSubmit="savePollObject" />
+    <h1 v-if="$root.loggedIn">New Poll</h1>
+    <Messages
+      :status-messages="statusMessages"
+      :error-messages="errorMessages"
+    />
+
+    <PollForm v-if="$root.loggedIn" @pollSubmit="savePollObject" />
   </div>
 </template>
 
 <script>
 import PollForm from "../components/PollForm.vue";
-
+import Messages from "../components/Messages.vue";
 import { savePoll } from "../lib/api.js";
 export default {
   name: "NewPoll",
   components: {
-    PollForm
+    PollForm,
+    Messages
   },
   data() {
     return {
       statusMessages: [],
-      emptyPoll: {
-        title: "",
-        description: "",
-        options: [],
-        start: "",
-        end: "",
-        pollId: ""
-      }
+      errorMessages: []
     };
+  },
+  created() {
+    if (!this.$root.loggedIn) {
+      this.errorMessages.push("You need to be logged in to create polls.");
+    }
   },
   methods: {
     async savePollObject(pollObject) {
@@ -52,6 +43,7 @@ export default {
         votes: [],
         status: "DRAFT"
       });
+      //! TODO: Wrap this in success
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
       this.statusMessages.length = 0;
       this.statusMessages.push("Poll saved.");

@@ -7,6 +7,9 @@ import "vue-datetime/dist/vue-datetime.css";
 Vue.config.productionTip = false;
 
 new Vue({
+  data: {
+    loggedIn: localStorage.authToken
+  },
   router,
   render: h => h(App)
 }).$mount("#app");

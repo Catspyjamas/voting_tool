@@ -1,15 +1,24 @@
+//Load env variables
+require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
-const { catchErrors } = require("./handlers/errorHandlers");
-const authHandler = require("./handlers/authHandler");
-const pollHandler = require("./handlers/pollHandler");
 const bodyParser = require("body-parser");
+// const session = require("express-session");
+const passport = require("passport");
 
 require("./db");
+
+const { catchErrors } = require("./handlers/errorHandlers");
+const authHandlers = require("./handlers/authHandlers");
+const pollHandler = require("./handlers/pollHandler");
+
+// require("./handlers/passport");
 
 const pollController = require("./controllers/pollController");
 const votesController = require("./controllers/votesController");
 const userController = require("./controllers/userController");
+const authController = require("./controllers/authController");
 
 // create our Express app
 const app = express();
@@ -18,11 +27,19 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-app.get(
-  "/user",
-  catchErrors(authHandler.findUser),
-  catchErrors(userController.getUser)
-);
+// app.use(
+//   session({
+//     secret: process.env.SECRET,
+//     key: process.env.KEY,
+//     resave: false,
+//     saveUninitialized: false
+//   })
+// );
+
+app.use(passport.initialize());
+// app.use(passport.session());
+
+// TODO: Set user to res.locals
 
 app.get("/polls", catchErrors(pollController.getPolls));
 
@@ -36,7 +53,7 @@ app.get("/polls", catchErrors(pollController.getPolls));
 
 app.post(
   "/polls",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.createPoll)
 );
 
@@ -48,13 +65,13 @@ app.get(
 
 app.patch(
   "/polls/:pollId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.updatePoll)
 );
 
 app.delete(
   "/polls/:pollId",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollController.deletePoll)
 );
 
@@ -66,33 +83,88 @@ app.delete(
 
 app.get(
   "/polls/:pollId/votes",
-  catchErrors(authHandler.findUser),
+  catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.getVotes)
 );
 
 app.get(
-  "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
+  "/polls/:pollId/vote",
+  catchErrors(authHandlers.findUser),
+  catchErrors(pollHandler.findPoll),
+
   catchErrors(votesController.getVote)
 );
 
 app.post(
-  "/polls/:pollId/votes",
-  catchErrors(authHandler.findUser),
+  "/polls/:pollId/vote",
+  catchErrors(authHandlers.findUser),
   catchErrors(pollHandler.findPoll),
   catchErrors(votesController.createVote)
 );
 app.patch(
-  "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
+  "/polls/:pollId/vote",
+  catchErrors(authHandlers.findUser),
+  catchErrors(pollHandler.findPoll),
   catchErrors(votesController.updateVote)
 );
-app.delete(
-  "/polls/:pollId/votes/:userId",
-  catchErrors(authHandler.findUser),
-  catchErrors(pollHandler.findPoll),
-  catchErrors(votesController.deleteVote)
+
+//!Currently not implemented
+// app.delete(
+//   "/polls/:pollId/vote",
+//   catchErrors(authHandlers.findUser),
+//   catchErrors(pollHandler.findPoll),
+//   catchErrors(votesController.deleteVote)
+// );
+
+// GET /user: Finds a user and returns it
+// POST /signup/ Create a new user
+// PUT /users/:userId Update user
+// PUT /users/:userId Delete user
+
+app.get(
+  "/user",
+  catchErrors(authHandlers.findUser),
+  catchErrors(userController.getUser)
 );
+
+app.post(
+  "/signup",
+  authHandlers.validateSignup,
+  catchErrors(userController.createUser),
+  catchErrors(authController.login),
+  authController.handleSuccess,
+  authController.handleError
+);
+app.patch(
+  "/user",
+  authHandlers.validateUpdateUser,
+  catchErrors(authHandlers.findUser),
+  catchErrors(userController.updateUser),
+  authController.handleSuccess,
+  authController.handleError
+);
+
+app.post(
+  "/login",
+  catchErrors(authController.login),
+  authController.handleSuccess,
+  authController.handleError
+);
+
+app.post(
+  "/logout",
+  catchErrors(authHandlers.findUser),
+  catchErrors(authController.logout),
+  authController.handleSuccess,
+  authController.handleError
+);
+
+app.use((err, req, res, next) => {
+  console.error("SOMETHING WENT WRONG", err);
+
+  res.status(err.statusCode || 500);
+  res.json({ status: "error", errors: [{ err }] });
+});
 
 module.exports = app;

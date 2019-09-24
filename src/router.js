@@ -7,6 +7,9 @@ import About from "./components/About.vue";
 import NewPoll from "./containers/PollNewForm.vue";
 import Submitted from "./components/Submitted.vue";
 import Results from "./containers/Results.vue";
+import Login from "./containers/Login.vue";
+import SignUp from "./containers/SignUp.vue";
+import UserEdit from "./containers/UserEdit.vue";
 
 Vue.use(Router);
 
@@ -45,12 +48,6 @@ export default new Router({
       props: true
     },
     {
-      path: "/polls/:pollId/vote/:userIdByParams",
-      name: "EditVote",
-      component: Vote,
-      props: true
-    },
-    {
       path: "/about",
       name: "About",
       component: About
@@ -65,6 +62,21 @@ export default new Router({
       name: "Submitted",
       component: Submitted,
       props: true
+    },
+    {
+      path: "/login",
+      name: "Login",
+      component: Login
+    },
+    {
+      path: "/signup",
+      name: "SignUp",
+      component: SignUp
+    },
+    {
+      path: "/editUser",
+      name: "editUser",
+      component: UserEdit
     }
   ]
 });

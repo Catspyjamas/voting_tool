@@ -2,69 +2,69 @@ const Poll = require("../models/Poll");
 const Vote = require("../models/Vote");
 
 exports.getVote = async (req, res) => {
-  const user = res.locals.user;
-  const poll = await Poll.findOne({ _id: req.params.pollId }).populate("votes");
+  const user = req.user;
+  const poll = res.locals.poll;
   if (!poll) {
     throw new Error(`Unknown poll with id ${req.params.pollId}`);
   }
   if (!poll.votes || poll.votes.length === 0) {
-    //! Is it ok to render a response and throw an Error afterwards?
-    res.json({ usersFirstVote: true });
-    throw new Error(
-      `Update not possible: There aren't any votes for this poll yet.`
-    );
-  }
-  //Check if user is authorized to get this vote (token matches param)
-  if (req.params.userId && user.id !== req.params.userId) {
-    res.status(401);
-    throw new Error(`You cannot vote for another user`);
+    res.status(400);
+    res.json({ status: "success", data: { usersFirstVote: true } });
+    return;
   }
   //Find out the voteId
   const vote = poll.votes.find(vote => vote.userId.toJSON() === user.id);
   // if so, get vote with userId
   if (!vote) {
-    res.json({ usersFirstVote: true });
-  } else {
-    res.json(vote);
+    res.json({ status: "success", data: { usersFirstVote: true } });
+    return;
   }
+  res.json({ status: "success", data: vote });
 };
 
 exports.getVotes = async (req, res) => {
-  const queriedPoll = res.locals.poll;
+  const poll = res.locals.poll;
   //check if status is CLOSED at all
-  if (queriedPoll.status !== "CLOSED") {
+  if (poll.status !== "CLOSED") {
     res.status(403);
-    throw new Error(
-      "You can only look at the results when the poll is closed."
-    );
+    res.json({
+      status: "error",
+      errors: [
+        { msg: "You can only look at the results when the poll is closed." }
+      ]
+    });
+    return;
   }
-  const pollResults = await Poll.findOne({ _id: req.params.pollId }).populate(
-    "votes"
-  );
-  res.json(pollResults);
+  res.json({ status: "success", data: poll });
 };
 
 exports.createVote = async (req, res) => {
-  //get poll id from params
   const poll = res.locals.poll;
-  //check if user is authorized to get this vote (token matches param)
-  const user = res.locals.user;
+  const user = req.user;
   if (poll.status !== "OPEN") {
-    res.status(401);
     throw new Error("You can only vote when the poll is open.");
   }
-  const vote = await new Vote({ ...req.body, userId: user._id }).save();
+  const existingVote = poll.votes.find(
+    vote => vote.userId.toJSON() === user.id
+  );
+  if (existingVote) {
+    throw new Error("Seems like this user has already voted.");
+  }
+  const vote = await new Vote({
+    ranking: req.body,
+    userId: user._id
+  }).save();
   poll.votes.push(vote);
   await poll.save();
   res.status(201);
-  res.json(vote);
+  res.json({ status: "success", data: vote });
 };
 
 exports.updateVote = async (req, res) => {
-  const user = res.locals.user;
+  const user = req.user;
   const ranking = req.body.ranking;
 
-  const poll = await Poll.findOne({ _id: req.params.pollId }).populate("votes");
+  const poll = res.locals.poll;
   if (!poll) {
     throw new Error(`Unknown poll with id ${req.params.pollId}`);
   }
@@ -73,9 +73,7 @@ exports.updateVote = async (req, res) => {
       `Update not possible: There aren't any votes for this poll`
     );
   }
-  if (req.params.userId && user.id !== req.params.userId) {
-    throw new Error("You can only update your own votes");
-  }
+
   if (poll.status !== "OPEN") {
     res.status(403);
     throw new Error("You can only update your vote when the poll is open.");
@@ -84,14 +82,6 @@ exports.updateVote = async (req, res) => {
   //Find oldVote in polls
   const oldVote = poll.votes.find(vote => vote.userId.toJSON() === user.id);
 
-  //Manipulate oldVote with new ranking (Don't need this probably)
-  //  const oldVoteIndex = poll.votes.findIndex(
-  //  vote => vote.userId.toJSON() === user.id
-  //);
-  // let newVote = { ...oldVote };
-  // newVote.ranking = ranking;
-  // poll.votes.splice(oldVoteIndex, 1, newVote);
-  // await poll.save();
   const updatedVote = await Vote.findOneAndUpdate(
     { _id: oldVote._id },
     { ranking: ranking },
@@ -100,8 +90,8 @@ exports.updateVote = async (req, res) => {
       runValidators: true
     }
   ).exec();
-
-  res.json(updatedVote);
+  res.status(201);
+  res.json({ status: "success", data: updatedVote });
 };
 
 exports.deleteVote = async (req, res) => {

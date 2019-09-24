@@ -1,13 +1,11 @@
 <template>
   <div class="container">
     <h1>Edit Poll</h1>
-    <transition name="status-message">
-      <div v-if="statusMessages.length" id="status-message-polls" class="status-message">
-        <ul>
-          <li v-for="statusMessage in statusMessages" :key="statusMessage">{{ statusMessage }}</li>
-        </ul>
-      </div>
-    </transition>
+    <Messages
+      :status-messages="statusMessages"
+      :error-messages="errorMessages"
+    />
+
     <PollForm v-if="loaded" :poll="poll" @pollSubmit="savePollObject" />
   </div>
 </template>
@@ -15,12 +13,14 @@
 <script>
 import { fetchPoll } from "../lib/api.js";
 import { savePoll } from "../lib/api.js";
+import Messages from "../components/Messages.vue";
 
 import PollForm from "../components/PollForm.vue";
 export default {
   name: "EditPoll",
   components: {
-    PollForm
+    PollForm,
+    Messages
   },
   props: {
     pollId: {
@@ -31,12 +31,20 @@ export default {
   data() {
     return {
       statusMessages: [],
+      errorMessages: [],
       poll: null,
       loaded: false
     };
   },
   async created() {
-    this.poll = await fetchPoll(this.pollId);
+    if (!this.$root.loggedIn) {
+      this.errorMessages.push("You need to be logged in to edit polls.");
+    }
+    const fetchedPollObject = await fetchPoll(this.pollId);
+    if (fetchedPollObject.status !== "success") {
+      this.errorMessages.push(...fetchedPollObject.errors);
+    }
+    this.poll = fetchedPollObject.data;
     this.loaded = true;
   },
   methods: {
@@ -46,6 +54,11 @@ export default {
       window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
 
       this.statusMessages.push("Poll saved.");
+      const fetchedPollObject = await fetchPoll(this.pollId);
+      if (fetchedPollObject.status !== "success") {
+        this.errorMessages.push(...fetchedPollObject.errors);
+      }
+      this.poll = fetchedPollObject.data;
       setTimeout(() => (this.statusMessages = []), 7000);
     }
   }
