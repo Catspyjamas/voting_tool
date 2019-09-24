@@ -39,10 +39,14 @@ export default {
   async created() {
     if (!this.$root.loggedIn) {
       this.errorMessages.push("You need to be logged in to edit polls.");
+      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
     }
     const fetchedPollObject = await fetchPoll(this.pollId);
     if (fetchedPollObject.status !== "success") {
-      this.errorMessages.push(...fetchedPollObject.errors);
+      this.errorMessages.push(
+        ...fetchedPollObject.errors.map(error => error.msg)
+      );
+      return;
     }
     this.poll = fetchedPollObject.data;
     this.loaded = true;
@@ -51,13 +55,19 @@ export default {
     async savePollObject(pollObject) {
       await savePoll(pollObject, this.pollId);
       this.statusMessages.length = 0;
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
 
-      this.statusMessages.push("Poll saved.");
       const fetchedPollObject = await fetchPoll(this.pollId);
-      if (fetchedPollObject.status !== "success") {
-        this.errorMessages.push(...fetchedPollObject.errors);
+      if (
+        fetchedPollObject.status === "fail" ||
+        fetchedPollObject.status === "error"
+      ) {
+        this.errorMessages.push(
+          ...fetchedPollObject.errors.map(error => error.msg)
+        );
+        return;
       }
+      this.statusMessages.push("Poll saved.");
+      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
       this.poll = fetchedPollObject.data;
       setTimeout(() => (this.statusMessages = []), 7000);
     }

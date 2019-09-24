@@ -42,7 +42,7 @@ export default {
       }
       const { newPasswordConfirm, ...userObject } = credentials;
       const response = await changeUser(userObject);
-      if (response.status === "fail") {
+      if (response.status === "fail" || response.status === "error") {
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
         setTimeout(() => (this.errorMessages = []), 7000);
