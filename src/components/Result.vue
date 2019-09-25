@@ -2,8 +2,12 @@
 <template>
   <div>
     <div id="winner">
-      <h2 v-if="winnerOptions.length === 1">The winner of the poll "{{ pollTitle }}" is...</h2>
-      <h2 v-else>It's a tie! The winners of the poll "{{ pollTitle }}" are...</h2>
+      <h2 v-if="winnerOptions.length === 1">
+        The winner of the poll "{{ pollTitle }}" is...
+      </h2>
+      <h2 v-else>
+        It's a tie! The winners of the poll "{{ pollTitle }}" are...
+      </h2>
       <div id="winner-names">
         <span
           v-for="(winnerOption, index) in winnerOptions"
@@ -15,39 +19,53 @@
             v-if="
               winnerOptions.length !== 1 && index === winnerOptions.length - 2
             "
-          >&nbsp; and</h2>
+          >
+            &nbsp; and
+          </h2>
         </span>
       </div>
     </div>
 
-    <div v-for="(pollResult, index) in pollResults" :key="pollResult.roundIndex">
+    <div
+      v-for="(pollResult, index) in pollResults"
+      :key="pollResult.roundIndex"
+    >
       <div class="headline">
-        <h2 v-if="pollResult.roundIndex === 0">Here's what we started out with</h2>
+        <h2 v-if="pollResult.roundIndex === 0">
+          Here's what we started out with
+        </h2>
         <h2 v-else>Round # {{ index + 1 }}</h2>
       </div>
       <div v-if="pollResult.minKeys" class="additional-info">
         <span>
           As we didn't have a majority, the one(s) with the least votes got
-          eliminated (in this case: 
+          eliminated (in this case:
         </span>
-        <span v-for="(minKey, index3) in pollResult.minKeys" :key="index3" class="option">
+        <span
+          v-for="(minKey, index3) in pollResult.minKeys"
+          :key="index3"
+          class="option"
+        >
           <span
             v-if="
               pollResult.minKeys.length > 1 &&
                 index3 === pollResult.minKeys.length - 1
             "
-          >and</span>
+            >and</span
+          >
           {{ minKey }}
           <span
             v-if="
               pollResult.minKeys.length > 1 &&
                 index3 < pollResult.minKeys.length - 1
             "
-          >,&nbsp;</span>
+            >,&nbsp;</span
+          >
           <span v-if="index3 === pollResult.minKeys.length - 1">).</span>
         </span>
         <span>
-          But people's votes aren't lost. Here's the chart if we take into account their next favourite options:
+          But people's votes aren't lost. Here's the chart if we take into
+          account their next favourite options:
         </span>
       </div>
       <div class="info">
@@ -60,7 +78,10 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="summedUpResult in pollResult.summedUpResults" :key="summedUpResult[0]">
+            <tr
+              v-for="summedUpResult in pollResult.summedUpResults"
+              :key="summedUpResult[0]"
+            >
               <td>{{ summedUpResult[1] }} voted for</td>
               <td>{{ summedUpResult[0] }}</td>
               <td>{{ summedUpResult[2] }}%</td>
@@ -68,7 +89,11 @@
           </tbody>
         </table>
       </div>
-      <doughnut-chart class="chart" :chartdata="pollResult.chartData" :options="chartOptions" />
+      <doughnut-chart
+        class="chart"
+        :chartdata="pollResult.chartData"
+        :options="chartOptions"
+      />
     </div>
   </div>
 </template>
@@ -88,10 +113,7 @@ export default {
       type: Array,
       default: () => []
     },
-    chartData: {
-      type: Array,
-      default: () => []
-    },
+
     winnerOptions: {
       type: Array,
       required: true
