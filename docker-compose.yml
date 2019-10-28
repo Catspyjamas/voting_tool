@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+    app:
+        container_name: app
+        restart: always
+        build: ./
+        command: npm run serve:api
+        ports:
+            - "7999:7999"
+        links:
+            - mongo
+    mongo:
+        container_name: mongo
+        image: mongo
+        volumes:
+            - ./data:/data/db
+        ports:
+            - "27017:27017"
+    test:
+        build:
+            context: .
+        environment:
+            - CI=true
+        command: npm run test
