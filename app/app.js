@@ -39,6 +39,8 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 // app.use(passport.session());
 
+app.get("/", (req, res) => res.send("Server is working"));
+
 // TODO: Set user to res.locals
 
 app.get("/polls", catchErrors(pollController.getPolls));

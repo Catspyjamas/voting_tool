@@ -1,93 +1,94 @@
 {
-  "name": "our-e-vote",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "serve": "vue-cli-service serve",
-    "serve:api": "nodemon ./app/main.js",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "styleguide": "vue-cli-service styleguidist",
-    "styleguide:build": "vue-cli-service styleguidist:build",
-    "test:unit": "vue-cli-service test:unit",
-    "test:watch": "jest --watch",
-    "setup:dummy-data": "node tools/dummyData.js"
-  },
-  "dependencies": {
-    "axios": "^0.19.0",
-    "body-parser": "^1.19.0",
-    "chart.js": "^2.8.0",
-    "cors": "^2.8.5",
-    "dotenv": "^8.1.0",
-    "express": "^4.17.1",
-    "express-session": "^1.16.2",
-    "express-validator": "^6.2.0",
-    "feather-icons": "^4.19.0",
-    "jsonwebtoken": "^8.5.1",
-    "luxon": "^1.17.2",
-    "md5": "^2.2.1",
-    "moment": "^2.24.0",
-    "mongoose": "^5.6.6",
-    "mongoose-bcrypt": "^1.6.0",
-    "mongoose-mongodb-errors": "0.0.2",
-    "node-sass": "^4.11.0",
-    "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0",
-    "passport-local-mongoose": "^5.0.1",
-    "randomcolor": "^0.5.4",
-    "sass-loader": "^7.1.0",
-    "uniqid": "^5.0.3",
-    "validator": "^11.1.0",
-    "vue": "^2.6.10",
-    "vue-chartjs": "^3.4.2",
-    "vue-datetime": "^1.0.0-beta.10",
-    "vue-feather": "^1.0.0",
-    "vue-feather-icon": "^1.2.0",
-    "vue-router": "^3.0.2",
-    "vuedraggable": "^2.20.0",
-    "weekstart": "^1.0.0"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.4.0",
-    "@vue/cli-plugin-eslint": "^3.4.0",
-    "@vue/cli-plugin-unit-jest": "^3.7.0",
-    "@vue/cli-service": "^3.5.1",
-    "@vue/test-utils": "1.0.0-beta.29",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
-    "eslint": "^5.8.0",
-    "eslint-config-prettier": "^4.1.0",
-    "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-vue": "^5.0.0",
-    "jest": "^24.8.0",
-    "nodemon": "^1.19.1",
-    "supertest": "^4.0.2",
-    "vue-cli-plugin-styleguidist": "^3.11.4",
-    "vue-template-compiler": "^2.6.10"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
+    "name": "our-e-vote",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "serve:api": "nodemon ./app/main.js",
+        "build": "vue-cli-service build",
+        "lint": "vue-cli-service lint",
+        "styleguide": "vue-cli-service styleguidist",
+        "styleguide:build": "vue-cli-service styleguidist:build",
+        "test": "jest",
+        "test:unit": "vue-cli-service test:unit",
+        "test:watch": "jest --watch",
+        "setup:dummy-data": "node tools/dummyData.js"
     },
-    "extends": [
-      "plugin:vue/essential",
-      "eslint:recommended"
-    ],
-    "rules": {},
-    "parserOptions": {
-      "parser": "babel-eslint"
-    }
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not ie <= 8"
-  ]
+    "dependencies": {
+        "axios": "^0.19.0",
+        "body-parser": "^1.19.0",
+        "chart.js": "^2.8.0",
+        "cors": "^2.8.5",
+        "dotenv": "^8.1.0",
+        "express": "^4.17.1",
+        "express-session": "^1.16.2",
+        "express-validator": "^6.2.0",
+        "feather-icons": "^4.19.0",
+        "jsonwebtoken": "^8.5.1",
+        "luxon": "^1.17.2",
+        "md5": "^2.2.1",
+        "moment": "^2.24.0",
+        "mongoose": "^5.6.6",
+        "mongoose-bcrypt": "^1.6.0",
+        "mongoose-mongodb-errors": "0.0.2",
+        "node-sass": "^4.11.0",
+        "passport": "^0.4.0",
+        "passport-jwt": "^4.0.0",
+        "passport-local-mongoose": "^5.0.1",
+        "randomcolor": "^0.5.4",
+        "sass-loader": "^7.1.0",
+        "uniqid": "^5.0.3",
+        "validator": "^11.1.0",
+        "vue": "^2.6.10",
+        "vue-chartjs": "^3.4.2",
+        "vue-datetime": "^1.0.0-beta.10",
+        "vue-feather": "^1.0.0",
+        "vue-feather-icon": "^1.2.0",
+        "vue-router": "^3.0.2",
+        "vuedraggable": "^2.20.0",
+        "weekstart": "^1.0.0"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-babel": "^3.4.0",
+        "@vue/cli-plugin-eslint": "^3.4.0",
+        "@vue/cli-plugin-unit-jest": "^3.7.0",
+        "@vue/cli-service": "^3.5.1",
+        "@vue/test-utils": "1.0.0-beta.29",
+        "babel-core": "7.0.0-bridge.0",
+        "babel-eslint": "^10.0.1",
+        "babel-jest": "^23.6.0",
+        "eslint": "^5.8.0",
+        "eslint-config-prettier": "^4.1.0",
+        "eslint-plugin-prettier": "^3.0.1",
+        "eslint-plugin-vue": "^5.0.0",
+        "jest": "^24.8.0",
+        "nodemon": "^1.19.1",
+        "supertest": "^4.0.2",
+        "vue-cli-plugin-styleguidist": "^3.11.4",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "eslint:recommended"
+        ],
+        "rules": {},
+        "parserOptions": {
+            "parser": "babel-eslint"
+        }
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions",
+        "not ie <= 8"
+    ]
 }
