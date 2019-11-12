@@ -5,11 +5,14 @@ const { createDummyData } = require("./tests/dummyData");
 
 let dummyData;
 
-beforeAll(resetDb);
 beforeAll(async () => {
+  await resetDb();
+  //TODO: test if I can manually add data
   dummyData = await createDummyData();
 });
-afterAll(closeConnection);
+afterAll(async () => {
+  await closeConnection();
+});
 
 let obelixToken;
 let obelixId;

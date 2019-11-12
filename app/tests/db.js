@@ -1,7 +1,7 @@
-const { connection } = require("../db");
+const { connection, initDatabase } = require("../db");
 
 async function resetDb() {
-  await connection;
+  await initDatabase();
   await connection.db.dropDatabase();
 }
 
