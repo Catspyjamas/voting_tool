@@ -32,29 +32,20 @@
           />
         </transition-group>
       </draggable>
-      <router-link
-        :to="{ name: 'Submitted', params: { userId: userId } }"
-        class="button-link"
-        :user-id="userId"
-      >
-        <TextButton
-          icon="arrow-right-circle"
-          text="Submit your
+
+      <TextButton
+        icon="arrow-right-circle"
+        text="Submit your
         choice"
-          @click="submitVote"
-        />
-      </router-link>
-      <router-link
-        :to="{ name: 'Submitted', params: { userId: userId } }"
-        class="button-link"
-      >
-        <TextButton
-          background-color="coral"
-          icon="arrow-right-circle"
-          text="Abstain instead"
-          @click="abstainVote"
-        />
-      </router-link>
+        @click="submitVote"
+      />
+
+      <TextButton
+        background-color="#ff7f50"
+        icon="arrow-right-circle"
+        text="Abstain instead"
+        @click="abstainVote"
+      />
     </main>
   </div>
 </template>

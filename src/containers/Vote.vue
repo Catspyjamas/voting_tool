@@ -5,13 +5,23 @@
       :error-messages="errorMessages"
     />
     <VoteForm
-      v-if="votesArrived"
+      v-if="votesArrived && !voted"
       :poll="poll"
       :initial-ranked-options="rankedOptions"
       :status-text="statusText"
       :user-id="userId"
       @submitVote="submitVote"
     />
+    <router-link
+      v-if="voted"
+      :to="{
+        name: 'Vote',
+        params: { pollId: pollId }
+      }"
+      class="button-link"
+    >
+      <TextButton text="Changed my mind" direction="left" @click="reload" />
+    </router-link>
   </div>
 </template>
 
@@ -19,11 +29,13 @@
 import { fetchVote, saveVote, fetchPoll } from "../lib/api.js";
 import VoteForm from "../components/VoteForm.vue";
 import Messages from "../components/Messages.vue";
+import TextButton from "../components/TextButton";
 
 export default {
   components: {
     VoteForm,
-    Messages
+    Messages,
+    TextButton
   },
   props: {
     pollId: {
@@ -68,15 +80,16 @@ export default {
       return;
     }
     if (voteResponse.data.usersFirstVote) {
-      this.poll = pollResponse.data.poll;
+      this.poll = pollResponse.data;
 
       this.statusText = `This is the first time you're voting for ${
         this.poll.title
       }.`;
-      this.rankedOptions = this.shuffleArray(pollResponse.data.poll.options);
+      this.rankedOptions = this.shuffleArray(pollResponse.data.options);
       return;
     }
-    this.poll = pollResponse.data.poll;
+
+    this.poll = pollResponse.data;
 
     this.userId = voteResponse.data.userId;
     if (voteResponse.data.ranking && voteResponse.data.ranking.length === 0) {
@@ -97,11 +110,27 @@ export default {
   },
   methods: {
     async submitVote(rankedOptions) {
-      try {
-        await saveVote(this.poll._id, rankedOptions, this.authToken);
-        this.voted = true;
-      } catch (error) {
-        console.log(error);
+      const voteSubmitResponse = await saveVote(
+        this.poll._id,
+        rankedOptions,
+        this.authToken
+      );
+      this.voted = true;
+
+      if (
+        voteSubmitResponse.status === "fail" ||
+        voteSubmitResponse.status == "error"
+      ) {
+        this.errorMessages.push(
+          voteSubmitResponse.errors.map(error => error.msg)
+        );
+        window.scrollTo({ left: 0, top: 0 });
+      }
+      if (voteSubmitResponse.status === "success") {
+        this.statusMessages.push(
+          "You successfully voted! If you would like to have another look at your vote or change it, here's a link:"
+        );
+        window.scrollTo({ left: 0, top: 0 });
       }
     },
 
@@ -110,6 +139,9 @@ export default {
         .map(a => [Math.random(), a])
         .sort((a, b) => a[0] - b[0])
         .map(a => a[1]);
+    },
+    reload() {
+      this.$router.go();
     }
   }
 };

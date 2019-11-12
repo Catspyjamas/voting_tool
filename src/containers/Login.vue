@@ -24,7 +24,7 @@ export default {
   methods: {
     async submitLogIn(credentials) {
       const response = await login(credentials);
-      if (response.status === "fail") {
+      if (response.status === "fail" || response.status === "error") {
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
       } else if (response.status === "success") {

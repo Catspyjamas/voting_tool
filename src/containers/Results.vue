@@ -5,7 +5,6 @@
       v-if="loaded"
       :poll-title="poll.title"
       :poll-results="pollResults"
-      :chart-data="chartData"
       :winner-options="winnerOptions"
       :chart-options="chartOptions"
     />
@@ -18,6 +17,7 @@ import { fetchPollResults } from "../lib/api.js";
 import { findWinner } from "../lib/poll.js";
 import { prepareRoundInfo } from "../lib/poll.js";
 export default {
+  name: "Results",
   components: {
     Result,
     Messages
@@ -41,34 +41,33 @@ export default {
       errorMessages: []
     };
   },
-  computed: {
-    chartData: function() {
-      return this.pollResults.chartData;
-    }
-  },
+  // computed: {
+  //   chartData: function() {
+  //     return this.pollResults.chartData;
+  //   }
+  // },
   async mounted() {
     try {
-      const response = await fetchPollResults(this.pollId);
-      if (response.status === "fail" || response.status === "error") {
+      const pollResponse = await fetchPollResults(this.pollId);
+      if (pollResponse.status === "fail" || pollResponse.status === "error") {
         this.errorMessages.length = 0;
-        this.errorMessages = response.errors.map(error => error.msg);
+        this.errorMessages = pollResponse.errors.map(error => error.msg);
         setTimeout(() => (this.errorMessages = []), 7000);
         return;
       }
-      this.poll = response.data;
-      const roundHistory = findWinner(response.data);
-      const pollResults = prepareRoundInfo(response.data, roundHistory);
+      this.poll = pollResponse.data;
+      //Find a winner with the ranking data
+      const roundHistory = findWinner(pollResponse.data);
+      //Prepare an object that sums up the roundhistory in a form that lets us display everything in the results component
+      const pollResults = prepareRoundInfo(pollResponse.data, roundHistory);
       this.pollResults = pollResults;
-      const winnerIdsAndVotes = [...pollResults[pollResults.length - 1].result];
-      // const winnerOptions = [];
-      // winnerIdsAndVotes.forEach(winnerIdAndVote => {
-      //   poll.options.forEach(option => {
-      //     if (winnerIdAndVote.winnerId === option._id) {
-      //       winnerOptions.push(option);
-      //     }
-      //   });
-      // });
-      this.winnerOptions = response.data.options.filter(pollOption => {
+      //console.log(JSON.stringify(pollResults, null, 2));
+      //Get the winner's Id and the number of people who voted for it from our roundHistory
+      const winnerIdsAndVotes = [
+        ...roundHistory[roundHistory.length - 1].result
+      ];
+      //Now we know the winner's id, all we need is the winner's whole data
+      this.winnerOptions = pollResponse.data.options.filter(pollOption => {
         return winnerIdsAndVotes.some(winnerIdAndVote => {
           return pollOption._id === winnerIdAndVote.winnerId;
         });

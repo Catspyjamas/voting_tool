@@ -34,7 +34,7 @@ export default {
   methods: {
     async savePollObject(pollObject) {
       const { title, description, options, start, end } = pollObject;
-      await savePoll({
+      const responseObject = await savePoll({
         title,
         description,
         options,
@@ -43,11 +43,16 @@ export default {
         votes: [],
         status: "DRAFT"
       });
-      //! TODO: Wrap this in success
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+      if (responseObject.status !== "success") {
+        this.errorMessages.length === 0;
+        this.errorMessages.push(responseObject.errors.map(error => error.msg));
+        return;
+      }
       this.statusMessages.length = 0;
       this.statusMessages.push("Poll saved.");
       setTimeout(() => (this.statusMessages = []), 7000);
+
+      setTimeout(window.scrollTo({ left: 0, top: 0 }), 2);
     }
   }
 };

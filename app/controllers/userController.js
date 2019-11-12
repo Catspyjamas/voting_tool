@@ -58,5 +58,9 @@ exports.updateUser = async (req, res, next) => {
       return;
     }
   }
-  next(new Error("Wrong"));
+  next(
+    new Error(
+      "Authentication failed. Either this user doesn't exist or the password's wrong."
+    )
+  );
 };

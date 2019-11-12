@@ -107,7 +107,7 @@
               </td>
               <td v-if="poll.status === 'CLOSED' && !enoughVotes(poll)">
                 You need to collect more than one vote if you would like to
-                diplay the results.
+                display the results.
               </td>
               <td v-if="poll.status === 'CLOSED' && enoughVotes(poll)">
                 {{ poll.votes.length }}
@@ -164,7 +164,7 @@ export default {
       return dateFormat.format(new Date(date));
     },
     enoughVotes(poll) {
-      return poll.votes.length > 0;
+      return poll.votes.length > 1;
     }
   }
 };

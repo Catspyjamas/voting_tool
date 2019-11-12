@@ -32,7 +32,7 @@ exports.login = async (req, res, next) => {
 
   const user = await User.findOne({ email });
 
-  if (user !== undefined) {
+  if (user) {
     //verifyPassword is a method that comes with bcrypt
     const valid = await user.verifyPassword(password);
 
@@ -56,7 +56,11 @@ exports.login = async (req, res, next) => {
       return;
     }
   }
-  next(new Error("Wrong"));
+  next(
+    new Error(
+      "Authentication failed. Either this user doesn't exist or the password's wrong."
+    )
+  );
 };
 
 // On logout, the uniquid token is deleted from the database to make sure the JWT token cannot be used any more (even if it hasn't exoired yet).
@@ -83,7 +87,11 @@ exports.handleError = (err, req, res, next) => {
   if (err.name === "UserExistsError") {
     res.status(422);
     res.json({ status: "fail", errors: [{ msg: err.message }] });
-    return;
   }
-  next(err);
+  if (err.message) {
+    res.status(401);
+    res.json({ status: "fail", errors: [{ msg: err.message }] });
+  } else {
+    next(err);
+  }
 };

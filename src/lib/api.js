@@ -156,7 +156,7 @@ export async function saveVote(pollId, rankedOptions, authToken) {
     if (hasUserVoted.data && hasUserVoted.data.usersFirstVote) {
       const responseVote = await axios.post(
         `${url}/polls/${pollId}/vote`,
-        rankedOptions,
+        { ranking: rankedOptions },
         {
           headers: {
             Authentication: authToken,

@@ -40,9 +40,6 @@ export default {
   },
   methods: {
     onSubmit() {
-      if (!this.checkForm()) {
-        return;
-      }
       const { title, description } = this;
       this.$emit("poll-option-submit", {
         title,
@@ -50,20 +47,6 @@ export default {
       });
       this.title = "";
       this.description = "";
-    },
-    checkForm: function() {
-      if (this.title) {
-        return true;
-      }
-
-      this.optionErrors = [];
-
-      if (!this.title) {
-        this.optionErrors.push("Option name required.");
-      }
-      // e.preventDefault();
-      window.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-      return false;
     }
   }
 };
@@ -85,15 +68,5 @@ export default {
 .form__innerbox {
   border: 1px solid rgba(232, 232, 232, 0.5);
   position: relative;
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.7s ease;
-}
-
-.slide-fade-enter {
-  transform: translateX(10px);
-  opacity: 0;
 }
 </style>

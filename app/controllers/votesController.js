@@ -51,7 +51,7 @@ exports.createVote = async (req, res) => {
     throw new Error("Seems like this user has already voted.");
   }
   const vote = await new Vote({
-    ranking: req.body,
+    ranking: req.body.ranking,
     userId: user._id
   }).save();
   poll.votes.push(vote);

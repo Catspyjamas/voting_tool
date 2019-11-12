@@ -159,7 +159,7 @@ export default {
     scrollMeTo(refName) {
       const element = this.$refs[refName];
       const top = element.offsetTop;
-      window.scrollTo({ left: 0, top: top, behavior: "smooth" });
+      window.scrollTo({ left: 0, top: top - 60, behavior: "smooth" });
     }
   }
 };

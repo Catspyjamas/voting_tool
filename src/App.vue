@@ -2,20 +2,37 @@
   <div id="app">
     <nav>
       <div class="navlinks">
-        <router-link class="navlink" to="/polls">Polls</router-link>
-        <router-link class="navlink" to="/about">About</router-link>
-        <router-link v-if="!$root.loggedIn" class="navlink" to="/login"
+        <router-link class="navlink" to="/polls" @click="removeStatusMessages"
+          >Polls</router-link
+        >
+        <router-link class="navlink" to="/about" @click="removeStatusMessages"
+          >About</router-link
+        >
+        <router-link
+          v-if="!$root.loggedIn"
+          class="navlink"
+          to="/login"
+          @click="removeStatusMessages"
           >Login</router-link
         >
         <a v-if="$root.loggedIn" class="navlink" @click="logout">Logout</a>
-        <router-link v-if="!$root.loggedIn" class="navlink" to="/signup"
+        <router-link
+          v-if="!$root.loggedIn"
+          class="navlink"
+          to="/signup"
+          @click="removeStatusMessages"
           >Sign Up</router-link
         >
-        <router-link v-if="$root.loggedIn" class="navlink" to="/editUser"
+        <router-link
+          v-if="$root.loggedIn"
+          class="navlink"
+          to="/editUser"
+          @click="removeStatusMessages"
           >Edit Profile</router-link
         >
       </div>
     </nav>
+    <Messages class="status-message-global" :status-messages="statusMessages" />
     <router-view />
     <footer>
       <a id="peerigon-link" :href="'//' + 'www.peerigon.com'" target="_blank">
@@ -47,16 +64,29 @@
 
 <script>
 import { logout } from "./lib/api";
+import Messages from "./components/Messages";
 export default {
   name: "App",
-  components: {},
+  components: {
+    Messages
+  },
+  data() {
+    return {
+      statusMessages: []
+    };
+  },
   methods: {
     async logout() {
       const response = await logout();
 
       if (response.status === "success") {
         this.$root.loggedIn = false;
+        this.statusMessages.push(`You are now logged out.`);
+        setTimeout(() => (this.statusMessages = []), 2000);
       }
+    },
+    removeStatusMessages() {
+      this.statusMessages.length = 0;
     }
   }
 };
@@ -105,9 +135,9 @@ body {
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 3rem;
-  margin-top: 2rem;
-  line-height: 1.1rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  line-height: 2.8rem;
   @media (max-width: 750px) {
     font-size: 2rem;
   }
@@ -152,6 +182,12 @@ footer {
   align-items: center;
   padding: 30px 20px;
 }
+
+.status-message-global {
+  max-width: 70vw;
+  margin: 15px auto 0 auto;
+}
+
 .navlinks {
   margin: 0 auto 0 auto;
   display: flex;
@@ -268,5 +304,6 @@ footer {
   letter-spacing: 0;
   text-transform: none;
   color: white;
+  text-align: center;
 }
 </style>

@@ -2,6 +2,10 @@ const User = require("../models/User");
 const Poll = require("../models/Poll");
 const Vote = require("../models/Vote");
 
+const passportJwt = require("passport-jwt");
+const jwt = require("jsonwebtoken");
+const uniqid = require("uniqid");
+
 require("./db.js");
 
 //mongoose only gives us database objects. If we compare those to plain old JavaScript APi objects, tests will fail
@@ -10,63 +14,76 @@ function toPojo(object) {
   return JSON.parse(JSON.stringify(object));
 }
 
+const obelix = {
+  firstName: "Obelix",
+  lastName: "Gaulois",
+  email: "obelix@mail.com",
+  password: "123"
+};
+
 async function createDummyData() {
   const asterix = await new User({
     firstName: "Asterix",
+    lastName: "Gaulois",
     email: "asterix@mail.com",
-    password: "123",
-    token: "a"
-  }).save();
-  const obelix = await new User({
-    firstName: "Obelix",
-    email: "obelix@mail.com",
     password: "123"
   }).save();
   const miraculix = await new User({
     firstName: "Miraculix",
+    lastName: "Gaulois",
     email: "miraculix@mail.com",
     password: "123"
   }).save();
   const verleihnix = await new User({
     firstName: "Verleihnix",
+    lastName: "Gaulois",
     email: "verleihnix@mail.com",
     password: "123"
   }).save();
   const gutemine = await new User({
     firstName: "Gutemine",
+    lastName: "Gaulois",
     email: "gutemine@mail.com",
     password: "123"
   }).save();
   const automatix = await new User({
     firstName: "Automatix",
+    lastName: "Gaulois",
     email: "automatix@mail.com",
     password: "123"
   }).save();
   const troubadix = await new User({
     firstName: "Troubardix",
+    lastName: "Gaulois",
     email: "troubardix@mail.com",
     password: "123"
   }).save();
   const idefix = await new User({
     firstName: "Idefix",
+    lastName: "Gaulois",
     email: "idefix@mail.com",
     password: "123"
   }).save();
   const majestix = await new User({
     firstName: "Majestix",
+    lastName: "Gaulois",
+
     email: "majestix@mail.com",
     password: "123"
   }).save();
   const falbala = await new User({
     firstName: "Falbala",
+    lastName: "Gaulois",
     email: "falbala@mail.com",
     password: "123"
   }).save();
   const methusalix = await new User({
     firstName: "Methusalix",
+    lastName: "Gaulois",
     email: "methusalix@mail.com",
     password: "123"
   }).save();
+
   const draftPoll = await new Poll({
     title: "Birthday Event Draft",
     start: new Date(Date.UTC(2019, 11, 20, 3, 0, 0)),
@@ -178,36 +195,35 @@ async function createDummyData() {
     status: "OPEN"
   }).save();
 
-  const vote1 = await new Vote({
-    userId: asterix._id,
+  const openPollPojo = toPojo(openPoll);
+  const vote1 = {
     ranking: [
-      openPoll.options[4]._id,
-      openPoll.options[3]._id,
-      openPoll.options[1]._id,
-      openPoll.options[0]._id,
-      openPoll.options[2]._id
+      openPollPojo.options[1]._id,
+      openPollPojo.options[3]._id,
+      openPollPojo.options[2]._id,
+      openPollPojo.options[4]._id,
+      openPollPojo.options[0]._id
     ]
-  }).save();
-  const vote2 = await new Vote({
-    userId: obelix._id,
+  };
+  const vote2 = {
     ranking: [
-      openPoll.options[3]._id,
-      openPoll.options[4]._id,
-      openPoll.options[2]._id,
-      openPoll.options[0]._id,
-      openPoll.options[1]._id
+      openPollPojo.options[0]._id,
+      openPollPojo.options[2]._id,
+      openPollPojo.options[3]._id,
+      openPollPojo.options[1]._id,
+      openPollPojo.options[4]._id
     ]
-  }).save();
-  const vote3 = await new Vote({
-    userId: miraculix._id,
+  };
+  const vote3 = {
     ranking: [
-      openPoll.options[3]._id,
-      openPoll.options[0]._id,
-      openPoll.options[1]._id,
-      openPoll.options[4]._id,
-      openPoll.options[2]._id
+      openPollPojo.options[3]._id,
+      openPollPojo.options[2]._id,
+      openPollPojo.options[4]._id,
+      openPollPojo.options[1]._id,
+      openPollPojo.options[0]._id
     ]
-  }).save();
+  };
+
   const vote4 = await new Vote({
     userId: verleihnix._id,
     ranking: [
@@ -218,6 +234,7 @@ async function createDummyData() {
       closedPoll.options[2]._id
     ]
   }).save();
+
   const vote5 = await new Vote({
     userId: gutemine._id,
     ranking: [
@@ -228,6 +245,7 @@ async function createDummyData() {
       closedPoll.options[4]._id
     ]
   }).save();
+
   const vote6 = await new Vote({
     userId: automatix._id,
     ranking: [
@@ -288,8 +306,8 @@ async function createDummyData() {
       closedPoll.options[2]._id
     ]
   }).save();
-  openPoll.votes.push(vote1._id, vote2._id);
-  await openPoll.save();
+  // openPoll.votes.push(vote1._id, vote2._id);
+  // await openPoll.save();
   closedPoll.votes.push(
     vote4._id,
     vote5._id,
@@ -301,14 +319,13 @@ async function createDummyData() {
     vote11._id
   );
   await closedPoll.save();
+
   return {
     asterix: toPojo(asterix),
-    obelix: toPojo(obelix),
-    miraculix: toPojo(miraculix),
-    verleihnix: toPojo(verleihnix),
-    vote1: toPojo(vote1),
-    vote2: toPojo(vote2),
-    vote3: toPojo(vote3),
+    obelix,
+    vote1,
+    vote2,
+    vote3,
     draftPoll: toPojo(draftPoll),
     openPoll: toPojo(openPoll),
     closedPoll: toPojo(closedPoll)

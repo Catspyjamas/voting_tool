@@ -33,14 +33,17 @@ export default {
       }
       const { passwordConfirm, ...userObject } = credentials;
       const response = await signup(userObject);
-      if (response.status === "fail") {
+      if (response.status === "fail" || response.status === "error") {
         this.errorMessages.length = 0;
         this.errorMessages = response.errors.map(error => error.msg);
-      } else if (response.status === "success") {
+        return;
+      }
+      if (response.status === "success") {
         this.errorMessages.length = 0;
         this.statusMessages.push(`Created a new user.`);
         this.signedUp = true;
         this.$root.loggedIn = true;
+        return;
       } else {
         this.errorMessages.length = 0;
         this.errorMessages.push(
